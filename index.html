@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-g" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>โกลเด้น ตาล | น้ำตาลโตนดแท้ - ผลิตอย่างยั่งยืนในประเทศไทย</title>
+    <meta name="description" content="ค้นพบโกลเด้น ตาล น้ำตาลโตนดออร์แกนิกพรีเมียม GI ต่ำ บริสุทธิ์ 100% ไม่ขัดสี และผลิตอย่างยั่งยืนจากสวนครอบครัวในราชบุรี ประเทศไทย ทางเลือกน้ำตาลเพื่อสุขภาพที่สมบูรณ์แบบ" />
+    <meta name="keywords" content="น้ำตาลโตนด, โกลเด้น ตาล, น้ำตาลโตนดแท้, น้ำตาลโตนดออร์แกนิก, น้ำตาลสำหรับคนเป็นเบาหวาน, น้ำตาลโตนด GI ต่ำ, สินค้าไทย, ส่งออก, อาหารสุขภาพ, low glycemic index sweetener, healthy sugar alternative, sustainable sugar farming" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&family=Inter:wght@400;700;900&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
+
+    <style>
+      body {
+        font-family: 'Poppins', 'Noto Sans Thai', sans-serif;
+        background-color: #FDFBF8;
+        color: #402E32;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', serif;
+      }
+      .parallax-bg {
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      /* Added for scroll animations */
+      .content-animate {
+        transition: opacity 0.8s cubic-bezier(0.04, 0.62, 0.23, 0.98), transform 0.8s cubic-bezier(0.04, 0.62, 0.23, 0.98);
+      }
+      .content-animate.from-left {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      .content-animate.from-right {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      .content-animate.is-visible {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-icons/": "https://esm.sh/react-icons@^5.5.0/",
+    "framer-motion": "https://esm.sh/framer-motion@^12.23.6",
+    "react-scroll": "https://esm.sh/react-scroll@^1.9.3",
+    "chart.js": "https://esm.sh/chart.js@^4.4.3",
+    "react-chartjs-2": "https://esm.sh/react-chartjs-2@^5.2.0",
+    "react-dom": "https://esm.sh/react-dom@^19.1.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
