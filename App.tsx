@@ -104,8 +104,15 @@ const App: React.FC = () => {
     }, [language]);
 
     useEffect(() => {
-        const randomIndex = Math.floor(Math.random() * HERO_BACKGROUND_IMAGES.length);
-        setHeroBg(HERO_BACKGROUND_IMAGES[randomIndex]);
+        try {
+            const randomIndex = Math.floor(Math.random() * HERO_BACKGROUND_IMAGES.length);
+            setHeroBg(HERO_BACKGROUND_IMAGES[randomIndex]);
+        } catch (error) {
+            console.error("Failed to set random hero background:", error);
+            if (HERO_BACKGROUND_IMAGES.length > 0) {
+                setHeroBg(HERO_BACKGROUND_IMAGES[0]);
+            }
+        }
     }, []);
 
     const removeFromCart = useCallback((id: number) => {
@@ -142,19 +149,26 @@ const App: React.FC = () => {
     }, []);
 
     const translatedProducts = useMemo(() => {
-        if (isLoading) return [];
-        return PRODUCTS_DATA.map(product => {
-            const image = product.images[Math.floor(Math.random() * product.images.length)];
-            return {
-                ...product,
-                image,
-                title: t(`${product.key}.title`),
-                description: t(`${product.key}.description`),
-                targetUsers: t(`${product.key}.targetUsers`),
-                usp: t(`${product.key}.usp`),
-                market: t(`${product.key}.market`),
-            };
-        });
+        try {
+            if (isLoading) return [];
+            return PRODUCTS_DATA.map(product => {
+                const image = product.images.length > 0
+                    ? product.images[Math.floor(Math.random() * product.images.length)]
+                    : ''; // Fallback for empty image array
+                return {
+                    ...product,
+                    image,
+                    title: t(`${product.key}.title`),
+                    description: t(`${product.key}.description`),
+                    targetUsers: t(`${product.key}.targetUsers`),
+                    usp: t(`${product.key}.usp`),
+                    market: t(`${product.key}.market`),
+                };
+            });
+        } catch (error) {
+            console.error("Failed to process products:", error);
+            return []; // Return empty array on error to prevent crash
+        }
     }, [isLoading, t]);
     
     const palmyraPalmAccordionItems = useMemo(() => {
@@ -326,7 +340,7 @@ const App: React.FC = () => {
     }
 
     return (
-        <div className="bg-[#FDFBF8] text-stone-800">
+        <div className="bg-[#FDFBF8] text-stone-900">
             {!isLoading && (
                 <>
                     <JsonLdScript schema={organizationSchema} />
@@ -361,13 +375,13 @@ const App: React.FC = () => {
                     >
                         <h1 
                             className="text-4xl md:text-5xl font-bold text-white"
-                            style={{ textShadow: '2px 2px 4px rgba(60, 40, 30, 0.7)' }}
+                            style={{ textShadow: '2px 2px 8px rgba(40, 20, 10, 0.85)' }}
                         >
                             <Highlight text={t('hero.title')} />
                         </h1>
                         <p 
                             className="mt-4 text-xl md:text-2xl text-white font-medium"
-                            style={{ textShadow: '2px 2px 4px rgba(60, 40, 30, 0.7)' }}
+                            style={{ textShadow: '2px 2px 8px rgba(40, 20, 10, 0.85)' }}
                         >
                            <Highlight text={t('hero.subtitle')} />
                         </p>

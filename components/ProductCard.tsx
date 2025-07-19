@@ -34,21 +34,33 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onQuote
   };
 
   const handleMouseEnter = () => {
-    if (isDesktop) {
-        setFlippedCardId(product.id);
+    try {
+        if (isDesktop) {
+            setFlippedCardId(product.id);
+        }
+    } catch (error) {
+        console.error("Error in handleMouseEnter for ProductCard:", error);
     }
   };
 
   const handleMouseLeave = () => {
-      if (isDesktop) {
-          setFlippedCardId(null);
-      }
+    try {
+        if (isDesktop) {
+            setFlippedCardId(null);
+        }
+    } catch (error) {
+        console.error("Error in handleMouseLeave for ProductCard:", error);
+    }
   };
 
   const handleClick = () => {
-      if (!isDesktop) {
-          setFlippedCardId(isFlipped ? null : product.id);
-      }
+    try {
+        if (!isDesktop) {
+            setFlippedCardId(isFlipped ? null : product.id);
+        }
+    } catch (error) {
+        console.error("Error in handleClick for ProductCard:", error);
+    }
   };
 
   const moreInfoTextKey = isDesktop ? 'products.card.moreInfoHover' : 'products.card.moreInfoClick';
