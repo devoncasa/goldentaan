@@ -21,7 +21,7 @@
         color: rgb(28 25 23);
       }
       h1, h2, h3, h4, h5, h6 {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
       }
       .parallax-bg {
         background-attachment: fixed;
@@ -29,20 +29,18 @@
         background-repeat: no-repeat;
         background-size: cover;
       }
-      /* Added for scroll animations */
+      /* Hardened for deployment: Animation only handles transform, not opacity. */
       .content-animate {
-        transition: opacity 0.8s cubic-bezier(0.04, 0.62, 0.23, 0.98), transform 0.8s cubic-bezier(0.04, 0.62, 0.23, 0.98);
+        opacity: 1; /* Always visible by default */
+        transition: transform 0.8s cubic-bezier(0.04, 0.62, 0.23, 0.98);
       }
       .content-animate.from-left {
-        opacity: 0;
         transform: translateX(-50px);
       }
       .content-animate.from-right {
-        opacity: 0;
         transform: translateX(50px);
       }
       .content-animate.is-visible {
-        opacity: 1;
         transform: translateX(0);
       }
     </style>

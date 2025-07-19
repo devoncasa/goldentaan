@@ -75,7 +75,7 @@ const ParallaxSection: React.FC<ParallaxSectionProps> = ({ children, id, classNa
       <div className="absolute inset-0 z-0 filter backdrop-blur-[8px]" />
       
       <div
-        className={`relative z-10 content-animate from-${animationDirection} ${isVisible ? 'is-visible' : ''}`}
+        className={`relative z-20 content-animate from-${animationDirection} ${isVisible ? 'is-visible' : ''}`}
       >
         {children}
       </div>
