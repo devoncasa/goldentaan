@@ -13,29 +13,23 @@ const AnimatedCounter: React.FC<{ target: number; prefix?: string; suffix?: stri
     const [displayValue, setDisplayValue] = useState(`${prefix}0${suffix}`);
 
     useEffect(() => {
-        try {
-            if (isVisible) {
-                let current = 0;
-                const duration = 1500;
-                const stepTime = 20;
-                const steps = duration / stepTime;
-                const increment = target / steps;
-    
-                const step = () => {
-                    current += increment;
-                    if (current < target) {
-                        setDisplayValue(prefix + Math.ceil(current).toLocaleString() + suffix);
-                        setTimeout(step, stepTime);
-                    } else {
-                        setDisplayValue(prefix + target.toLocaleString() + suffix);
-                    }
-                };
-                step();
-            }
-        } catch (error) {
-            console.error("Error in AnimatedCounter:", error);
-            // Fallback to just showing the target value immediately
-            setDisplayValue(prefix + target.toLocaleString() + suffix);
+        if (isVisible) {
+            let current = 0;
+            const duration = 1500;
+            const stepTime = 20;
+            const steps = duration / stepTime;
+            const increment = target / steps;
+
+            const step = () => {
+                current += increment;
+                if (current < target) {
+                    setDisplayValue(prefix + Math.ceil(current).toLocaleString() + suffix);
+                    setTimeout(step, stepTime);
+                } else {
+                    setDisplayValue(prefix + target.toLocaleString() + suffix);
+                }
+            };
+            step();
         }
     }, [isVisible, target, prefix, suffix]);
 
@@ -65,15 +59,8 @@ const JourneyInfographic: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        try {
-            const randomIndex = Math.floor(Math.random() * INFOGRAPHIC_BACKGROUND_IMAGES.length);
-            setParallaxBg(INFOGRAPHIC_BACKGROUND_IMAGES[randomIndex]);
-        } catch (error) {
-            console.error("Failed to set random infographic background:", error);
-            if (INFOGRAPHIC_BACKGROUND_IMAGES.length > 0) {
-                setParallaxBg(INFOGRAPHIC_BACKGROUND_IMAGES[0]);
-            }
-        }
+        const randomIndex = Math.floor(Math.random() * INFOGRAPHIC_BACKGROUND_IMAGES.length);
+        setParallaxBg(INFOGRAPHIC_BACKGROUND_IMAGES[randomIndex]);
     }, []);
 
     const handleMouseEnter = () => { if (isDesktop) setIsExpanded(true); };

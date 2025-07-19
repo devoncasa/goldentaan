@@ -1,4 +1,5 @@
 
+
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-scroll';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,7 +21,7 @@ const LanguageSwitcher = () => {
     <div className="flex items-center bg-stone-100 rounded-full p-1">
       <button
         onClick={() => setLanguage('en')}
-        className={`px-3 py-1 text-sm font-semibold rounded-full transition-colors duration-300 ${
+        className={`px-2 md:px-3 py-1 text-sm font-semibold rounded-full transition-colors duration-300 ${
           language === 'en' ? 'bg-amber-800 text-white' : 'text-stone-600 hover:bg-stone-200'
         }`}
       >
@@ -28,7 +29,7 @@ const LanguageSwitcher = () => {
       </button>
       <button
         onClick={() => setLanguage('th')}
-        className={`px-3 py-1 text-sm font-semibold rounded-full transition-colors duration-300 ${
+        className={`px-2 md:px-3 py-1 text-sm font-semibold rounded-full transition-colors duration-300 ${
           language === 'th' ? 'bg-amber-800 text-white' : 'text-stone-600 hover:bg-stone-200'
         }`}
       >
@@ -119,8 +120,9 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, setCartOpen,
             </button>
           </div>
 
-          <div className="-mr-2 flex md:hidden">
-            <button onClick={() => setCartOpen(true)} className="relative mr-2 p-2 rounded-full text-stone-600 hover:text-amber-900 hover:bg-amber-100 transition-colors">
+          <div className="-mr-2 flex items-center md:hidden">
+            <LanguageSwitcher />
+            <button onClick={() => setCartOpen(true)} className="relative ml-2 p-2 rounded-full text-stone-600 hover:text-amber-900 hover:bg-amber-100 transition-colors">
               <FiShoppingCart className="h-6 w-6" />
               {cartItemCount > 0 && (
                 <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">{cartItemCount}</span>
@@ -176,9 +178,6 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, setCartOpen,
                   )}
                 </div>
               ))}
-              <div className="flex justify-center pt-4">
-                <LanguageSwitcher />
-              </div>
             </div>
           </motion.div>
         )}

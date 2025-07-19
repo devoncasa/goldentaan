@@ -1,8 +1,7 @@
 
 
-
 import React from 'react';
-import { ProductData } from './types';
+import { Product } from './types';
 import { FaFacebook, FaInstagram, FaYoutube, FaWhatsapp } from 'react-icons/fa';
 import { RiLineFill } from 'react-icons/ri';
 
@@ -173,62 +172,82 @@ export const MENU_ITEMS = [
   { name: 'header.menu.contactUs', to: 'contact' },
 ];
 
-export const PRODUCTS_DATA: ProductData[] = [
+export const PRODUCTS_DATA = [
   {
     id: 1,
-    sku: 'GT-BLK-500G',
-    images: ['https://i.postimg.cc/T1cB4Q79/Traditional-Palm-Sugar-Block.webp'],
+    sku: "GT-BLOCK-500G",
+    image: 'https://i.postimg.cc/T1cB4Q79/Traditional-Palm-Sugar-Block.webp',
     price: 12,
     isQuote: false,
     key: 'products.items.1',
   },
   {
     id: 2,
-    sku: 'GT-PWD-500G',
-    images: ['https://i.postimg.cc/7h4p9jVh/Palm-Sugar-Powder.webp'],
+    sku: "GT-POWDER-250G",
+    image: 'https://i.postimg.cc/7h4p9jVh/Palm-Sugar-Powder.webp',
     price: 15,
     isQuote: false,
     key: 'products.items.2',
   },
   {
     id: 3,
-    sku: 'GT-SYP-350ML',
-    images: ['https://i.postimg.cc/N03h9K21/Palm-Sugar-Syrup.webp'],
+    sku: "GT-SYRUP-300ML",
+    image: 'https://i.postimg.cc/N03h9K21/Palm-Sugar-Syrup.webp',
     price: 18,
     isQuote: false,
     key: 'products.items.3',
   },
   {
     id: 4,
-    sku: 'GT-ORG-BLK-1KG',
-    images: [
-        'https://i.postimg.cc/Xv8fschV/Traditional-Palm-Sugar-Block.webp',
-        'https://i.postimg.cc/xC1KhNDL/Traditional-Palm-Sugar-Block-02.webp'
-    ],
+    sku: "GT-ORGANIC-BULK",
+    image: 'https://i.postimg.cc/8kB8cPp6/Certified-Organic-Toddy-Palm-Sugar.webp',
     price: 0,
     isQuote: true,
     key: 'products.items.4',
   },
   {
     id: 5,
-    sku: 'GT-FSN-VAR',
-    images: ['https://i.postimg.cc/wvLCh9Dn/Palm-Sugar-Fusion-Flavors.webp'],
+    sku: "GT-FUSION-BULK",
+    image: 'https://i.postimg.cc/wvLCh9Dn/Palm-Sugar-Fusion-Flavors.webp',
     price: 0,
     isQuote: true,
     key: 'products.items.5',
   },
 ];
 
+export const RECIPES_DATA_KEYS = [
+    { image: "https://i.postimg.cc/d16g9N3q/golden-taan-caramel-latte.jpg", key: 'recipes.items.1' },
+    { image: "https://i.postimg.cc/t44TqxP4/gluten-free-palmyra-blondies.jpg", key: 'recipes.items.2' },
+    { image: "https://i.postimg.cc/XqM3w0g5/pan-seared-salmon-glaze.jpg", key: 'recipes.items.3' },
+    { image: "https://i.postimg.cc/Hnpyk8Kx/smoky-old-fashioned-cocktail.jpg", key: 'recipes.items.4' },
+];
+
 
 export const FAQ_DATA = [
-  { key: 'faq.items.1' },
-  { key: 'faq.items.2' },
-  { key: 'faq.items.3' },
-  { key: 'faq.items.4' },
-  { key: 'faq.items.5' },
-  { key: 'faq.items.6' },
-  { key: 'faq.items.7' },
-  { key: 'faq.items.8' },
+  {
+    key: 'faq.items.1'
+  },
+  {
+    key: 'faq.items.2'
+  },
+  {
+    key: 'faq.items.3'
+  },
+  {
+    key: 'faq.items.4'
+  },
+  {
+    key: 'faq.items.5'
+  },
+  {
+    key: 'faq.items.6'
+  },
+  {
+    key: 'faq.items.7'
+  },
+  {
+    key: 'faq.items.8'
+  },
 ];
 
 export const SOCIAL_LINKS = [
@@ -238,9 +257,9 @@ export const SOCIAL_LINKS = [
 ];
 
 export const CERTIFICATION_ICONS = [
-  { src: 'https://i.postimg.cc/P50jF6wN/usda-organic-logo.png', alt: 'USDA Organic Certified' },
-  { src: 'https://i.postimg.cc/rp6xJcM4/otop-logo-thailand.png', alt: 'OTOP Certified Thailand' },
-  { src: 'https://i.postimg.cc/XYD1SmyB/halal-certification-logo.png', alt: 'HALAL Certified' },
+  { src: 'https://picsum.photos/seed/organic/100/100', alt: 'Organic Certified' },
+  { src: 'https://picsum.photos/seed/otop/100/100', alt: 'OTOP Certified' },
+  { src: 'https://picsum.photos/seed/halal/100/100', alt: 'HALAL Certified' },
 ];
 
 export const CHAT_OPTIONS = [

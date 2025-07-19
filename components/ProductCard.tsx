@@ -1,12 +1,10 @@
 
 
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Product } from '../types';
 import { FiPlus, FiSend } from 'react-icons/fi';
 import { useTranslations } from '../hooks/useTranslations';
-import Highlight from './Highlight';
 
 interface ProductCardProps {
   product: Product;
@@ -34,37 +32,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onQuote
   };
 
   const handleMouseEnter = () => {
-    try {
-        if (isDesktop) {
-            setFlippedCardId(product.id);
-        }
-    } catch (error) {
-        console.error("Error in handleMouseEnter for ProductCard:", error);
+    if (isDesktop) {
+        setFlippedCardId(product.id);
     }
   };
 
   const handleMouseLeave = () => {
-    try {
-        if (isDesktop) {
-            setFlippedCardId(null);
-        }
-    } catch (error) {
-        console.error("Error in handleMouseLeave for ProductCard:", error);
-    }
+      if (isDesktop) {
+          setFlippedCardId(null);
+      }
   };
 
   const handleClick = () => {
-    try {
-        if (!isDesktop) {
-            setFlippedCardId(isFlipped ? null : product.id);
-        }
-    } catch (error) {
-        console.error("Error in handleClick for ProductCard:", error);
-    }
+      if (!isDesktop) {
+          setFlippedCardId(isFlipped ? null : product.id);
+      }
   };
 
   const moreInfoTextKey = isDesktop ? 'products.card.moreInfoHover' : 'products.card.moreInfoClick';
-  const altText = t('products.card.altText', { productName: product.title });
 
   return (
     <div 
@@ -81,18 +66,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onQuote
         {/* Front Side */}
         <div className="absolute w-full h-full [backface-visibility:hidden] bg-white rounded-lg shadow-xl flex flex-col items-center justify-between p-4 text-center cursor-pointer">
             <div className="w-full">
-                <motion.img 
-                    key={product.image}
-                    src={product.image} 
-                    alt={altText} 
-                    className="w-full h-56 object-cover rounded-md"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                />
-                <h3 className="text-base font-bold text-stone-800 mt-4 h-12 flex items-center justify-center">
-                    <Highlight text={product.title} />
-                </h3>
+                <img src={product.image} alt={product.alt} className="w-full h-56 object-cover rounded-md" />
+                <h3 className="text-base font-bold text-stone-800 mt-4 h-12 flex items-center justify-center">{product.title}</h3>
             </div>
             <div className="text-xs text-stone-500 mt-2">
                 {t(moreInfoTextKey)}
@@ -102,21 +77,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onQuote
         {/* Back Side */}
         <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-amber-50 rounded-lg shadow-xl flex flex-col p-4 text-left overflow-y-auto cursor-default">
             <div className="flex-grow">
-                 <h3 className="text-base font-bold text-amber-900 mb-2"><Highlight text={product.title} /></h3>
-                 <p className="text-sm text-stone-600 mb-2"><Highlight text={product.description} /></p>
+                 <h3 className="text-base font-bold text-amber-900 mb-2">{product.title}</h3>
+                 <p className="text-sm text-stone-600 mb-2">{product.description}</p>
                 
                 <div className="space-y-1 text-xs text-stone-700">
                     <div>
                         <strong className="font-semibold text-amber-800 block">{t('products.card.targetUsers')}</strong>
-                        <p><Highlight text={product.targetUsers} /></p>
+                        <p>{product.targetUsers}</p>
                     </div>
                      <div>
                         <strong className="font-semibold text-amber-800 block">{t('products.card.usp')}</strong>
-                         <p><Highlight text={product.usp} /></p>
+                         <p>{product.usp}</p>
                     </div>
                      <div>
                         <strong className="font-semibold text-amber-800 block">{t('products.card.market')}</strong>
-                         <p><Highlight text={product.market} /></p>
+                         <p>{product.market}</p>
                     </div>
                 </div>
             </div>

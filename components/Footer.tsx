@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from 'react-scroll';
 import { SOCIAL_LINKS, CERTIFICATION_ICONS } from '../constants';
 import { useTranslations } from '../hooks/useTranslations';
-import Highlight from './Highlight';
 
 const Footer: React.FC = () => {
   const { t } = useTranslations();
@@ -13,9 +12,9 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <h3 className="text-2xl font-semibold text-amber-800"><Highlight text={t('footer.brandName')} /></h3>
+            <h3 className="text-2xl font-semibold text-amber-800">{t('footer.brandName')}</h3>
             <p className="mt-4 text-stone-600 max-w-md">
-              <Highlight text={t('footer.description')} />
+              {t('footer.description')}
             </p>
           </div>
           <div>
@@ -48,7 +47,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         <div className="mt-12 border-t border-stone-300 pt-8 text-center text-stone-500">
-          <p><Highlight text={t('footer.copyright')} /></p>
+          <p>{t('footer.copyright')}</p>
         </div>
       </div>
     </footer>

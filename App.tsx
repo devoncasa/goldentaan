@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useRef, useEffect, useMemo, useContext } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -10,14 +10,13 @@ import Accordion from './components/Accordion';
 import JourneyInfographic from './components/JourneyInfographic';
 import ParallaxSection from './components/ParallaxSection';
 import FaqTable from './components/FaqTable';
-import Highlight from './components/Highlight';
-import JsonLdScript from './components/JsonLdScript';
-import { PRODUCTS_DATA, FAQ_DATA, HERO_BACKGROUND_IMAGES } from './constants';
-import { Product, CartItem } from './types';
+import MetaTagManager from './components/MetaTagManager';
+import SchemaMarkup from './components/SchemaMarkup';
+import { PRODUCTS_DATA, FAQ_DATA, HERO_BACKGROUND_IMAGES, RECIPES_DATA_KEYS } from './constants';
+import { Product, CartItem, Recipe } from './types';
 import { FiChevronDown, FiMail, FiPhone, FiMapPin, FiArrowRight } from 'react-icons/fi';
 import { Link as ScrollLink } from 'react-scroll';
 import { useTranslations } from './hooks/useTranslations';
-import { LanguageContext } from './context/LanguageContext';
 
 const ContentFrame: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => {
     return (
@@ -29,7 +28,6 @@ const ContentFrame: React.FC<{ children: React.ReactNode; className?: string }> 
 
 const FAQItem: React.FC<{ faqData: any; index: number }> = ({ faqData, index }) => {
     const [isOpen, setIsOpen] = useState(index === 0);
-    const { t } = useTranslations();
 
     return (
         <div className="border-b border-stone-200 py-4">
@@ -47,86 +45,25 @@ const FAQItem: React.FC<{ faqData: any; index: number }> = ({ faqData, index }) 
                 animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0, marginTop: isOpen ? '1rem' : '0rem' }}
                 className="overflow-hidden"
             >
-                <div className="text-stone-600 leading-relaxed">
-                    {faqData.answerIsTable ? (
-                         <FaqTable
-                            intro={t('faq.table.intro')}
-                            headerFeature={t('faq.table.headerFeature')}
-                            headerGoldenTaan={t('faq.table.headerGoldenTaan')}
-                            headerCommonSugar={t('faq.table.headerCommonSugar')}
-                            row1Title={t('faq.table.row1Title')}
-                            row1Taan={t('faq.table.row1Taan')}
-                            row1Common={t('faq.table.row1Common')}
-                            row2Title={t('faq.table.row2Title')}
-                            row2Taan={t('faq.table.row2Taan')}
-                            row2Common={t('faq.table.row2Common')}
-                            row3Title={t('faq.table.row3Title')}
-                            row3Taan={t('faq.table.row3Taan')}
-                            row3Common={t('faq.table.row3Common')}
-                            row4Title={t('faq.table.row4Title')}
-                            row4Taan={t('faq.table.row4Taan')}
-                            row4Common={t('faq.table.row4Common')}
-                            row5Title={t('faq.table.row5Title')}
-                            row5Taan={t('faq.table.row5Taan')}
-                            row5Common={t('faq.table.row5Common')}
-                        />
-                    ) : faqData.answer}
-                </div>
+                <div className="text-stone-600 leading-relaxed pt-4">{faqData.answerIsTable ? <FaqTable /> : faqData.answer}</div>
             </motion.div>
         </div>
     );
 };
 
 const App: React.FC = () => {
-    // --- All hooks must be called at the top level ---
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isCartOpen, setCartOpen] = useState(false);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [heroBg, setHeroBg] = useState('');
     const [flippedCardId, setFlippedCardId] = useState<number | null>(null);
     const { t, isLoading } = useTranslations();
-    const { language } = useContext(LanguageContext);
 
     useEffect(() => {
-        // Set document language for accessibility and SEO
-        document.documentElement.lang = language;
-        // Dynamically update meta tags
-        const titles = {
-            en: 'Golden TAAN | Authentic Palmyra Palm Sugar - Sustainably Sourced in Thailand',
-            th: 'โกลเด้น ตาล | น้ำตาลโตนดแท้ - ผลิตอย่างยั่งยืนในประเทศไทย'
-        };
-        const descriptions = {
-            en: 'Discover Golden TAAN, the premium, low-GI Palmyra Palm Sugar. 100% pure, unrefined, and sustainably sourced from our family farms in Ratchaburi, Thailand. The perfect healthy sugar alternative.',
-            th: 'ค้นพบโกลเด้น ตาล น้ำตาลโตนดออร์แกนิกพรีเมียม GI ต่ำ บริสุทธิ์ 100% ไม่ขัดสี และผลิตอย่างยั่งยืนจากสวนครอบครัวในราชบุรี ประเทศไทย ทางเลือกน้ำตาลเพื่อสุขภาพที่สมบูรณ์แบบ'
-        };
-        document.title = titles[language];
-        document.querySelector('meta[name="description"]')?.setAttribute('content', descriptions[language]);
-    }, [language]);
-
-    useEffect(() => {
-        try {
-            const randomIndex = Math.floor(Math.random() * HERO_BACKGROUND_IMAGES.length);
-            setHeroBg(HERO_BACKGROUND_IMAGES[randomIndex]);
-        } catch (error) {
-            console.error("Failed to set random hero background:", error);
-            if (HERO_BACKGROUND_IMAGES.length > 0) {
-                setHeroBg(HERO_BACKGROUND_IMAGES[0]);
-            }
-        }
+        const randomIndex = Math.floor(Math.random() * HERO_BACKGROUND_IMAGES.length);
+        setHeroBg(HERO_BACKGROUND_IMAGES[randomIndex]);
     }, []);
 
-    const removeFromCart = useCallback((id: number) => {
-        setCartItems(prevItems => prevItems.filter(item => item.id !== id));
-    }, []);
-
-    const updateQuantity = useCallback((id: number, quantity: number) => {
-        if (quantity < 1) {
-            removeFromCart(id);
-            return;
-        }
-        setCartItems(prevItems => prevItems.map(item => item.id === id ? {...item, quantity: quantity} : item));
-    }, [removeFromCart]);
-    
     const addToCart = useCallback((product: Product) => {
         setCartItems(prevItems => {
             const exist = prevItems.find(item => item.id === product.id);
@@ -148,209 +85,78 @@ const App: React.FC = () => {
         alert(`Requesting a quote for: ${product.title}`);
     }, []);
 
-    const translatedProducts = useMemo(() => {
-        try {
-            if (isLoading) return [];
-            return PRODUCTS_DATA.map(product => {
-                const image = product.images.length > 0
-                    ? product.images[Math.floor(Math.random() * product.images.length)]
-                    : ''; // Fallback for empty image array
-                return {
-                    ...product,
-                    image,
-                    title: t(`${product.key}.title`),
-                    description: t(`${product.key}.description`),
-                    targetUsers: t(`${product.key}.targetUsers`),
-                    usp: t(`${product.key}.usp`),
-                    market: t(`${product.key}.market`),
-                };
-            });
-        } catch (error) {
-            console.error("Failed to process products:", error);
-            return []; // Return empty array on error to prevent crash
+    const removeFromCart = useCallback((id: number) => {
+        setCartItems(prevItems => prevItems.filter(item => item.id !== id));
+    }, []);
+    
+    const updateQuantity = useCallback((id: number, quantity: number) => {
+        if (quantity < 1) {
+            removeFromCart(id);
+            return;
         }
-    }, [isLoading, t]);
-    
-    const palmyraPalmAccordionItems = useMemo(() => {
-        if (isLoading) return [];
-        return [
-            { 
-                image: "https://i.postimg.cc/kXg20sL0/borassus-flabellifer-illustration.png",
-                title: t('ourStory.palmyraPalm.item1Title'),
-                content: t('ourStory.palmyraPalm.item1Content')
-            },
-            { 
-                image: "https://i.postimg.cc/8zQJtV5M/terroir-of-ratchaburi.jpg",
-                title: t('ourStory.palmyraPalm.item2Title'),
-                content: t('ourStory.palmyraPalm.item2Content')
-            },
-            { 
-                image: "https://i.postimg.cc/bNkTg4sV/tree-of-life-historical.jpg",
-                title: t('ourStory.palmyraPalm.item3Title'),
-                content: t('ourStory.palmyraPalm.item3Content')
-            }
-        ];
-    }, [isLoading, t]);
-
-    const harvestArtAccordionItems = useMemo(() => {
-        if (isLoading) return [];
-        return [
-            { image: "https://i.postimg.cc/0jWvM7Nn/farmer-climbing-palm-tree.jpg" },
-            { image: "https://i.postimg.cc/VLzJ7GzP/science-of-simmering.jpg" },
-            { image: "https://i.postimg.cc/prgQdYvV/nectar-to-crystal.jpg" }
-        ].map((item, i) => ({ ...item, title: t(`ourStory.harvestArt.item${i+1}Title`), content: t(`ourStory.harvestArt.item${i+1}Content`) }));
-    }, [isLoading, t]);
-
-    const commitmentAccordionItems = useMemo(() => {
-        if (isLoading) return [];
-        return [
-            { image: "https://i.postimg.cc/50tZ8Jp2/ecological-sustainability.jpg" },
-            { image: "https://i.postimg.cc/Wb7SgDkj/ratchaburi-farming-community.jpg" },
-            { image: "https://i.postimg.cc/XvjL1ZHy/purity-quality-assurance.jpg" },
-        ].map((item, i) => ({ ...item, title: t(`ourStory.commitment.item${i+1}Title`), content: t(`ourStory.commitment.item${i+1}Content`) }));
-    }, [isLoading, t]);
-    
-    const healthBenefitsAccordionItems = useMemo(() => {
-        if (isLoading) return [];
-        return [
-            { image: "https://i.postimg.cc/J0P5zKcg/low-glycemic-index.jpg" },
-            { image: "https://i.postimg.cc/9M3g0x7r/rich-in-minerals.jpg" },
-            { image: "https://i.postimg.cc/44rY4M9W/natural-electrolytes.jpg" },
-            { image: "https://i.postimg.cc/pT3Y3g4J/clean-label-promise.jpg" }
-        ].map((item, i) => ({ ...item, title: t(`benefits.items.${i+1}.title`), content: t(`benefits.items.${i+1}.content`) }));
-    }, [isLoading, t]);
-
-    const translatedFaqs = useMemo(() => {
-        if (isLoading) return [];
-        return FAQ_DATA.map(faq => t(faq.key));
-    }, [isLoading, t]);
-
-    const recipesData = useMemo(() => {
-        if (isLoading) return [];
-        return [
-            { image: "https://i.postimg.cc/d16g9N3q/golden-taan-caramel-latte.jpg", key: 'recipes.items.1' },
-            { image: "https://i.postimg.cc/t44TqxP4/gluten-free-palmyra-blondies.jpg", key: 'recipes.items.2' },
-            { image: "https://i.postimg.cc/XqM3w0g5/pan-seared-salmon-glaze.jpg", key: 'recipes.items.3' },
-            { image: "https://i.postimg.cc/Hnpyk8Kx/smoky-old-fashioned-cocktail.jpg", key: 'recipes.items.4' },
-        ].map(recipe => ({...recipe, details: t(recipe.key)}));
-    }, [isLoading, t]);
-    
-    // --- Schema.org JSON-LD Generation ---
-    const organizationSchema = useMemo(() => ({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Golden TAAN",
-      "url": "https://[YOUR_DOMAIN_HERE]",
-      "logo": "https://i.postimg.cc/mrQKP5dZ/taan-logo-small.webp",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "96/3 Moo.2, T. Wanyai, A. Bang Phae",
-        "addressLocality": "Ratchaburi",
-        "postalCode": "70160",
-        "addressCountry": "TH"
-      },
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+66-96-861-5795",
-        "contactType": "Customer Service"
-      },
-      "sameAs": [
-        "https://facebook.com",
-        "https://instagram.com",
-        "https://youtube.com"
-      ]
-    }), []);
-    
-    const websiteSchema = useMemo(() => ({
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "url": "https://[YOUR_DOMAIN_HERE]",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://[YOUR_DOMAIN_HERE]/?s={search_term_string}",
-            "query-input": "required name=search_term_string"
-        }
-    }), []);
-
-    const productSchemas = useMemo(() => {
-        if (isLoading) return [];
-        return translatedProducts.map(p => ({
-            "@context": "https://schema.org",
-            "@type": "Product",
-            "name": p.title,
-            "image": p.image,
-            "description": p.description,
-            "sku": p.sku,
-            "brand": { "@type": "Brand", "name": "Golden TAAN" },
-            ...(!p.isQuote && {
-                "offers": {
-                    "@type": "Offer",
-                    "url": `https://[YOUR_DOMAIN_HERE]/products#${p.id}`,
-                    "priceCurrency": "USD",
-                    "price": p.price.toFixed(2),
-                    "availability": "https://schema.org/InStock"
-                }
-            })
-        }));
-    }, [translatedProducts, isLoading]);
-
-    const recipeSchemas = useMemo(() => {
-        if (isLoading) return [];
-        return recipesData.map(r => ({
-            "@context": "https://schema.org",
-            "@type": "Recipe",
-            "name": r.details.title,
-            "image": r.image,
-            "description": r.details.description,
-            "recipeIngredient": r.details.ingredients,
-            "recipeInstructions": r.details.instructions,
-            "author": { "@type": "Organization", "name": "Golden TAAN" }
-        }));
-    }, [recipesData, isLoading]);
-
-    const faqSchema = useMemo(() => {
-        if (isLoading || translatedFaqs.length === 0) return null;
-        return {
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": translatedFaqs
-                .filter(faq => !faq.answerIsTable)
-                .map(faq => ({
-                    "@type": "Question",
-                    "name": faq.question,
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": faq.answer
-                    }
-                }))
-        };
-    }, [translatedFaqs, isLoading]);
-
-    // --- End of hooks and schema section ---
+        setCartItems(prevItems => prevItems.map(item => item.id === id ? {...item, quantity: quantity} : item));
+    }, [removeFromCart]);
     
     const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
+    
+    const palmyraPalmAccordionItems = [
+        { image: "https://i.postimg.cc/kXg20sL0/borassus-flabellifer-illustration.png", ...t('ourStory.palmyraPalm.items.1') },
+        { image: "https://i.postimg.cc/8zQJtV5M/terroir-of-ratchaburi.jpg", ...t('ourStory.palmyraPalm.items.2') },
+        { image: "https://i.postimg.cc/bNkTg4sV/tree-of-life-historical.jpg", ...t('ourStory.palmyraPalm.items.3') }
+    ].map(item => ({...item, title: t(`ourStory.palmyraPalm.items.${item.image.includes('borassus') ? 1 : item.image.includes('terroir') ? 2 : 3}.title`), content: t(`ourStory.palmyraPalm.items.${item.image.includes('borassus') ? 1 : item.image.includes('terroir') ? 2 : 3}.content`) }));
+
+    const harvestArtAccordionItems = [
+        { image: "https://i.postimg.cc/0jWvM7Nn/farmer-climbing-palm-tree.jpg" },
+        { image: "https://i.postimg.cc/VLzJ7GzP/science-of-simmering.jpg" },
+        { image: "https://i.postimg.cc/prgQdYvV/nectar-to-crystal.jpg" }
+    ].map((item, i) => ({ ...item, title: t(`ourStory.harvestArt.item${i+1}Title`), content: t(`ourStory.harvestArt.item${i+1}Content`) }));
+
+    const commitmentAccordionItems = [
+        { image: "https://i.postimg.cc/50tZ8Jp2/ecological-sustainability.jpg" },
+        { image: "https://i.postimg.cc/Wb7SgDkj/ratchaburi-farming-community.jpg" },
+        { image: "https://i.postimg.cc/XvjL1ZHy/purity-quality-assurance.jpg" },
+    ].map((item, i) => ({ ...item, title: t(`ourStory.commitment.item${i+1}Title`), content: t(`ourStory.commitment.item${i+1}Content`) }));
+    
+    const healthBenefitsAccordionItems = [
+        { image: "https://i.postimg.cc/J0P5zKcg/low-glycemic-index.jpg" },
+        { image: "https://i.postimg.cc/9M3g0x7r/rich-in-minerals.jpg" },
+        { image: "https://i.postimg.cc/44rY4M9W/natural-electrolytes.jpg" },
+        { image: "https://i.postimg.cc/pT3Y3g4J/clean-label-promise.jpg" }
+    ].map((item, i) => ({ ...item, title: t(`benefits.items.${i+1}.title`), content: t(`benefits.items.${i+1}.content`) }));
+
 
     if (isLoading) {
         return (
             <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#FDFBF8] text-amber-900">
                  <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-amber-800"></div>
-                 <h1 className="text-2xl font-semibold mt-4"><Highlight text={t('loadingMessage')} /></h1>
+                 <h1 className="text-2xl font-semibold mt-4">{t('loadingMessage')}</h1>
             </div>
         );
     }
 
-    return (
-        <div className="bg-[#FDFBF8] text-stone-900">
-            {!isLoading && (
-                <>
-                    <JsonLdScript schema={organizationSchema} />
-                    <JsonLdScript schema={websiteSchema} />
-                    {productSchemas.map(s => <JsonLdScript key={s.sku} schema={s} />)}
-                    {recipeSchemas.map(s => <JsonLdScript key={s.name} schema={s} />)}
-                    {faqSchema && <JsonLdScript schema={faqSchema} />}
-                </>
-            )}
+    const translatedProducts = PRODUCTS_DATA.map(product => ({
+        ...product,
+        title: t(`${product.key}.title`),
+        alt: t(`${product.key}.alt`),
+        description: t(`${product.key}.description`),
+        targetUsers: t(`${product.key}.targetUsers`),
+        usp: t(`${product.key}.usp`),
+        market: t(`${product.key}.market`),
+    }));
 
+    const translatedFaqs = Object.values(t('faq.items'));
+
+    const translatedRecipes: Recipe[] = RECIPES_DATA_KEYS.map(recipe => ({
+        image: recipe.image,
+        key: recipe.key,
+        ...t(recipe.key)
+    }));
+
+
+    return (
+        <div className="bg-[#FDFBF8] text-stone-800">
+            <MetaTagManager />
+            <SchemaMarkup products={translatedProducts} />
             <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} setCartOpen={setCartOpen} cartItemCount={cartItemCount} />
             <Cart isOpen={isCartOpen} setIsOpen={setCartOpen} cartItems={cartItems} removeFromCart={removeFromCart} updateQuantity={updateQuantity}/>
             <LiveChatButton />
@@ -375,15 +181,15 @@ const App: React.FC = () => {
                     >
                         <h1 
                             className="text-4xl md:text-5xl font-bold text-white"
-                            style={{ textShadow: '2px 2px 8px rgba(40, 20, 10, 0.85)' }}
+                            style={{ textShadow: '2px 2px 4px rgba(60, 40, 30, 0.7)' }}
                         >
-                            <Highlight text={t('hero.title')} />
+                            {t('hero.title')}
                         </h1>
                         <p 
                             className="mt-4 text-xl md:text-2xl text-white font-medium"
-                            style={{ textShadow: '2px 2px 8px rgba(40, 20, 10, 0.85)' }}
+                            style={{ textShadow: '2px 2px 4px rgba(60, 40, 30, 0.7)' }}
                         >
-                           <Highlight text={t('hero.subtitle')} />
+                            {t('hero.subtitle')}
                         </p>
                         <ScrollLink to="products" smooth={true} duration={500} offset={-80} className="mt-8 inline-block bg-amber-800 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-amber-900 transition-colors cursor-pointer transform hover:scale-105 shadow-xl">
                             {t('hero.button')}
@@ -394,21 +200,21 @@ const App: React.FC = () => {
                 <JourneyInfographic />
 
                 {/* --- OUR STORY START --- */}
-                <ParallaxSection id="legacy" animationDirection="left">
+                <ParallaxSection id="legacy">
                     <div className="max-w-5xl mx-auto px-4">
                         <ContentFrame>
                              <div className="text-center mb-8">
                                 <img src="https://i.postimg.cc/T3YjD6gQ/golden-taan-legacy-intro.jpg" alt={t('ourStory.legacy.title')} className="w-full h-64 object-cover rounded-lg shadow-md" />
                             </div>
                             <div className="text-center">
-                                <h2 className="text-4xl md:text-5xl font-bold text-stone-800"><Highlight text={t('ourStory.legacy.title')} /></h2>
+                                <h2 className="text-4xl md:text-5xl font-bold text-stone-800">{t('ourStory.legacy.title')}</h2>
                                 <p className="mt-4 text-lg md:text-xl text-stone-600">{t('ourStory.legacy.subtitle')}</p>
                             </div>
                             
                             <div className="mt-12 text-left space-y-8">
                                 <div>
                                     <h3 className="text-2xl font-bold text-amber-800 mb-3">{t('ourStory.legacy.rootsTitle')}</h3>
-                                    <p className="text-stone-700 leading-relaxed"><Highlight text={t('ourStory.legacy.rootsText')} /></p>
+                                    <p className="text-stone-700 leading-relaxed">{t('ourStory.legacy.rootsText')}</p>
                                 </div>
                                 <div>
                                     <h3 className="text-2xl font-bold text-amber-800 mb-3">{t('ourStory.legacy.harvestTitle')}</h3>
@@ -416,7 +222,7 @@ const App: React.FC = () => {
                                 </div>
                                 <div>
                                     <h3 className="text-2xl font-bold text-amber-800 mb-3">{t('ourStory.legacy.promiseTitle')}</h3>
-                                    <p className="text-stone-700 leading-relaxed"><Highlight text={t('ourStory.legacy.promiseText')} /></p>
+                                    <p className="text-stone-700 leading-relaxed">{t('ourStory.legacy.promiseText')}</p>
                                 </div>
                             </div>
 
@@ -438,7 +244,7 @@ const App: React.FC = () => {
                     </div>
                 </ParallaxSection>
 
-                <ParallaxSection id="palmyra-palm" animationDirection="right">
+                <ParallaxSection id="palmyra-palm">
                      <div className="max-w-5xl mx-auto px-4">
                         <ContentFrame>
                             <div className="text-center mb-12">
@@ -450,7 +256,7 @@ const App: React.FC = () => {
                     </div>
                 </ParallaxSection>
                 
-                <ParallaxSection id="harvest-art" animationDirection="left">
+                <ParallaxSection id="harvest-art">
                      <div className="max-w-5xl mx-auto px-4">
                         <ContentFrame>
                             <div className="text-center mb-12">
@@ -462,11 +268,11 @@ const App: React.FC = () => {
                     </div>
                 </ParallaxSection>
 
-                <ParallaxSection id="commitment" animationDirection="right">
+                <ParallaxSection id="commitment">
                     <div className="max-w-5xl mx-auto px-4">
                         <ContentFrame>
                             <div className="text-center mb-12">
-                                <h2 className="text-4xl md:text-5xl font-bold text-stone-800"><Highlight text={t('ourStory.commitment.title')} /></h2>
+                                <h2 className="text-4xl md:text-5xl font-bold text-stone-800">{t('ourStory.commitment.title')}</h2>
                                 <p className="mt-4 text-lg md:text-xl text-stone-600">{t('ourStory.commitment.subtitle')}</p>
                             </div>
                             <Accordion items={commitmentAccordionItems} defaultOpenIndex={0} />
@@ -476,20 +282,20 @@ const App: React.FC = () => {
                 {/* --- OUR STORY END --- */}
 
                 {/* Products Section */}
-                <ParallaxSection id="products" animationDirection="left">
+                <ParallaxSection id="products">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                        <ContentFrame>
                             <div className="text-center">
                                 <h2 className="text-4xl md:text-5xl font-bold text-amber-900">{t('products.title')}</h2>
-                                <p className="mt-4 text-lg text-stone-600"><Highlight text={t('products.subtitle')} /></p>
+                                <p className="mt-4 text-lg text-stone-600">{t('products.subtitle')}</p>
                             </div>
                             <div className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                                 {translatedProducts.map((product) => (
                                     <ProductCard 
                                         key={product.id} 
                                         product={product} 
-                                        onAddToCart={() => addToCart(product)} 
-                                        onQuoteRequest={() => requestQuote(product)}
+                                        onAddToCart={addToCart} 
+                                        onQuoteRequest={requestQuote}
                                         flippedCardId={flippedCardId}
                                         setFlippedCardId={setFlippedCardId}
                                     />
@@ -500,12 +306,12 @@ const App: React.FC = () => {
                 </ParallaxSection>
                 
                 {/* Health Benefits Section */}
-                <ParallaxSection id="benefits" animationDirection="right">
+                <ParallaxSection id="benefits">
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                         <ContentFrame>
                             <div className="text-center mb-12">
                                 <h2 className="text-4xl md:text-5xl font-bold text-emerald-900">{t('benefits.title')}</h2>
-                                <p className="mt-4 text-lg text-stone-600"><Highlight text={t('benefits.subtitle')} /></p>
+                                <p className="mt-4 text-lg text-stone-600">{t('benefits.subtitle')}</p>
                             </div>
                             <Accordion items={healthBenefitsAccordionItems} defaultOpenIndex={0} />
                         </ContentFrame>
@@ -513,22 +319,22 @@ const App: React.FC = () => {
                 </ParallaxSection>
                 
                 {/* Recipes & Usage Section */}
-                <ParallaxSection id="recipes" animationDirection="left">
+                <ParallaxSection id="recipes">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <ContentFrame>
                             <div className="text-center">
-                                <h2 className="text-4xl md:text-5xl font-bold text-amber-900"><Highlight text={t('recipes.title')} /></h2>
+                                <h2 className="text-4xl md:text-5xl font-bold text-amber-900">{t('recipes.title')}</h2>
                                 <p className="mt-4 text-lg text-stone-600">{t('recipes.subtitle')}</p>
                             </div>
                             <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                              {recipesData.map(recipe => (
+                              {translatedRecipes.map(recipe => (
                                  <div key={recipe.key} className="group bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:-translate-y-2">
                                     <div className="overflow-hidden">
-                                      <img src={recipe.image} alt={recipe.details.title} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"/>
+                                      <img src={recipe.image} alt={recipe.alt} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"/>
                                     </div>
                                     <div className="p-6 text-left">
-                                      <h3 className="text-lg font-bold text-stone-800 h-14"><Highlight text={recipe.details.title} /></h3>
-                                      <p className="mt-2 text-sm text-stone-600">{recipe.details.description}</p>
+                                      <h3 className="text-lg font-bold text-stone-800 h-14">{recipe.name}</h3>
+                                      <p className="mt-2 text-sm text-stone-600">{recipe.description}</p>
                                     </div>
                                  </div>
                               ))}
@@ -538,7 +344,7 @@ const App: React.FC = () => {
                 </ParallaxSection>
 
                 {/* FAQ Section */}
-                <ParallaxSection id="faq" animationDirection="right">
+                <ParallaxSection id="faq">
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                         <ContentFrame>
                              <h2 className="text-4xl md:text-5xl font-bold text-center text-amber-900">{t('faq.title')}</h2>
@@ -552,7 +358,7 @@ const App: React.FC = () => {
                 </ParallaxSection>
                 
                 {/* Contact Section */}
-                 <ParallaxSection id="contact" animationDirection="left">
+                 <ParallaxSection id="contact">
                     <div className="max-w-6xl mx-auto px-4">
                         <ContentFrame>
                             <div className="text-center">
@@ -568,7 +374,7 @@ const App: React.FC = () => {
                                         <div className="bg-amber-100 p-3 rounded-full text-amber-800 mt-1"><FiMapPin className="w-6 h-6"/></div>
                                         <div>
                                             <h3 className="text-xl font-bold text-stone-800">{t('contact.addressTitle')}</h3>
-                                            <p className="text-stone-600"><Highlight text={t('contact.addressText')} /></p>
+                                            <p className="text-stone-600">{t('contact.addressText')}</p>
                                         </div>
                                     </div>
                                      <div className="flex items-start space-x-4">
@@ -612,7 +418,6 @@ const App: React.FC = () => {
                                   loading="lazy" 
                                   referrerPolicy="no-referrer-when-downgrade"
                                   className="rounded-lg shadow-md"
-                                  title="Google Maps location for Golden Taan"
                                 ></iframe>
                             </div>
                         </ContentFrame>
