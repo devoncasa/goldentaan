@@ -1,10 +1,11 @@
 
-
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiTrash2 } from 'react-icons/fi';
 import { CartItem } from '../types';
 import { useTranslations } from '../hooks/useTranslations';
+import StyledText from './StyledText';
+import { formatCurrency } from '../utils/formatting';
 
 interface CartProps {
   isOpen: boolean;
@@ -15,7 +16,7 @@ interface CartProps {
 }
 
 const Cart: React.FC<CartProps> = ({ isOpen, setIsOpen, cartItems, removeFromCart, updateQuantity }) => {
-  const { t } = useTranslations();
+  const { t, language } = useTranslations();
   const backdropVariants = {
     visible: { opacity: 1 },
     hidden: { opacity: 0 },
@@ -44,33 +45,33 @@ const Cart: React.FC<CartProps> = ({ isOpen, setIsOpen, cartItems, removeFromCar
           ></motion.div>
           
           <motion.div
-            className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col"
+            className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-[#FAF9F6] shadow-2xl flex flex-col"
             variants={cartVariants}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
             <div className="flex items-center justify-between p-6 border-b">
-              <h2 className="text-2xl font-bold text-stone-800">{t('cart.title')}</h2>
-              <button onClick={() => setIsOpen(false)} className="p-2 rounded-full hover:bg-stone-100">
-                <FiX className="h-6 w-6 text-stone-600" />
+              <h2 className="text-2xl font-bold text-[#3D2B1F]"><StyledText text={t('cart.title')} /></h2>
+              <button onClick={() => setIsOpen(false)} className="p-2 rounded-full hover:bg-[#A0522D]/10">
+                <FiX className="h-6 w-6 text-[#3D2B1F]/80" />
               </button>
             </div>
 
             <div className="flex-grow p-6 overflow-y-auto">
               {cartItems.length === 0 ? (
-                <div className="text-center text-stone-500 mt-20">
-                  <p>{t('cart.empty')}</p>
-                  <button onClick={() => setIsOpen(false)} className="mt-4 text-amber-800 font-semibold hover:underline">
-                    {t('cart.continueShopping')}
+                <div className="text-center text-[#3D2B1F]/80 mt-20">
+                  <p><StyledText text={t('cart.empty')} /></p>
+                  <button onClick={() => setIsOpen(false)} className="mt-4 text-[#A0522D] font-semibold hover:underline">
+                    <StyledText text={t('cart.continueShopping')} />
                   </button>
                 </div>
               ) : (
                 <ul className="space-y-4">
                   {cartItems.map(item => (
                     <li key={item.id} className="flex items-start space-x-4">
-                      <img src={item.image} alt={item.title} className="w-20 h-20 rounded-lg object-cover" />
+                      <img src={item.image} alt={item.title} className="w-20 h-20 rounded-lg object-cover border-2 border-[#A0522D]" />
                       <div className="flex-grow">
-                        <h3 className="font-semibold text-stone-800">{item.title}</h3>
-                        <p className="text-sm text-stone-500">${item.price.toFixed(2)}</p>
+                        <h3 className="font-semibold text-[#3D2B1F]"><StyledText text={item.title} /></h3>
+                        <p className="text-sm text-[#3D2B1F]/80">{formatCurrency(item.price, language)}</p>
                         <div className="flex items-center mt-2">
                           <input 
                             type="number" 
@@ -82,7 +83,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, setIsOpen, cartItems, removeFromCar
                         </div>
                       </div>
                       <div className="text-right">
-                         <p className="font-bold text-stone-800">${(item.price * item.quantity).toFixed(2)}</p>
+                         <p className="font-bold text-[#3D2B1F]">{formatCurrency(item.price * item.quantity, language)}</p>
                          <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:text-red-700 mt-2">
                            <FiTrash2 />
                          </button>
@@ -96,11 +97,11 @@ const Cart: React.FC<CartProps> = ({ isOpen, setIsOpen, cartItems, removeFromCar
             {cartItems.length > 0 && (
               <div className="p-6 border-t">
                 <div className="flex justify-between items-center font-bold text-xl">
-                  <span>{t('cart.total')}</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span><StyledText text={t('cart.total')} /></span>
+                  <span>{formatCurrency(total, language)}</span>
                 </div>
-                <button className="w-full mt-4 bg-amber-800 text-white py-3 rounded-lg font-bold hover:bg-amber-900 transition-colors">
-                  {t('cart.checkout')}
+                <button className="w-full mt-4 bg-[#556B2F] text-white py-3 rounded-lg font-bold hover:bg-[#4A5D29] transition-colors">
+                  <StyledText text={t('cart.checkout')} />
                 </button>
               </div>
             )}

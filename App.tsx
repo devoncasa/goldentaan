@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProductCard from './components/ProductCard';
@@ -8,34 +8,28 @@ import Cart from './components/Cart';
 import LiveChatButton from './components/LiveChatButton';
 import Accordion from './components/Accordion';
 import JourneyInfographic from './components/JourneyInfographic';
-import ParallaxSection from './components/ParallaxSection';
 import FaqTable from './components/FaqTable';
 import MetaTagManager from './components/MetaTagManager';
 import SchemaMarkup from './components/SchemaMarkup';
-import { PRODUCTS_DATA, FAQ_DATA, HERO_BACKGROUND_IMAGES, RECIPES_DATA_KEYS } from './constants';
+import StyledText from './components/StyledText';
+import PageSection from './components/ParallaxSection'; // Renamed to PageSection conceptually
+import CommunityImpactCard from './components/CommunityImpactCard';
+import { PRODUCTS_DATA, FAQ_DATA, RECIPES_DATA_KEYS, BACKGROUND_IMAGES } from './constants';
 import { Product, CartItem, Recipe } from './types';
-import { FiChevronDown, FiMail, FiPhone, FiMapPin, FiArrowRight } from 'react-icons/fi';
-import { Link as ScrollLink } from 'react-scroll';
+import { FiChevronDown, FiMail, FiPhone, FiMapPin, FiArrowRight, FiCheck, FiStar } from 'react-icons/fi';
 import { useTranslations } from './hooks/useTranslations';
-
-const ContentFrame: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => {
-    return (
-        <div className={`bg-white/[.85] rounded-xl shadow-lg p-8 md:p-12 backdrop-blur-sm ${className || ''}`}>
-            {children}
-        </div>
-    )
-}
 
 const FAQItem: React.FC<{ faqData: any; index: number }> = ({ faqData, index }) => {
     const [isOpen, setIsOpen] = useState(index === 0);
+    const { t } = useTranslations();
 
     return (
-        <div className="border-b border-stone-200 py-4">
+        <div className="border-b border-[#A0522D]/20 py-4">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex justify-between items-center text-left text-lg font-semibold text-stone-800"
+                className="w-full flex justify-between items-center text-left text-lg font-semibold text-[#3D2B1F]"
             >
-                <span>{faqData.question}</span>
+                <StyledText as="span" text={faqData.question} />
                 <motion.div animate={{ rotate: isOpen ? 180 : 0 }}>
                     <FiChevronDown />
                 </motion.div>
@@ -45,23 +39,32 @@ const FAQItem: React.FC<{ faqData: any; index: number }> = ({ faqData, index }) 
                 animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0, marginTop: isOpen ? '1rem' : '0rem' }}
                 className="overflow-hidden"
             >
-                <div className="text-stone-600 leading-relaxed pt-4">{faqData.answerIsTable ? <FaqTable /> : faqData.answer}</div>
+                <div className="text-[#3D2B1F] leading-relaxed pt-4 whitespace-pre-line">{faqData.answerIsTable ? <FaqTable /> : <StyledText text={faqData.answer} />}</div>
             </motion.div>
         </div>
     );
+};
+
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
 };
 
 const App: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isCartOpen, setCartOpen] = useState(false);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [heroBg, setHeroBg] = useState('');
     const [flippedCardId, setFlippedCardId] = useState<number | null>(null);
+    const [highlightedProductId, setHighlightedProductId] = useState<number | null>(null);
     const { t, isLoading } = useTranslations();
+    const [backgrounds, setBackgrounds] = useState<string[]>([]);
 
     useEffect(() => {
-        const randomIndex = Math.floor(Math.random() * HERO_BACKGROUND_IMAGES.length);
-        setHeroBg(HERO_BACKGROUND_IMAGES[randomIndex]);
+        setBackgrounds(shuffleArray(BACKGROUND_IMAGES));
     }, []);
 
     const addToCart = useCallback((product: Product) => {
@@ -100,36 +103,36 @@ const App: React.FC = () => {
     const cartItemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
     
     const palmyraPalmAccordionItems = [
-        { image: "https://i.postimg.cc/kXg20sL0/borassus-flabellifer-illustration.png", ...t('ourStory.palmyraPalm.items.1') },
-        { image: "https://i.postimg.cc/8zQJtV5M/terroir-of-ratchaburi.jpg", ...t('ourStory.palmyraPalm.items.2') },
-        { image: "https://i.postimg.cc/bNkTg4sV/tree-of-life-historical.jpg", ...t('ourStory.palmyraPalm.items.3') }
-    ].map(item => ({...item, title: t(`ourStory.palmyraPalm.items.${item.image.includes('borassus') ? 1 : item.image.includes('terroir') ? 2 : 3}.title`), content: t(`ourStory.palmyraPalm.items.${item.image.includes('borassus') ? 1 : item.image.includes('terroir') ? 2 : 3}.content`) }));
+        { image: "https://i.postimg.cc/kXg20sL0/borassus-flabellifer-illustration.png", key: '1' },
+        { image: "https://i.postimg.cc/8zQJtV5M/terroir-of-ratchaburi.jpg", key: '2' },
+        { image: "https://i.postimg.cc/bNkTg4sV/tree-of-life-historical.jpg", key: '3' }
+    ].map(item => ({...item, title: <StyledText text={t(`ourStory.palmyraPalm.items.${item.key}.title`)} />, content: <StyledText text={t(`ourStory.palmyraPalm.items.${item.key}.content`)} /> }));
 
     const harvestArtAccordionItems = [
-        { image: "https://i.postimg.cc/0jWvM7Nn/farmer-climbing-palm-tree.jpg" },
-        { image: "https://i.postimg.cc/VLzJ7GzP/science-of-simmering.jpg" },
-        { image: "https://i.postimg.cc/prgQdYvV/nectar-to-crystal.jpg" }
-    ].map((item, i) => ({ ...item, title: t(`ourStory.harvestArt.item${i+1}Title`), content: t(`ourStory.harvestArt.item${i+1}Content`) }));
+        { image: "https://i.postimg.cc/0jWvM7Nn/farmer-climbing-palm-tree.jpg", key: '1' },
+        { image: "https://i.postimg.cc/VLzJ7GzP/science-of-simmering.jpg", key: '2' },
+        { image: "https://i.postimg.cc/prgQdYvV/nectar-to-crystal.jpg", key: '3' }
+    ].map(item => ({ ...item, title: <StyledText text={t(`ourStory.harvestArt.items.${item.key}.title`)} />, content: <StyledText text={t(`ourStory.harvestArt.items.${item.key}.content`)} /> }));
 
     const commitmentAccordionItems = [
-        { image: "https://i.postimg.cc/50tZ8Jp2/ecological-sustainability.jpg" },
-        { image: "https://i.postimg.cc/Wb7SgDkj/ratchaburi-farming-community.jpg" },
-        { image: "https://i.postimg.cc/XvjL1ZHy/purity-quality-assurance.jpg" },
-    ].map((item, i) => ({ ...item, title: t(`ourStory.commitment.item${i+1}Title`), content: t(`ourStory.commitment.item${i+1}Content`) }));
+        { image: "https://i.postimg.cc/50tZ8Jp2/ecological-sustainability.jpg", key: '1' },
+        { image: "https://i.postimg.cc/Wb7SgDkj/ratchaburi-farming-community.jpg", key: '2' },
+        { image: "https://i.postimg.cc/XvjL1ZHy/purity-quality-assurance.jpg", key: '3' },
+    ].map(item => ({ ...item, title: <StyledText text={t(`ourStory.commitment.items.${item.key}.title`)} />, content: <StyledText text={t(`ourStory.commitment.items.${item.key}.content`)} /> }));
     
     const healthBenefitsAccordionItems = [
-        { image: "https://i.postimg.cc/J0P5zKcg/low-glycemic-index.jpg" },
-        { image: "https://i.postimg.cc/9M3g0x7r/rich-in-minerals.jpg" },
-        { image: "https://i.postimg.cc/44rY4M9W/natural-electrolytes.jpg" },
-        { image: "https://i.postimg.cc/pT3Y3g4J/clean-label-promise.jpg" }
-    ].map((item, i) => ({ ...item, title: t(`benefits.items.${i+1}.title`), content: t(`benefits.items.${i+1}.content`) }));
+        { image: "https://i.postimg.cc/J0P5zKcg/low-glycemic-index.jpg", key: '1' },
+        { image: "https://i.postimg.cc/9M3g0x7r/rich-in-minerals.jpg", key: '2' },
+        { image: "https://i.postimg.cc/44rY4M9W/natural-electrolytes.jpg", key: '3' },
+        { image: "https://i.postimg.cc/pT3Y3g4J/clean-label-promise.jpg", key: '4' }
+    ].map(item => ({ ...item, title: <StyledText text={t(`benefits.items.${item.key}.title`)} />, content: <StyledText text={t(`benefits.items.${item.key}.content`)} /> }));
 
 
     if (isLoading) {
         return (
-            <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#FDFBF8] text-amber-900">
-                 <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-amber-800"></div>
-                 <h1 className="text-2xl font-semibold mt-4">{t('loadingMessage')}</h1>
+            <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#FAF9F6] text-[#A0522D]">
+                 <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-[#556B2F]"></div>
+                 <h1 className="text-2xl font-semibold mt-4"><StyledText text={t('loadingMessage')} /></h1>
             </div>
         );
     }
@@ -146,15 +149,21 @@ const App: React.FC = () => {
 
     const translatedFaqs = Object.values(t('faq.items'));
 
-    const translatedRecipes: Recipe[] = RECIPES_DATA_KEYS.map(recipe => ({
-        image: recipe.image,
-        key: recipe.key,
-        ...t(recipe.key)
+    const translatedRecipes: (Recipe & { productId: number })[] = RECIPES_DATA_KEYS.map(recipe => ({
+        ...recipe, // contains image, key, productId
+        ...t(recipe.key) // contains name, alt, description, etc.
     }));
 
+    const AuthorBio = () => (
+        <div className="mt-12 pt-6 border-t border-[#A0522D]/20 text-center">
+            <p className="text-sm italic text-[#3D2B1F]/80">
+                <StyledText text={t('ourStory.authorBio')} />
+            </p>
+        </div>
+    );
 
     return (
-        <div className="bg-[#FDFBF8] text-stone-800">
+        <div className="bg-transparent text-[#3D2B1F]">
             <MetaTagManager />
             <SchemaMarkup products={translatedProducts} />
             <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} setCartOpen={setCartOpen} cartItemCount={cartItemCount} />
@@ -162,267 +171,308 @@ const App: React.FC = () => {
             <LiveChatButton />
             
             <main>
-                {/* Home Section */}
-                <section id="home" className="h-screen min-h-[700px] relative flex items-center justify-center overflow-hidden">
-                     <div
-                        className="parallax-bg absolute inset-0 z-0"
-                        style={{ backgroundImage: `url(${heroBg})` }}
-                    >
-                         {/* Vignette Overlay */}
-                        <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at center, rgba(245, 235, 220, 0.0) 0%, rgba(64, 46, 50, 0.6) 85%)' }} />
-                    </div>
-                    <div className="absolute inset-0 z-0 filter backdrop-blur-[8px]" />
-
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1 }}
-                        className="text-center z-10 p-4"
-                    >
-                        <h1 
-                            className="text-4xl md:text-5xl font-bold text-white"
-                            style={{ textShadow: '2px 2px 4px rgba(60, 40, 30, 0.7)' }}
-                        >
-                            {t('hero.title')}
+                <section id="home" className="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
+                    {backgrounds[0] && <div className="section-bg-container" style={{ backgroundImage: `url(${backgrounds[0]})` }} />}
+                    <div className="absolute inset-0 bg-white/20 z-[2]" />
+                    <div className="relative z-[3] bg-white/50 backdrop-blur-sm border-2 border-[#A0522D] rounded-xl shadow-2xl p-8 md:p-12 text-center max-w-4xl mx-4">
+                        <img 
+                            src="https://i.postimg.cc/mrQKP5dZ/taan-logo-small.webp" 
+                            alt={t('header.brandName')}
+                            className="h-20 w-auto mx-auto mb-6"
+                        />
+                        <h1 className="text-4xl md:text-5xl font-bold" style={{color: '#3D2B1F'}}>
+                            <StyledText text={t('hero.title')} />
                         </h1>
-                        <p 
-                            className="mt-4 text-xl md:text-2xl text-white font-medium"
-                            style={{ textShadow: '2px 2px 4px rgba(60, 40, 30, 0.7)' }}
-                        >
-                            {t('hero.subtitle')}
+                        <p className="mt-4 text-xl md:text-2xl font-medium" style={{color: '#B87333'}}>
+                            <StyledText text={t('hero.subtitle')} />
                         </p>
-                        <ScrollLink to="products" smooth={true} duration={500} offset={-80} className="mt-8 inline-block bg-amber-800 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-amber-900 transition-colors cursor-pointer transform hover:scale-105 shadow-xl">
-                            {t('hero.button')}
-                        </ScrollLink>
-                    </motion.div>
+                        <p className="mt-6 text-lg md:text-xl max-w-3xl mx-auto" style={{color: '#3D2B1F'}}>
+                            <StyledText text={t('hero.intro')} />
+                        </p>
+                        <a href="#products" className="mt-8 inline-block bg-[#556B2F] text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-[#4A5D29] transition-colors cursor-pointer transform hover:scale-105 shadow-xl">
+                            <StyledText text={t('hero.button')} />
+                        </a>
+                    </div>
                 </section>
-
-                <JourneyInfographic />
-
-                {/* --- OUR STORY START --- */}
-                <ParallaxSection id="legacy">
-                    <div className="max-w-5xl mx-auto px-4">
-                        <ContentFrame>
-                             <div className="text-center mb-8">
-                                <img src="https://i.postimg.cc/T3YjD6gQ/golden-taan-legacy-intro.jpg" alt={t('ourStory.legacy.title')} className="w-full h-64 object-cover rounded-lg shadow-md" />
-                            </div>
-                            <div className="text-center">
-                                <h2 className="text-4xl md:text-5xl font-bold text-stone-800">{t('ourStory.legacy.title')}</h2>
-                                <p className="mt-4 text-lg md:text-xl text-stone-600">{t('ourStory.legacy.subtitle')}</p>
-                            </div>
-                            
-                            <div className="mt-12 text-left space-y-8">
-                                <div>
-                                    <h3 className="text-2xl font-bold text-amber-800 mb-3">{t('ourStory.legacy.rootsTitle')}</h3>
-                                    <p className="text-stone-700 leading-relaxed">{t('ourStory.legacy.rootsText')}</p>
-                                </div>
-                                <div>
-                                    <h3 className="text-2xl font-bold text-amber-800 mb-3">{t('ourStory.legacy.harvestTitle')}</h3>
-                                    <p className="text-stone-700 leading-relaxed">{t('ourStory.legacy.harvestText')}</p>
-                                </div>
-                                <div>
-                                    <h3 className="text-2xl font-bold text-amber-800 mb-3">{t('ourStory.legacy.promiseTitle')}</h3>
-                                    <p className="text-stone-700 leading-relaxed">{t('ourStory.legacy.promiseText')}</p>
-                                </div>
-                            </div>
-
-                            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <ScrollLink to="palmyra-palm" smooth={true} duration={500} offset={-80} className="group text-center p-4 cursor-pointer">
-                                    <h4 className="font-bold text-amber-800 group-hover:underline">{t('ourStory.legacy.link1')}</h4>
-                                    <FiArrowRight className="mx-auto mt-2 text-amber-800/70"/>
-                                </ScrollLink>
-                                 <ScrollLink to="harvest-art" smooth={true} duration={500} offset={-80} className="group text-center p-4 cursor-pointer">
-                                    <h4 className="font-bold text-amber-800 group-hover:underline">{t('ourStory.legacy.link2')}</h4>
-                                    <FiArrowRight className="mx-auto mt-2 text-amber-800/70"/>
-                                </ScrollLink>
-                                 <ScrollLink to="commitment" smooth={true} duration={500} offset={-80} className="group text-center p-4 cursor-pointer">
-                                    <h4 className="font-bold text-amber-800 group-hover:underline">{t('ourStory.legacy.link3')}</h4>
-                                    <FiArrowRight className="mx-auto mt-2 text-amber-800/70"/>
-                                </ScrollLink>
-                            </div>
-                        </ContentFrame>
-                    </div>
-                </ParallaxSection>
-
-                <ParallaxSection id="palmyra-palm">
-                     <div className="max-w-5xl mx-auto px-4">
-                        <ContentFrame>
-                            <div className="text-center mb-12">
-                                <h2 className="text-4xl md:text-5xl font-bold text-stone-800">{t('ourStory.palmyraPalm.title')}</h2>
-                                <p className="mt-4 text-lg md:text-xl text-stone-600" dangerouslySetInnerHTML={{ __html: t('ourStory.palmyraPalm.subtitle') }}/>
-                            </div>
-                            <Accordion items={palmyraPalmAccordionItems} defaultOpenIndex={0} />
-                        </ContentFrame>
-                    </div>
-                </ParallaxSection>
                 
-                <ParallaxSection id="harvest-art">
-                     <div className="max-w-5xl mx-auto px-4">
-                        <ContentFrame>
-                            <div className="text-center mb-12">
-                                <h2 className="text-4xl md:text-5xl font-bold text-stone-800">{t('ourStory.harvestArt.title')}</h2>
-                                <p className="mt-4 text-lg md:text-xl text-stone-600">{t('ourStory.harvestArt.subtitle')}</p>
+                 <>
+                    <PageSection id="why-choose-us" bgImage={backgrounds[1]}>
+                        <div className="text-center">
+                            <h2 className="text-4xl md:text-5xl font-bold text-[#3D2B1F]"><StyledText text={t('whyChoose.title')} /></h2>
+                        </div>
+                        <div className="mt-16 grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+                        {Object.values(t('whyChoose.items')).map((item: any, index: number) => (
+                            <div key={index} className="text-center">
+                            <div className="text-5xl mb-4 inline-block">{item.icon}</div>
+                            <h3 className="text-xl font-bold text-[#3D2B1F]"><StyledText text={item.title} /></h3>
+                            <p className="mt-2 text-[#3D2B1F]"><StyledText text={item.text} /></p>
                             </div>
-                            <Accordion items={harvestArtAccordionItems} defaultOpenIndex={0} />
-                        </ContentFrame>
-                    </div>
-                </ParallaxSection>
+                        ))}
+                        </div>
+                    </PageSection>
+                    
+                    <JourneyInfographic bgImage={backgrounds[2]} />
 
-                <ParallaxSection id="commitment">
-                    <div className="max-w-5xl mx-auto px-4">
-                        <ContentFrame>
-                            <div className="text-center mb-12">
-                                <h2 className="text-4xl md:text-5xl font-bold text-stone-800">{t('ourStory.commitment.title')}</h2>
-                                <p className="mt-4 text-lg md:text-xl text-stone-600">{t('ourStory.commitment.subtitle')}</p>
-                            </div>
-                            <Accordion items={commitmentAccordionItems} defaultOpenIndex={0} />
-                        </ContentFrame>
+                    {/* --- OUR STORY START --- */}
+                    <PageSection id="legacy" bgImage={backgrounds[3]}>
+                        <div className="text-center mb-8">
+                        <img src="https://i.postimg.cc/T3YjD6gQ/golden-taan-legacy-intro.jpg" alt={t('ourStory.legacy.title')} className="w-full h-64 object-cover rounded-lg shadow-md border-2 border-[#A0522D]" />
                     </div>
-                </ParallaxSection>
-                {/* --- OUR STORY END --- */}
+                    <div className="text-center">
+                        <h2 className="text-4xl md:text-5xl font-bold text-[#3D2B1F] whitespace-pre-line leading-normal"><StyledText text={t('ourStory.legacy.title')} /></h2>
+                        <p className="mt-4 text-lg md:text-xl text-[#3D2B1F]"><StyledText text={t('ourStory.legacy.subtitle')} /></p>
+                    </div>
+                    
+                    <div className="mt-12 text-left space-y-8">
+                        <div>
+                            <h3 className="text-2xl font-bold text-[#A0522D] mb-3"><StyledText text={t('ourStory.legacy.rootsTitle')} /></h3>
+                            <p className="text-[#3D2B1F] leading-relaxed"><StyledText text={t('ourStory.legacy.rootsText')} /></p>
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-bold text-[#A0522D] mb-3"><StyledText text={t('ourStory.legacy.harvestTitle')} /></h3>
+                            <p className="text-[#3D2B1F] leading-relaxed"><StyledText text={t('ourStory.legacy.harvestText')} /></p>
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-bold text-[#A0522D] mb-3"><StyledText text={t('ourStory.legacy.promiseTitle')} /></h3>
+                            <p className="text-[#3D2B1F] leading-relaxed"><StyledText text={t('ourStory.legacy.promiseText')} /></p>
+                        </div>
+                    </div>
 
-                {/* Products Section */}
-                <ParallaxSection id="products">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                       <ContentFrame>
-                            <div className="text-center">
-                                <h2 className="text-4xl md:text-5xl font-bold text-amber-900">{t('products.title')}</h2>
-                                <p className="mt-4 text-lg text-stone-600">{t('products.subtitle')}</p>
+                    <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <a href="#palmyra-palm" className="group text-center p-4 cursor-pointer">
+                            <h4 className="font-bold text-[#A0522D] group-hover:underline"><StyledText text={t('ourStory.legacy.link1')} /></h4>
+                            <FiArrowRight className="mx-auto mt-2 text-[#A0522D]/70"/>
+                        </a>
+                        <a href="#harvest-art" className="group text-center p-4 cursor-pointer">
+                            <h4 className="font-bold text-[#A0522D] group-hover:underline"><StyledText text={t('ourStory.legacy.link2')} /></h4>
+                            <FiArrowRight className="mx-auto mt-2 text-[#A0522D]/70"/>
+                        </a>
+                        <a href="#commitment" className="group text-center p-4 cursor-pointer">
+                            <h4 className="font-bold text-[#A0522D] group-hover:underline"><StyledText text={t('ourStory.legacy.link3')} /></h4>
+                            <FiArrowRight className="mx-auto mt-2 text-[#A0522D]/70"/>
+                        </a>
+                    </div>
+                    </PageSection>
+
+                    <PageSection id="palmyra-palm" bgImage={backgrounds[4]}>
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl md:text-5xl font-bold text-[#3D2B1F]"><StyledText text={t('ourStory.palmyraPalm.title')} /></h2>
+                            <p className="mt-4 text-lg md:text-xl text-[#3D2B1F]">
+                                <StyledText text={t('ourStory.palmyraPalm.subtitle')} />
+                            </p>
+                            <div className="mt-8 mx-auto w-24 h-1 bg-[#A0522D]/30 rounded-full" />
+                        </div>
+                        <Accordion items={palmyraPalmAccordionItems} defaultOpenIndex={0} />
+                    </PageSection>
+                    
+                    <PageSection id="harvest-art" bgImage={backgrounds[5]}>
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl md:text-5xl font-bold text-[#3D2B1F]"><StyledText text={t('ourStory.harvestArt.title')} /></h2>
+                            <p className="mt-4 text-lg md:text-xl text-[#3D2B1F]"><StyledText text={t('ourStory.harvestArt.subtitle')} /></p>
+                        </div>
+                        <Accordion items={harvestArtAccordionItems} defaultOpenIndex={0} />
+                    </PageSection>
+
+                    <PageSection id="commitment" bgImage={backgrounds[6]}>
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl md:text-5xl font-bold text-[#3D2B1F]"><StyledText text={t('ourStory.commitment.title')} /></h2>
+                            <p className="mt-4 text-lg md:text-xl text-[#3D2B1F]"><StyledText text={t('ourStory.commitment.subtitle')} /></p>
+                        </div>
+                        <Accordion items={commitmentAccordionItems} defaultOpenIndex={0} />
+                        <AuthorBio />
+                    </PageSection>
+
+                    <PageSection id="community" bgImage={backgrounds[7]}>
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl md:text-5xl font-bold text-[#3D2B1F]"><StyledText text={t('ourStory.communityImpact.title')} /></h2>
+                            <p className="mt-4 text-lg md:text-xl text-[#3D2B1F] max-w-3xl mx-auto">
+                                <StyledText text={t('ourStory.communityImpact.subtitle')} />
+                            </p>
+                        </div>
+                        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {t('ourStory.communityImpact.items').map((item: any, index: number) => (
+                                <CommunityImpactCard
+                                    key={index}
+                                    icon={item.icon}
+                                    title={item.title}
+                                    text={item.text}
+                                />
+                            ))}
+                        </div>
+                        <AuthorBio />
+                    </PageSection>
+                    {/* --- OUR STORY END --- */}
+
+                    <PageSection id="products" bgImage={backgrounds[8]}>
+                        <div className="text-center">
+                            <h2 className="text-4xl md:text-5xl font-bold text-[#3D2B1F]"><StyledText text={t('products.title')} /></h2>
+                            <p className="mt-4 text-lg text-[#3D2B1F]"><StyledText text={t('products.subtitle')} /></p>
+                        </div>
+                        <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                            {translatedProducts.map((product) => (
+                                <ProductCard 
+                                    key={product.id} 
+                                    product={product} 
+                                    onAddToCart={addToCart} 
+                                    onQuoteRequest={requestQuote}
+                                    flippedCardId={flippedCardId}
+                                    setFlippedCardId={setFlippedCardId}
+                                    isHighlighted={product.id === highlightedProductId}
+                                />
+                            ))}
+                        </div>
+                    </PageSection>
+                    
+                    <PageSection id="benefits" bgImage={backgrounds[9]}>
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl md:text-5xl font-bold text-[#3D2B1F]"><StyledText text={t('benefits.title')} /></h2>
+                            <p className="mt-4 text-lg text-[#3D2B1F]"><StyledText text={t('benefits.subtitle')} /></p>
+                        </div>
+                        <Accordion items={healthBenefitsAccordionItems} defaultOpenIndex={0} />
+                        <AuthorBio />
+                    </PageSection>
+                    
+                    <PageSection id="recipes" bgImage={backgrounds[10]}>
+                        <div className="text-center">
+                            <h2 className="text-4xl md:text-5xl font-bold text-[#3D2B1F]"><StyledText text={t('recipes.title')} /></h2>
+                            <p className="mt-4 text-lg text-[#3D2B1F]"><StyledText text={t('recipes.subtitle')} /></p>
+                        </div>
+                        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {translatedRecipes.map(recipe => (
+                            <div 
+                                key={recipe.key}
+                                className="group bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:-translate-y-2 border-2 border-[#A0522D] flex flex-col"
+                                onMouseEnter={() => setHighlightedProductId(recipe.productId)}
+                                onMouseLeave={() => setHighlightedProductId(null)}
+                            >
+                                <div className="overflow-hidden">
+                                <img src={recipe.image} alt={recipe.alt} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"/>
+                                </div>
+                                <div className="p-6 text-left flex flex-col flex-grow">
+                                    <h3 className="text-lg font-bold text-[#3D2B1F]"><StyledText text={recipe.name} /></h3>
+                                    <div className="flex-grow">
+                                        <p className="mt-2 text-sm text-[#3D2B1F]"><StyledText text={recipe.description} /></p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-                                {translatedProducts.map((product) => (
-                                    <ProductCard 
-                                        key={product.id} 
-                                        product={product} 
-                                        onAddToCart={addToCart} 
-                                        onQuoteRequest={requestQuote}
-                                        flippedCardId={flippedCardId}
-                                        setFlippedCardId={setFlippedCardId}
-                                    />
+                        ))}
+                        </div>
+                        <div className="mt-16 pt-12 border-t border-[#A0522D]/20">
+                            <h3 className="text-center text-3xl font-bold text-[#3D2B1F]"><StyledText text={t('recipes.globalPairings.title')} /></h3>
+                            <div className="mt-8 grid md:grid-cols-3 gap-8 text-center">
+                                {t('recipes.globalPairings.items').map((item: any, index: number) => (
+                                    <div key={index} className="bg-[#A0522D]/5 p-6 rounded-lg">
+                                        <div className="text-4xl mb-3">
+                                            { index === 0 ? '🍮' : index === 1 ? '🍖' : '🍦'}
+                                        </div>
+                                        <h4 className="font-bold text-lg text-[#A0522D]"><StyledText text={item.title} /></h4>
+                                        <p className="mt-2 text-sm text-[#3D2B1F]"><StyledText text={item.text} /></p>
+                                    </div>
                                 ))}
                             </div>
-                        </ContentFrame>
-                    </div>
-                </ParallaxSection>
-                
-                {/* Health Benefits Section */}
-                <ParallaxSection id="benefits">
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <ContentFrame>
-                            <div className="text-center mb-12">
-                                <h2 className="text-4xl md:text-5xl font-bold text-emerald-900">{t('benefits.title')}</h2>
-                                <p className="mt-4 text-lg text-stone-600">{t('benefits.subtitle')}</p>
-                            </div>
-                            <Accordion items={healthBenefitsAccordionItems} defaultOpenIndex={0} />
-                        </ContentFrame>
-                    </div>
-                </ParallaxSection>
-                
-                {/* Recipes & Usage Section */}
-                <ParallaxSection id="recipes">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <ContentFrame>
-                            <div className="text-center">
-                                <h2 className="text-4xl md:text-5xl font-bold text-amber-900">{t('recipes.title')}</h2>
-                                <p className="mt-4 text-lg text-stone-600">{t('recipes.subtitle')}</p>
-                            </div>
-                            <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                              {translatedRecipes.map(recipe => (
-                                 <div key={recipe.key} className="group bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:-translate-y-2">
-                                    <div className="overflow-hidden">
-                                      <img src={recipe.image} alt={recipe.alt} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"/>
-                                    </div>
-                                    <div className="p-6 text-left">
-                                      <h3 className="text-lg font-bold text-stone-800 h-14">{recipe.name}</h3>
-                                      <p className="mt-2 text-sm text-stone-600">{recipe.description}</p>
-                                    </div>
-                                 </div>
-                              ))}
-                            </div>
-                        </ContentFrame>
-                    </div>
-                </ParallaxSection>
+                        </div>
+                    </PageSection>
 
-                {/* FAQ Section */}
-                <ParallaxSection id="faq">
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <ContentFrame>
-                             <h2 className="text-4xl md:text-5xl font-bold text-center text-amber-900">{t('faq.title')}</h2>
-                             <div className="mt-12">
-                                {translatedFaqs.map((faq, index) => (
-                                    <FAQItem key={index} faqData={faq} index={index} />
+                    <PageSection id="faq" bgImage={backgrounds[11]}>
+                        <h2 className="text-4xl md:text-5xl font-bold text-center text-[#3D2B1F]"><StyledText text={t('faq.title')} /></h2>
+                        <div className="mt-12">
+                            {translatedFaqs.map((faq, index) => (
+                                <FAQItem key={index} faqData={faq} index={index} />
+                            ))}
+                        </div>
+                    </PageSection>
+
+                    <PageSection id="partnership" bgImage={backgrounds[12]}>
+                        <div className="text-center">
+                            <h2 className="text-4xl md:text-5xl font-bold text-[#3D2B1F]"><StyledText text={t('partnership.title')} /></h2>
+                            <p className="mt-6 text-lg text-[#3D2B1F] max-w-2xl mx-auto"><StyledText text={t('partnership.content')} /></p>
+                            <a href="#contact" className="mt-8 inline-block bg-[#556B2F] text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-[#4A5D29] transition-colors cursor-pointer transform hover:scale-105 shadow-xl">
+                                <StyledText text={t('partnership.button')} />
+                            </a>
+                        </div>
+                        <div className="mt-12">
+                            <h3 className="text-center text-xl font-semibold text-[#3D2B1F]"><StyledText text={t('partnership.formatsTitle')} /></h3>
+                            <div className="mt-4 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-[#3D2B1F]">
+                                {t('partnership.formats').map((format: string) => (
+                                    <div key={format} className="flex items-center space-x-2">
+                                        <FiCheck className="text-[#556B2F]"/>
+                                        <span><StyledText text={format} /></span>
+                                    </div>
                                 ))}
-                             </div>
-                        </ContentFrame>
-                    </div>
-                </ParallaxSection>
-                
-                {/* Contact Section */}
-                 <ParallaxSection id="contact">
-                    <div className="max-w-6xl mx-auto px-4">
-                        <ContentFrame>
-                            <div className="text-center">
-                                <h2 className="text-4xl md:text-5xl font-bold text-amber-900">{t('contact.title')}</h2>
-                                <p className="mt-6 text-lg text-stone-600">{t('contact.subtitle')}</p>
                             </div>
-                            <div className="mt-16 grid md:grid-cols-2 gap-12 items-start">
-                                <div className="space-y-6">
-                                    <div className="mb-6">
-                                        <img src="https://i.postimg.cc/P5gSz5gd/hero-section-background-0052.webp" alt={t('contact.title')} className="rounded-lg shadow-md w-full h-48 object-cover" />
-                                    </div>
-                                    <div className="flex items-start space-x-4">
-                                        <div className="bg-amber-100 p-3 rounded-full text-amber-800 mt-1"><FiMapPin className="w-6 h-6"/></div>
-                                        <div>
-                                            <h3 className="text-xl font-bold text-stone-800">{t('contact.addressTitle')}</h3>
-                                            <p className="text-stone-600">{t('contact.addressText')}</p>
-                                        </div>
-                                    </div>
-                                     <div className="flex items-start space-x-4">
-                                        <div className="bg-amber-100 p-3 rounded-full text-amber-800 mt-1"><FiPhone className="w-6 h-6"/></div>
-                                        <div>
-                                            <h3 className="text-xl font-bold text-stone-800">{t('contact.phoneTitle')}</h3>
-                                            <p className="text-stone-600">
-                                                <a href="tel:+66968615795" className="hover:underline">+66 (0)96 861 5795</a>
-                                            </p>
-                                            <p className="text-sm text-stone-500">{t('contact.phoneHours')}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-start space-x-4">
-                                        <div className="bg-amber-100 p-3 rounded-full text-amber-800 mt-1"><FiMail className="w-6 h-6"/></div>
-                                        <div>
-                                            <h3 className="text-xl font-bold text-stone-800">{t('contact.emailTitle')}</h3>
-                                            <p className="text-stone-600">
-                                                <a href={`mailto:${t('contact.emailLink')}`} className="hover:underline">{t('contact.emailLink')}</a>
-                                            </p>
-                                        </div>
+                        </div>
+                        <div className="mt-8 pt-8 border-t border-[#A0522D]/20 flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-[#3D2B1F]">
+                            {t('partnership.badges').map((badge: any) => (
+                                <div key={badge.text} className="flex items-center space-x-2">
+                                    <span className="text-2xl">{badge.icon}</span>
+                                    <span className="font-medium"><StyledText text={badge.text} /></span>
+                                </div>
+                            ))}
+                        </div>
+                    </PageSection>
+                    
+                    <PageSection id="contact" bgImage={backgrounds[13]}>
+                        <div className="text-center">
+                            <h2 className="text-4xl md:text-5xl font-bold text-[#3D2B1F]"><StyledText text={t('contact.title')} /></h2>
+                            <p className="mt-6 text-lg text-[#3D2B1F]"><StyledText text={t('contact.subtitle')} /></p>
+                        </div>
+                        <div className="mt-16 grid md:grid-cols-2 gap-12 items-start">
+                            <div className="space-y-6">
+                                <div className="mb-6">
+                                    <img src="https://i.postimg.cc/P5gSz5gd/hero-section-background-0052.webp" alt={t('contact.title')} className="rounded-lg shadow-md w-full h-48 object-cover border-2 border-[#A0522D]" />
+                                </div>
+                                <div className="flex items-start space-x-4">
+                                    <div className="bg-[#A0522D]/10 p-3 rounded-full text-[#A0522D] mt-1"><FiMapPin className="w-6 h-6"/></div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-[#3D2B1F]"><StyledText text={t('contact.addressTitle')} /></h3>
+                                        <p className="text-[#3D2B1F]"><StyledText text={t('contact.addressText')} /></p>
                                     </div>
                                 </div>
-                                <div className="bg-white p-8 rounded-lg shadow-lg">
-                                     <h3 className="text-2xl font-bold text-stone-800 mb-6">{t('contact.formTitle')}</h3>
-                                     <form action={`mailto:${t('contact.emailLink')}`} method="post" encType="text/plain" className="space-y-5">
-                                        <input type="text" name="name" placeholder={t('contact.form.name')} required className="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"/>
-                                        <input type="email" name="email" placeholder={t('contact.form.email')} required className="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"/>
-                                        <input type="text" name="subject" placeholder={t('contact.form.subject')} required className="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"/>
-                                        <textarea name="message" placeholder={t('contact.form.message')} rows={5} required className="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
-                                        <button type="submit" className="w-full bg-amber-800 text-white font-bold py-3 px-4 rounded-lg hover:bg-amber-900 transition-colors text-lg">{t('contact.form.button')}</button>
-                                     </form>
+                                <div className="flex items-start space-x-4">
+                                    <div className="bg-[#A0522D]/10 p-3 rounded-full text-[#A0522D] mt-1"><FiPhone className="w-6 h-6"/></div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-[#3D2B1F]"><StyledText text={t('contact.phoneTitle')} /></h3>
+                                        <p className="text-[#3D2B1F]">
+                                            <a href="tel:+66968615795" className="hover:underline hover:text-[#556B2F]">+66 (0)96 861 5795</a>
+                                        </p>
+                                        <p className="text-sm text-[#3D2B1F]/80"><StyledText text={t('contact.phoneHours')} /></p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start space-x-4">
+                                    <div className="bg-[#A0522D]/10 p-3 rounded-full text-[#A0522D] mt-1"><FiMail className="w-6 h-6"/></div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-[#3D2B1F]"><StyledText text={t('contact.emailTitle')} /></h3>
+                                        <p className="text-[#3D2B1F]">
+                                            <a href={`mailto:${t('contact.emailLink')}`} className="hover:underline hover:text-[#556B2F]"><StyledText text={t('contact.emailLink')} /></a>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                             <div className="pt-8 mt-8 border-t border-stone-200">
-                                <iframe 
-                                  src="https://maps.google.com/maps?q=Golden%20Taan%2C%2096%2F3%20Moo.2%2C%20T.%20Wanyai%2C%20A.%20Bang%20Phae%2C%20Ratchaburi%2070160%2C%20Thailand&t=&z=13&ie=UTF8&iwloc=&output=embed" 
-                                  width="100%" 
-                                  height="350" 
-                                  style={{ border: 0 }} 
-                                  allowFullScreen={false}
-                                  loading="lazy" 
-                                  referrerPolicy="no-referrer-when-downgrade"
-                                  className="rounded-lg shadow-md"
-                                ></iframe>
+                            <div className="bg-white p-8 rounded-lg shadow-lg border-2 border-[#A0522D]">
+                                <h3 className="text-2xl font-bold text-[#3D2B1F] mb-6"><StyledText text={t('contact.formTitle')} /></h3>
+                                <form action={`mailto:${t('contact.emailLink')}`} method="post" encType="text/plain" className="space-y-5">
+                                    <input type="text" name="name" placeholder={t('contact.form.name')} required className="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-[#A0522D] focus:outline-none"/>
+                                    <input type="email" name="email" placeholder={t('contact.form.email')} required className="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-[#A0522D] focus:outline-none"/>
+                                    <input type="text" name="subject" placeholder={t('contact.form.subject')} required className="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-[#A0522D] focus:outline-none"/>
+                                    <textarea name="message" placeholder={t('contact.form.message')} rows={5} required className="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-[#A0522D] focus:outline-none"></textarea>
+                                    <button type="submit" className="w-full bg-[#556B2F] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#4A5D29] transition-colors text-lg"><StyledText text={t('contact.form.button')} /></button>
+                                </form>
                             </div>
-                        </ContentFrame>
-                    </div>
-                </ParallaxSection>
+                        </div>
+                        <div className="pt-8 mt-8 border-t border-[#A0522D]/20">
+                            <iframe 
+                            src="https://maps.google.com/maps?q=Golden%20Taan%2C%2096%2F3%20Moo.2%2C%20T.%20Wanyai%2C%20A.%20Bang%20Phae%2C%20Ratchaburi%2070160%2C%20Thailand&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+                            width="100%" 
+                            height="350" 
+                            style={{ border: 0 }} 
+                            allowFullScreen={false}
+                            loading="lazy" 
+                            referrerPolicy="no-referrer-when-downgrade"
+                            className="rounded-lg shadow-md"
+                            ></iframe>
+                        </div>
+                    </PageSection>
+                 </>
             </main>
             <Footer />
         </div>

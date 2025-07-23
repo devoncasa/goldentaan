@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { useTranslations } from '../hooks/useTranslations';
 import { Product, Recipe } from '../types';
-import { RECIPES_DATA_KEYS, PRODUCTS_DATA } from '../constants';
+import { RECIPES_DATA_KEYS, PRODUCTS_DATA, MENU_ITEMS } from '../constants';
 
 interface SchemaMarkupProps {
     products: Product[];
@@ -51,7 +52,7 @@ const SchemaMarkup: React.FC<SchemaMarkupProps> = ({ products }) => {
             "@type": "Brand",
             "name": "Golden Taan"
         },
-        "aggregateRating": { // Placeholder as requested
+        "aggregateRating": {
             "@type": "AggregateRating",
             "ratingValue": "4.9",
             "reviewCount": "187"
@@ -115,7 +116,54 @@ const SchemaMarkup: React.FC<SchemaMarkupProps> = ({ products }) => {
         }
     }));
 
-    const schemas = [organizationSchema, faqSchema, ...productSchemas, ...recipeSchemas];
+    // Article Schema for educational content
+    const storySections = [
+        { id: 'legacy', key: 'ourStory.legacy', image: 'https://i.postimg.cc/T3YjD6gQ/golden-taan-legacy-intro.jpg' },
+        { id: 'palmyra-palm', key: 'ourStory.palmyraPalm', image: 'https://i.postimg.cc/kXg20sL0/borassus-flabellifer-illustration.png' },
+        { id: 'harvest-art', key: 'ourStory.harvestArt', image: 'https://i.postimg.cc/0jWvM7Nn/farmer-climbing-palm-tree.jpg' },
+        { id: 'commitment', key: 'ourStory.commitment', image: 'https://i.postimg.cc/50tZ8Jp2/ecological-sustainability.jpg' },
+        { id: 'community', key: 'ourStory.communityImpact', image: 'https://i.postimg.cc/SRGKVRT3/hero-section-background-00126.webp' }
+    ];
+
+    const articleSchemas = storySections.map(section => ({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": `${siteUrl}#${section.id}`
+        },
+        "headline": t(`${section.key}.title`),
+        "description": t(`${section.key}.subtitle`),
+        "image": section.image,
+        "author": {
+            "@type": "Organization",
+            "name": "Golden Taan"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Golden Taan",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://i.postimg.cc/mrQKP5dZ/taan-logo-small.webp"
+            }
+        },
+        "datePublished": "2025-01-01",
+        "dateModified": "2025-01-01"
+    }));
+
+    // BreadcrumbList Schema
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": MENU_ITEMS.filter(item => !item.subItems).map((item, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "name": t(item.name),
+            "item": `${siteUrl}#${item.to}`
+        }))
+    };
+
+    const schemas = [organizationSchema, faqSchema, breadcrumbSchema, ...productSchemas, ...recipeSchemas, ...articleSchemas];
 
     return (
         <>

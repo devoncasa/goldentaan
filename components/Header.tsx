@@ -1,12 +1,11 @@
 
-
 import React, { useState, useContext } from 'react';
-import { Link } from 'react-scroll';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MENU_ITEMS } from '../constants';
 import { FiMenu, FiX, FiShoppingCart, FiChevronDown } from 'react-icons/fi';
 import { LanguageContext } from '../context/LanguageContext';
 import { useTranslations } from '../hooks/useTranslations';
+import StyledText from './StyledText';
 
 interface HeaderProps {
   isMenuOpen: boolean;
@@ -18,11 +17,11 @@ interface HeaderProps {
 const LanguageSwitcher = () => {
   const { language, setLanguage } = useContext(LanguageContext);
   return (
-    <div className="flex items-center bg-stone-100 rounded-full p-1">
+    <div className="flex items-center bg-[#FDFBF5] rounded-full p-1">
       <button
         onClick={() => setLanguage('en')}
         className={`px-2 md:px-3 py-1 text-sm font-semibold rounded-full transition-colors duration-300 ${
-          language === 'en' ? 'bg-amber-800 text-white' : 'text-stone-600 hover:bg-stone-200'
+          language === 'en' ? 'bg-[#556B2F] text-white' : 'text-[#3D2B1F]/80 hover:bg-[#A0522D]/10'
         }`}
       >
         EN
@@ -30,7 +29,7 @@ const LanguageSwitcher = () => {
       <button
         onClick={() => setLanguage('th')}
         className={`px-2 md:px-3 py-1 text-sm font-semibold rounded-full transition-colors duration-300 ${
-          language === 'th' ? 'bg-amber-800 text-white' : 'text-stone-600 hover:bg-stone-200'
+          language === 'th' ? 'bg-[#556B2F] text-white' : 'text-[#3D2B1F]/80 hover:bg-[#A0522D]/10'
         }`}
       >
         TH
@@ -48,18 +47,18 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, setCartOpen,
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm"
+      className="fixed top-0 left-0 right-0 z-50 bg-[#FAF9F6]/80 backdrop-blur-md shadow-sm"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex-shrink-0">
-            <Link to="home" smooth={true} duration={500} className="cursor-pointer">
+            <a href="#home" className="cursor-pointer">
               <img 
-                className="h-14 w-auto"
+                className="h-[50px] w-auto"
                 src="https://i.postimg.cc/mrQKP5dZ/taan-logo-small.webp" 
                 alt={t('header.brandName')} 
               />
-            </Link>
+            </a>
           </div>
 
           <nav className="hidden md:block">
@@ -71,36 +70,30 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, setCartOpen,
                   onMouseEnter={() => item.subItems && setOpenDropdown(item.name)}
                   onMouseLeave={() => item.subItems && setOpenDropdown(null)}
                 >
-                  <Link
-                    to={item.to}
-                    smooth={true}
-                    duration={500}
-                    offset={-80}
-                    className="text-stone-600 hover:text-amber-900 px-3 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors flex items-center"
+                  <a
+                    href={`#${item.to}`}
+                    className="text-[#3D2B1F] hover:text-[#A0522D] px-3 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors flex items-center"
                   >
-                    {t(item.name)}
+                    <StyledText text={t(item.name)} />
                     {item.subItems && <FiChevronDown className="ml-1 h-4 w-4" />}
-                  </Link>
+                  </a>
                   <AnimatePresence>
                     {item.subItems && openDropdown === item.name && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 py-1"
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max bg-[#FAF9F6] rounded-md shadow-lg ring-1 ring-black ring-opacity-5 py-1"
                       >
                         {item.subItems.map(subItem => (
-                           <Link
+                           <a
                             key={subItem.name}
-                            to={subItem.to}
-                            smooth={true}
-                            duration={500}
-                            offset={-80}
+                            href={`#${subItem.to}`}
                             onClick={() => setOpenDropdown(null)}
-                            className="text-stone-600 hover:text-amber-900 hover:bg-amber-50 block px-4 py-2 text-sm cursor-pointer whitespace-nowrap"
+                            className="text-[#3D2B1F] hover:text-[#A0522D] hover:bg-[#A0522D]/10 block px-4 py-2 text-sm cursor-pointer whitespace-nowrap"
                           >
-                            {t(subItem.name)}
-                          </Link>
+                            <StyledText text={t(subItem.name)} />
+                          </a>
                         ))}
                       </motion.div>
                     )}
@@ -112,7 +105,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, setCartOpen,
 
           <div className="hidden md:flex items-center space-x-4">
             <LanguageSwitcher />
-            <button onClick={() => setCartOpen(true)} className="relative p-2 rounded-full text-stone-600 hover:text-amber-900 hover:bg-amber-100 transition-colors">
+            <button onClick={() => setCartOpen(true)} className="relative p-2 rounded-full text-[#3D2B1F] hover:text-[#A0522D] hover:bg-[#A0522D]/10 transition-colors">
               <FiShoppingCart className="h-6 w-6" />
               {cartItemCount > 0 && (
                 <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">{cartItemCount}</span>
@@ -122,7 +115,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, setCartOpen,
 
           <div className="-mr-2 flex items-center md:hidden">
             <LanguageSwitcher />
-            <button onClick={() => setCartOpen(true)} className="relative ml-2 p-2 rounded-full text-stone-600 hover:text-amber-900 hover:bg-amber-100 transition-colors">
+            <button onClick={() => setCartOpen(true)} className="relative ml-2 p-2 rounded-full text-[#3D2B1F] hover:text-[#A0522D] hover:bg-[#A0522D]/10 transition-colors">
               <FiShoppingCart className="h-6 w-6" />
               {cartItemCount > 0 && (
                 <span className="absolute top-0 right-0 block h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">{cartItemCount}</span>
@@ -130,7 +123,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, setCartOpen,
             </button>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-stone-600 hover:text-amber-900 hover:bg-amber-100 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-md text-[#3D2B1F] hover:text-[#A0522D] hover:bg-[#A0522D]/10 focus:outline-none"
             >
               {isMenuOpen ? <FiX className="h-6 w-6" /> : <FiMenu className="h-6 w-6" />}
             </button>
@@ -149,30 +142,24 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, setCartOpen,
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {MENU_ITEMS.map((item) => (
                 <div key={item.name}>
-                  <Link
-                    to={item.to}
-                    smooth={true}
-                    duration={500}
-                    offset={-80}
+                  <a
+                    href={`#${item.to}`}
                     onClick={() => !item.subItems && setIsMenuOpen(false)}
-                    className="text-stone-600 hover:text-amber-900 hover:bg-amber-100 block px-3 py-2 rounded-md text-base font-medium cursor-pointer"
+                    className="text-[#3D2B1F] hover:text-[#A0522D] hover:bg-[#A0522D]/10 block px-3 py-2 rounded-md text-base font-medium cursor-pointer"
                   >
-                    {t(item.name)}
-                  </Link>
+                    <StyledText text={t(item.name)} />
+                  </a>
                   {item.subItems && (
                      <div className="pl-4">
                         {item.subItems.map(subItem => (
-                            <Link
+                            <a
                                 key={subItem.name}
-                                to={subItem.to}
-                                smooth={true}
-                                duration={500}
-                                offset={-80}
+                                href={`#${subItem.to}`}
                                 onClick={() => setIsMenuOpen(false)}
-                                className="text-stone-500 hover:text-amber-900 hover:bg-amber-50 block px-3 py-2 rounded-md text-base font-medium cursor-pointer"
+                                className="text-[#3D2B1F]/80 hover:text-[#A0522D] hover:bg-[#A0522D]/10 block px-3 py-2 rounded-md text-base font-medium cursor-pointer"
                             >
-                                {t(subItem.name)}
-                            </Link>
+                                <StyledText text={t(subItem.name)} />
+                            </a>
                         ))}
                      </div>
                   )}
