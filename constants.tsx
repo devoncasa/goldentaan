@@ -1,6 +1,7 @@
 
+
 import React from 'react';
-import { Product } from './types';
+import { Product, MenuItem } from './types';
 import { FaFacebook, FaInstagram, FaYoutube, FaWhatsapp } from 'react-icons/fa';
 import { RiLineFill } from 'react-icons/ri';
 
@@ -27,27 +28,34 @@ export const BACKGROUND_IMAGES = [
     'https://i.postimg.cc/QddnjbwP/krisbkk-Advertising-composition-banner-style-of-palm-sugar-prod-e5ca8092-96f4-4a9c-8a06-4b382f05960d.webp'
 ];
 
-export const MENU_ITEMS = [
+export const MENU_ITEMS: MenuItem[] = [
   { name: 'header.menu.home', to: 'home' },
-  { 
-    name: 'header.menu.ourStory', 
-    to: 'legacy',
-    subItems: [
-        { name: 'header.menu.ourStoryLegacy', to: 'legacy' },
-        { name: 'header.menu.ourStoryPalmyra', to: 'palmyra-palm' },
-        { name: 'header.menu.ourStoryHarvest', to: 'harvest-art' },
-        { name: 'header.menu.ourStoryCommitment', to: 'commitment' },
-        { name: 'header.menu.ourStoryCommunity', to: 'community' },
-    ]
+  {
+    name: 'header.menu.products',
+    to: 'products',
+    children: [
+      { name: 'header.menu.allProducts', to: 'products' },
+      { name: 'header.menu.compareSugars', to: 'compare-sugars' },
+      { name: 'header.menu.productBenefits', to: 'benefits' },
+    ],
   },
-  { name: 'header.menu.products', to: 'products' },
-  { name: 'header.menu.healthBenefits', to: 'benefits' },
   { name: 'header.menu.recipes', to: 'recipes' },
+  {
+    name: 'header.menu.aboutUs',
+    to: 'about',
+    children: [
+      { name: 'header.menu.ourStory', to: 'about' },
+      { name: 'header.menu.sustainability', to: 'about', anchor: 'commitment' },
+      { name: 'header.menu.community', to: 'community' },
+    ],
+  },
   { name: 'header.menu.faq', to: 'faq' },
-  { name: 'header.menu.contactUs', to: 'contact' },
+  { name: 'header.menu.contact', to: 'contact' },
 ];
 
-export const PRODUCTS_DATA = [
+type ProductData = Pick<Product, 'id' | 'sku' | 'image' | 'price' | 'isQuote' | 'category'> & { key: string };
+
+export const PRODUCTS_DATA: ProductData[] = [
   {
     id: 1,
     sku: "GT-BLOCK-500G",
@@ -55,6 +63,7 @@ export const PRODUCTS_DATA = [
     price: 12,
     isQuote: false,
     key: 'products.items.1',
+    category: 'bar',
   },
   {
     id: 2,
@@ -63,6 +72,7 @@ export const PRODUCTS_DATA = [
     price: 15,
     isQuote: false,
     key: 'products.items.2',
+    category: 'powder',
   },
   {
     id: 3,
@@ -71,6 +81,7 @@ export const PRODUCTS_DATA = [
     price: 18,
     isQuote: false,
     key: 'products.items.3',
+    category: 'syrup',
   },
   {
     id: 4,
@@ -79,6 +90,7 @@ export const PRODUCTS_DATA = [
     price: 0,
     isQuote: true,
     key: 'products.items.4',
+    category: 'bulk',
   },
   {
     id: 5,
@@ -87,14 +99,44 @@ export const PRODUCTS_DATA = [
     price: 0,
     isQuote: true,
     key: 'products.items.5',
+    category: 'specialty',
   },
 ];
 
 export const RECIPES_DATA_KEYS = [
-    { image: "https://i.postimg.cc/d16g9N3q/golden-taan-caramel-latte.jpg", key: 'recipes.items.1', productId: 3 },
-    { image: "https://i.postimg.cc/t44TqxP4/gluten-free-palmyra-blondies.jpg", key: 'recipes.items.2', productId: 2 },
-    { image: "https://i.postimg.cc/XqM3w0g5/pan-seared-salmon-glaze.jpg", key: 'recipes.items.3', productId: 3 },
-    { image: "https://i.postimg.cc/Hnpyk8Kx/smoky-old-fashioned-cocktail.jpg", key: 'recipes.items.4', productId: 3 },
+    { image: "https://i.postimg.cc/d16g9N3q/golden-taan-caramel-latte.jpg", key: 'recipes.items.1', productId: 3, category: 'beverage' as const },
+    { image: "https://i.postimg.cc/t44TqxP4/gluten-free-palmyra-blondies.jpg", key: 'recipes.items.2', productId: 2, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/XqM3w0g5/pan-seared-salmon-glaze.jpg", key: 'recipes.items.3', productId: 3, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/Hnpyk8Kx/smoky-old-fashioned-cocktail.jpg", key: 'recipes.items.4', productId: 3, category: 'beverage' as const },
+    { image: "https://i.postimg.cc/k4G7f9zS/khanom-kluay.jpg", key: 'recipes.items.5', productId: 2, category: 'thai-dessert' as const },
+    { image: "https://i.postimg.cc/tJn0W4XJ/thapthim-krop.jpg", key: 'recipes.items.6', productId: 2, category: 'thai-dessert' as const },
+    { image: "https://i.postimg.cc/W1Y45q5g/khanom-piak-poon.jpg", key: 'recipes.items.7', productId: 2, category: 'thai-dessert' as const },
+    { image: "https://i.postimg.cc/J4Z7F5v0/sangkaya.jpg", key: 'recipes.items.8', productId: 2, category: 'thai-dessert' as const },
+    { image: "https://i.postimg.cc/GpdVzGzK/khao-niao-moon.jpg", key: 'recipes.items.9', productId: 2, category: 'thai-dessert' as const },
+    { image: "https://i.postimg.cc/W3h4g3hH/met-khanun.jpg", key: 'recipes.items.10', productId: 2, category: 'thai-dessert' as const },
+    { image: "https://i.postimg.cc/Pqj959F5/khao-tom-mat.jpg", key: 'recipes.items.11', productId: 2, category: 'thai-dessert' as const },
+    { image: "https://i.postimg.cc/k4G7zM5Y/pork-chop-apple-sauce.jpg", key: 'recipes.items.12', productId: 3, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/T3sL3w3y/salted-caramel-tart.jpg", key: 'recipes.items.13', productId: 2, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/pT4yY2fM/quinoa-salad-balsamic.jpg", key: 'recipes.items.14', productId: 3, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/d1c9F7Fz/taan-old-fashioned.jpg", key: 'recipes.items.15', productId: 3, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/W1vXqB1H/duck-breast-berry-sauce.jpg", key: 'recipes.items.16', productId: 2, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/tJnQJq8z/smoked-bbq-sauce.jpg", key: 'recipes.items.17', productId: 2, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/J4R8D10J/palm-sugar-cookies.jpg", key: 'recipes.items.18', productId: 2, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/d16p2v4p/candied-bacon.jpg", key: 'recipes.items.19', productId: 2, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/pTkzD5tJ/roasted-root-vegetables.jpg", key: 'recipes.items.20', productId: 3, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/t44Vz1z5/homemade-granola.jpg", key: 'recipes.items.21', productId: 3, category: 'western-dish' as const },
+    { image: "https://i.postimg.cc/k4GzM5yq/nam-pla-wan.jpg", key: 'recipes.items.22', productId: 1, category: 'thai-traditional' as const },
+    { image: "https://i.postimg.cc/T3sL4w4z/mee-krob.jpg", key: 'recipes.items.23', productId: 1, category: 'thai-traditional' as const },
+    { image: "https://i.postimg.cc/pT4yZ3fG/pla-rad-prik.jpg", key: 'recipes.items.24', productId: 1, category: 'thai-traditional' as const },
+    { image: "https://i.postimg.cc/d1c9G8fH/massaman-curry.jpg", key: 'recipes.items.25', productId: 1, category: 'thai-traditional' as const },
+    { image: "https://i.postimg.cc/W1vXqC2j/moo-hong.jpg", key: 'recipes.items.26', productId: 1, category: 'thai-traditional' as const },
+    { image: "https://i.postimg.cc/tJnQKr9A/nam-jim-jaew.jpg", key: 'recipes.items.27', productId: 2, category: 'thai-traditional' as const },
+    { image: "https://i.postimg.cc/J4R8D21K/pad-thai-sauce.jpg", key: 'recipes.items.28', productId: 1, category: 'thai-traditional' as const },
+    { image: "https://i.postimg.cc/d16p3v5q/miang-kham.jpg", key: 'recipes.items.29', productId: 1, category: 'thai-traditional' as const },
+    { image: "https://i.postimg.cc/pTkzD6tL/tod-mun-sauce.jpg", key: 'recipes.items.30', productId: 2, category: 'thai-traditional' as const },
+    { image: "https://i.postimg.cc/t44Vy2z6/gai-pad-med-mamuang.jpg", key: 'recipes.items.31', productId: 2, category: 'thai-traditional' as const },
+    { image: "https://i.postimg.cc/Hnpyk9Ky/khao-soi.jpg", key: 'recipes.items.32', productId: 1, category: 'thai-traditional' as const },
+    { image: "https://i.postimg.cc/k4G7f0zT/gai-yang-sauce.jpg", key: 'recipes.items.33', productId: 2, category: 'thai-traditional' as const }
 ];
 
 
@@ -113,15 +155,6 @@ export const FAQ_DATA = [
   },
   {
     key: 'faq.items.5'
-  },
-  {
-    key: 'faq.items.6'
-  },
-  {
-    key: 'faq.items.7'
-  },
-  {
-    key: 'faq.items.8'
   },
 ];
 

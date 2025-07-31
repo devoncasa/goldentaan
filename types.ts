@@ -1,4 +1,14 @@
 
+
+export type Page = 'home' | 'products' | 'about' | 'community' | 'faq' | 'contact' | 'recipes' | 'benefits' | 'compare-sugars';
+
+export interface MenuItem {
+  name: string;
+  to: Page;
+  anchor?: string;
+  children?: MenuItem[];
+}
+
 export interface Product {
   id: number;
   title: string;
@@ -11,6 +21,7 @@ export interface Product {
   price: number;
   isQuote: boolean;
   sku: string;
+  category: 'bar' | 'powder' | 'syrup' | 'bulk' | 'specialty';
 }
 
 export interface CartItem extends Product {
@@ -23,6 +34,7 @@ export interface Recipe {
     name: string;
     alt: string;
     description: string;
+    category: 'thai-dessert' | 'western-dish' | 'beverage' | 'thai-traditional';
     recipeIngredient: string[];
     recipeInstructions: { name: string; text: string; }[];
     nutrition: {

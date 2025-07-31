@@ -8,17 +8,17 @@
     "brandName": "Golden Taan",
     "menu": {
       "home": "Home",
+      "products": "Products",
+      "allProducts": "All Products",
+      "compareSugars": "Compare Sugars",
+      "productBenefits": "Product Benefits",
+      "recipes": "Recipes",
+      "aboutUs": "About Us",
       "ourStory": "Our Story",
-      "ourStoryLegacy": "The Golden Taan Legacy",
-      "ourStoryPalmyra": "The Palmyra Palm: A Natural Wonder",
-      "ourStoryHarvest": "The Art of the Harvest",
-      "ourStoryCommitment": "Our Commitment: Planet & People",
-      "ourStoryCommunity": "Our Community Impact",
-      "products": "Our Products",
-      "healthBenefits": "Health Benefits",
-      "recipes": "Recipes & Usage",
+      "sustainability": "Sustainability",
+      "community": "Community Impact",
       "faq": "FAQ",
-      "contactUs": "Contact Us"
+      "contact": "Contact"
     }
   },
   "hero": {
@@ -26,6 +26,19 @@
     "subtitle": "100% Authentic Toddy Palm Sugar from the Heart of Thailand",
     "intro": "Experience Golden Taan, where tradition meets purity. We bring you handcrafted palm sugar, harvested from wild Palmyra Palms (Borassus flabellifer) over 30 years old. Each batch is meticulously slow-boiled over a gentle wood fire, allowing it to be naturally caramelized and touched by smoke, creating a flavor profile that is truly unforgettable.",
     "button": "Explore Our Products"
+  },
+  "homePage": {
+    "featuredProducts": {
+      "title": "Our Signature Products",
+      "subtitle": "Handcrafted from nature's purest nectar. Explore our best-sellers.",
+      "button": "View All Products"
+    },
+    "featuredRecipes": {
+      "title": "Taste the Inspiration",
+      "subtitle": "Discover delicious ways to use Golden Taan in your kitchen, from sweet to savory.",
+      "button": "Explore All Recipes",
+      "viewRecipe": "View Recipe"
+    }
   },
   "whyChoose": {
     "title": "Why Choose Golden Taan?",
@@ -79,114 +92,47 @@
     ]
   },
   "loadingMessage": "Loading Sweetness...",
-  "infographic": {
-    "title": "The Golden Taan Story",
-    "subtitle": "Discover the journey of an authentic Thai sweetener, from its role in a changing global market to its deep-rooted impact on a local community.",
-    "cta": {
-      "desktop": "Hover to explore the journey",
-      "mobile": "Tap to explore the journey"
-    },
-    "authenticity": {
-      "title": "A World Hungry for Authenticity",
-      "subtitle": "The global food landscape is experiencing a massive shift. Consumers are increasingly turning away from artificial products, creating a powerful demand for natural, transparent, and sustainable alternatives.",
-      "marketSize": "The Natural Sweetener Market is projected to reach",
-      "marketSizeSuffix": "by 2030",
-      "sourceMordor": "Source: Mordor Intelligence",
-      "consumerChoice": "of consumers globally are actively choosing products with natural, clean-label ingredients.",
-      "sourceMckinsey": "Source: McKinsey & Company",
-      "chartLabels": [
-        "Prefer Clean & Natural",
-        "Other"
-      ]
-    },
-    "difference": {
-      "title": "The Wholesome Difference",
-      "subtitle": "Unlike refined sugar, Golden Taan's traditional processing preserves vital minerals, offering a smarter choice for a balanced lifestyle.",
-      "chartTitle": "Nutritional Comparison (per 100g)",
-      "chartLabelTaan": "Golden Taan (per 100g)",
-      "chartLabelRefined": "Refined Sugar (per 100g)",
-      "chartYAxisLabels": [
-        "Potassium (mg)",
-        "Magnesium (mg)",
-        "Iron (mg)",
-        "Zinc (mg)"
-      ],
-      "giTitle": "Glycemic Index Comparison",
-      "giSubtitle": "A lower GI means a slower, more stable release of energy, avoiding sharp blood sugar spikes.",
-      "giRefined": "Refined Sugar",
-      "giTaan": "Golden Taan"
-    },
-    "process": {
-      "title": "A Tale of Two Sugars: The Process Matters",
-      "taanTitle": "Golden Taan (Artisanal)",
-      "taanStep1Title": "1. Harvest",
-      "taanStep1Desc": "Nectar is hand-tapped from Palmyra Palm blossoms.",
-      "taanStep2Title": "2. Simmer",
-      "taanStep2Desc": "Nectar is slow-simmered in open kettles to evaporate water.",
-      "taanStep3Title": "3. Crystallize",
-      "taanStep3Desc": "Syrup is agitated as it cools to form natural crystals. Nutrients are retained.",
-      "refinedTitle": "Refined White Sugar (Industrial)",
-      "refinedStep1Title": "1. Harvest & Crush",
-      "refinedStep1Desc": "Sugarcane is machine-harvested and crushed to extract juice.",
-      "refinedStep2Title": "2. Clarification",
-      "refinedStep2Desc": "Juice is mixed with lime and carbon dioxide to remove impurities.",
-      "refinedStep3Title": "3. Bleaching & Filtering",
-      "refinedStep3Desc": "Syrup is often bleached with sulfur dioxide and filtered through bone char. Most nutrients are stripped.",
-      "refinedStep4Title": "4. Crystallization",
-      "refinedStep4Desc": "Syrup is boiled and seeded to form pure sucrose crystals, which are then separated from molasses."
-    },
-    "sustainability": {
-      "title": "A Sustainable Ecosystem",
-      "subtitle": "Palmyra Palm cultivation is an inherently sustainable agricultural model that supports long-term land use without soil depletion or high water stress.",
-      "chartTitle": "Sustainability Impact Index (Higher is Better)",
-      "chartLabelTaan": "Golden Taan (Palmyra Palm)",
-      "chartLabelSugarcane": "Conventional Sugarcane",
-      "chartRadarLabels": [
-        [
-          "Water",
-          "Usage"
-        ],
-        [
-          "Soil",
-          "Regeneration"
-        ],
-        [
-          "Pesticide",
-          "Use"
-        ],
-        [
-          "Biodiversity",
-          "Support"
-        ],
-        [
-          "Carbon",
-          "Storage"
-        ]
-      ]
-    },
-    "community": {
-      "title": "Rooted in Community",
-      "subtitle": "Choosing Golden Taan is an investment in a cycle of prosperity, supporting the artisans and the land at the heart of our story.",
-      "card1_line1": "1 Palm Tree can provide income for a family for",
-      "card1_line2": "years",
-      "card2_line1": "Over",
-      "card2_line2": "rural households earn stable income",
-      "card3_line1": "Community enterprise exports generate over",
-      "card3_line2": "USD annually",
-      "card4_line1": "We pay",
-      "card4_line2": "higher wages than market rate"
-    },
-    "legacy": {
-      "title": "A 1,000-Year Sweet Tradition",
-      "item1_title": "9th Century",
-      "item1_desc": "Origins in Southeast Asia as a treasured sweetener.",
-      "item2_title": "Generations",
-      "item2_desc": "Traditional tapping methods passed down through families.",
-      "item3_title": "Royal & Ayurvedic",
-      "item3_desc": "Used in royal Thai desserts and traditional Ayurvedic remedies.",
-      "item4_title": "Today",
-      "item4_desc": "Rising as a superfood in wellness-focused markets worldwide."
-    }
+  "journeyInfographic": {
+    "title": "Our Journey of Purity",
+    "subtitle": "From a heritage palm grove in the heart of Thailand to your kitchen, discover the story behind every golden drop.",
+    "sections": [
+      {
+        "icon": "heritage",
+        "title": "Our Origins",
+        "content": "Rooted in the rich soil of Ratchaburi, our story began over 30 years ago, built on a multi-generational passion for authentic palm sugar.",
+        "stat": {
+          "value": "30+",
+          "label": "Years of Heritage"
+        }
+      },
+      {
+        "icon": "community",
+        "title": "Sustainable Farming",
+        "content": "We champion fair trade practices, partnering with over 40 local farming families to preserve traditional, eco-friendly cultivation methods.",
+        "stat": {
+          "value": "40+",
+          "label": "Farming Families Supported"
+        }
+      },
+      {
+        "icon": "craft",
+        "title": "Artisanal Craftsmanship",
+        "content": "Every batch is slow-boiled for 8 hours in traditional kettles. This patient process develops its deep, smoky-caramel flavor with zero additives.",
+        "stat": {
+          "value": "8",
+          "label": "Hour Slow-Boil Process"
+        }
+      },
+      {
+        "icon": "global",
+        "title": "From Thailand to the World",
+        "content": "We carefully pack and export our liquid gold, bringing the authentic taste of Thai tradition to health-conscious foodies in over 12 countries.",
+        "stat": {
+          "value": "12+",
+          "label": "Countries Reached"
+        }
+      }
+    ]
   },
   "ourStory": {
     "authorBio": "*Written by the Golden Taan Agricultural Team, combining decades of farming experience with a passion for sustainable practices.*",
@@ -367,23 +313,6 @@
   "recipes": {
     "title": "Palmyra Palm Sugar Recipes & Usage Ideas",
     "subtitle": "From traditional desserts to modern cocktails, discover how to use our natural palm sugar.",
-    "globalPairings": {
-      "title": "Global Culinary Pairings",
-      "items": [
-        {
-          "title": "For the French Pâtissier",
-          "text": "Use our powder to add a complex, smoky depth to crème brûlée."
-        },
-        {
-          "title": "For the American Grill Master",
-          "text": "Create a championship BBQ glaze for ribs with our rich palm sugar syrup."
-        },
-        {
-          "title": "For the Italian Gelato Maker",
-          "text": "Craft an artisanal salted caramel gelato with a uniquely Thai twist."
-        }
-      ]
-    },
     "items": {
       "1": {
         "name": "For the Barista: Golden Taan Caramel Latte",
@@ -504,6 +433,692 @@
           "calories": "160 kcal",
           "sugarContent": "8 g"
         }
+      },
+      "5": {
+        "name": "Khanom Kluay (Banana Cake with Golden TAAN)",
+        "alt": "Soft steamed banana cakes in a traditional wrapper.",
+        "description": "For banana lovers: A classic soft and sweet banana cake, with an added fragrant depth from Golden Taan Palm Sugar. A healthier alternative to white sugar.",
+        "recipeIngredient": [
+          "3 ripe Nam Wa bananas, mashed",
+          "1 cup rice flour",
+          "1/4 cup tapioca starch",
+          "1/2 cup coconut cream",
+          "100g Golden TAAN Palm Sugar",
+          "1 tsp baking powder",
+          "Banana leaves for lining cups (or paper molds)"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Mix",
+            "text": "Mash the bananas thoroughly. Mix with Palm Sugar and stir until dissolved."
+          },
+          {
+            "name": "Step 2: Combine Flours",
+            "text": "Add both types of flour and the baking powder. Mix well."
+          },
+          {
+            "name": "Step 3: Finish Batter",
+            "text": "Pour in the coconut cream and stir until the batter is smooth."
+          },
+          {
+            "name": "Step 4: Steam",
+            "text": "Pour into molds and steam for 25 minutes, or until cooked and risen."
+          }
+        ],
+        "nutrition": {
+          "calories": "120 kcal per piece",
+          "sugarContent": "12 g"
+        }
+      },
+      "6": {
+        "name": "Thapthim Krop (Thai Ruby Dessert with Palm Sugar)",
+        "alt": "Red water chestnut 'rubies' in sweet coconut milk.",
+        "description": "A refreshing dessert for a hot day: Crispy, vividly colored water chestnuts served in a fragrant sweet coconut milk simmered with Palm Sugar for a smoother, richer flavor.",
+        "recipeIngredient": [
+          "1 cup diced water chestnuts",
+          "Natural red food coloring (e.g., beetroot juice)",
+          "1 cup tapioca starch (for coating)",
+          "Water (for boiling)",
+          "1 cup coconut cream",
+          "Pinch of salt",
+          "200g Golden TAAN Palm Sugar",
+          "Crushed ice"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Color & Coat",
+            "text": "Soak the water chestnuts in red coloring until the desired color is achieved, then coat them thoroughly in tapioca starch."
+          },
+          {
+            "name": "Step 2: Cook Rubies",
+            "text": "Boil the coated chestnuts in water until they float to the surface. Scoop them out and plunge into ice-cold water."
+          },
+          {
+            "name": "Step 3: Make Syrup",
+            "text": "Simmer the Palm Sugar with coconut cream and salt until dissolved. Let it cool."
+          },
+          {
+            "name": "Step 4: Serve",
+            "text": "Serve the 'rubies' in the sweet coconut milk with crushed ice."
+          }
+        ],
+        "nutrition": {
+          "calories": "250 kcal per serving",
+          "sugarContent": "25 g"
+        }
+      },
+      "7": {
+        "name": "Khanom Piak Poon (Steamed Rice Flour Custard)",
+        "alt": "Soft, pandan-scented rice flour custard squares.",
+        "description": "Aromatic with pandan: A smooth, soft custard, vibrant green from fresh pandan leaves, with a deep, mellow sweetness from Palm Sugar.",
+        "recipeIngredient": [
+          "1 cup rice flour",
+          "2 tbsp tapioca starch",
+          "1 cup fresh pandan juice",
+          "1 cup coconut cream",
+          "150g Golden TAAN Palm Sugar",
+          "1/2 cup water"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Mix Flour",
+            "text": "Dissolve the flours in pandan juice and strain for a smooth texture."
+          },
+          {
+            "name": "Step 2: Heat Syrup",
+            "text": "Mix coconut cream with Palm Sugar over low heat until dissolved."
+          },
+          {
+            "name": "Step 3: Combine & Steam",
+            "text": "Combine all ingredients, pour into a steaming mold, and steam for 15-20 minutes."
+          },
+          {
+            "name": "Step 4: Serve",
+            "text": "Let cool before serving, topped with grated coconut."
+          }
+        ],
+        "nutrition": {
+          "calories": "140 kcal per piece",
+          "sugarContent": "15 g"
+        }
+      },
+      "8": {
+        "name": "Sangkaya (Coconut Custard with Palm Sugar)",
+        "alt": "Smooth and rich coconut custard, often served with sticky rice.",
+        "description": "Rich and velvety: A classic Sangkaya custard made with Palm Sugar instead of coconut sugar, adding a unique fragrance and a melt-in-your-mouth texture.",
+        "recipeIngredient": [
+          "4 chicken eggs",
+          "1 cup coconut cream",
+          "200g Golden TAAN Palm Sugar",
+          "Pinch of salt",
+          "3 pandan leaves (knotted)"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Whisk",
+            "text": "Whisk the eggs and Palm Sugar together until well combined."
+          },
+          {
+            "name": "Step 2: Add Cream",
+            "text": "Add coconut cream, salt, and knotted pandan leaves. Stir until smooth."
+          },
+          {
+            "name": "Step 3: Strain & Pour",
+            "text": "Strain the mixture and pour into small cups or foil containers."
+          },
+          {
+            "name": "Step 4: Steam",
+            "text": "Steam for 25-30 minutes, or until the custard is set and smooth."
+          }
+        ],
+        "nutrition": {
+          "calories": "220 kcal per serving",
+          "sugarContent": "22 g"
+        }
+      },
+      "9": {
+        "name": "Khao Niao Moon (Sweet Sticky Rice with Golden TAAN)",
+        "alt": "Sweet sticky rice served with fresh mango.",
+        "description": "A perfectly fragrant recipe: Using Palm Sugar enhances the delicate aroma of the coconut milk. Pairs beautifully with fresh mango or durian.",
+        "recipeIngredient": [
+          "2 cups 'khao niao kiew ngu' sticky rice (soaked for 6 hours)",
+          "1 1/2 cups coconut cream",
+          "200g Golden TAAN Palm Sugar",
+          "1/2 tsp salt"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Steam Rice",
+            "text": "Steam the soaked sticky rice until cooked through."
+          },
+          {
+            "name": "Step 2: Make Coconut Milk",
+            "text": "Simmer the coconut cream, Palm Sugar, and salt until everything is dissolved."
+          },
+          {
+            "name": "Step 3: Mix",
+            "text": "Pour the hot coconut milk mixture over the cooked sticky rice. Stir to combine and let it sit for 30 minutes to absorb."
+          },
+          {
+            "name": "Step 4: Serve",
+            "text": "Serve with fresh fruit or toasted mung beans."
+          }
+        ],
+        "nutrition": {
+          "calories": "350 kcal per serving (rice only)",
+          "sugarContent": "30 g"
+        }
+      },
+      "10": {
+        "name": "Met Khanun (Sweet Mung Bean Yolk Drops)",
+        "alt": "Golden yolk-coated mung bean paste sweets shaped like jackfruit seeds.",
+        "description": "A delicate, sweet, and rich treat: Mashed mung bean paste mixed with egg yolk and palm sugar, creating a well-rounded, fragrant sweetness.",
+        "recipeIngredient": [
+          "1 cup steamed and mashed split mung beans",
+          "4 duck egg yolks",
+          "1 tbsp wheat flour",
+          "150g Golden TAAN Palm Sugar",
+          "1 cup water"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Make Paste",
+            "text": "Mix the mashed mung beans, flour, and egg yolks until smooth."
+          },
+          {
+            "name": "Step 2: Shape",
+            "text": "Shape the paste into small ovals resembling jackfruit seeds. Set aside."
+          },
+          {
+            "name": "Step 3: Make Syrup",
+            "text": "Boil water and Palm Sugar until dissolved, then reduce the heat."
+          },
+          {
+            "name": "Step 4: Cook",
+            "text": "Gently drop the 'seeds' into the syrup and cook until they float and are cooked through. Let cool and serve in the syrup."
+          }
+        ],
+        "nutrition": {
+          "calories": "80 kcal per piece",
+          "sugarContent": "9 g"
+        }
+      },
+      "11": {
+        "name": "Khao Tom Mat (Banana Sticky Rice Wrap)",
+        "alt": "Steamed sticky rice and banana wrapped in banana leaves.",
+        "description": "Fragrant banana wrapped in leaves: Sticky rice sweetened with a coconut milk and Palm Sugar mixture for a gentler aroma, all enveloped in the fragrant steam of banana leaves.",
+        "recipeIngredient": [
+          "2 cups sticky rice (soaked overnight)",
+          "1 cup coconut cream",
+          "180g Golden TAAN Palm Sugar",
+          "1/2 tsp salt",
+          "5 ripe Nam Wa bananas (halved)",
+          "Banana leaves for wrapping"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Steam Rice",
+            "text": "Steam the soaked sticky rice until cooked."
+          },
+          {
+            "name": "Step 2: Make Coconut Milk",
+            "text": "Simmer the coconut cream, Palm Sugar, and salt until dissolved."
+          },
+          {
+            "name": "Step 3: Mix",
+            "text": "Mix the sweet coconut milk into the cooked sticky rice."
+          },
+          {
+            "name": "Step 4: Wrap & Steam",
+            "text": "Spoon the rice onto a banana leaf, place a banana piece in the center, and wrap into a parcel. Steam for 30 minutes."
+          }
+        ],
+        "nutrition": {
+          "calories": "280 kcal per parcel",
+          "sugarContent": "25 g"
+        }
+      },
+      "12": {
+        "name": "For Meat Lovers: Grilled Pork Chops with Apple Palm Sugar Sauce",
+        "alt": "Grilled pork chops with a shiny apple and palm sugar glaze.",
+        "description": "Elevate ordinary pork chops to a restaurant-quality dish with a glaze that combines the sweet aroma of palm sugar with the fresh tang of apples, making the pork tender, juicy, and infused with a caramel scent.",
+        "recipeIngredient": [
+          "2 bone-in pork chops",
+          "3 tbsp Golden Taan Palm Sugar Syrup",
+          "1/4 cup apple cider",
+          "1 tsp Dijon mustard",
+          "1 tsp chopped fresh rosemary"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Make the Sauce",
+            "text": "In a small saucepan, combine the palm sugar syrup, apple cider, and mustard. Simmer over low heat until the sauce thickens slightly, then stir in the rosemary."
+          },
+          {
+            "name": "Step 2: Grill the Pork Chops",
+            "text": "Season the pork chops with salt and pepper. Grill on a hot pan or grill until almost cooked through (about 3-4 minutes per side)."
+          },
+          {
+            "name": "Step 3: Glaze and Rest",
+            "text": "Brush the sauce generously over the pork chops during the final moments of grilling. Cook for another minute per side until the glaze is beautifully caramelized. Let them rest for 5 minutes before serving."
+          }
+        ],
+        "nutrition": {
+          "calories": "450 kcal per serving",
+          "sugarContent": "20 g"
+        }
+      },
+      "13": {
+        "name": "For Bakers: Salted Caramel Palm Sugar Tart",
+        "alt": "A decadent salted caramel tart made with palm sugar, sliced and ready to serve.",
+        "description": "Create a next-level caramel tart with the deep, complex flavor of authentic palm sugar. It offers a rich sweetness perfectly balanced by sea salt, making it an impressive dessert for any occasion.",
+        "recipeIngredient": [
+          "1 ready-made tart shell",
+          "1 cup Golden Taan Palm Sugar Powder",
+          "1/2 cup heavy cream",
+          "4 tbsp unsalted butter",
+          "1/2 tsp sea salt (Fleur de Sel)"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Bake Tart",
+            "text": "Bake the tart shell until golden brown. Let it cool completely."
+          },
+          {
+            "name": "Step 2: Make Caramel",
+            "text": "In a medium saucepan, melt the palm sugar powder over medium heat until it turns a beautiful amber color. Carefully pour in the heavy cream (be cautious of bubbling) and whisk until smooth. Remove from heat, then add the butter and sea salt, stirring until the butter is fully melted."
+          },
+          {
+            "name": "Step 3: Assemble",
+            "text": "Pour the warm caramel into the prepared tart shell, spreading it evenly. Refrigerate for at least 2 hours to allow the caramel to set."
+          }
+        ],
+        "nutrition": {
+          "calories": "380 kcal per slice",
+          "sugarContent": "35 g"
+        }
+      },
+      "14": {
+        "name": "For the Health-Conscious: Quinoa Salad with Balsamic Palm Sugar Dressing",
+        "alt": "A vibrant quinoa salad with fresh vegetables.",
+        "description": "A dressing that transforms a simple salad. The mellow sweetness of palm sugar balances the sharpness of balsamic vinegar, creating a harmonious flavor that pairs perfectly with quinoa and fresh vegetables.",
+        "recipeIngredient": [
+          "1 cup cooked quinoa",
+          "Mixed salad greens as desired",
+          "1 tbsp Golden Taan Palm Sugar Syrup",
+          "2 tbsp balsamic vinegar",
+          "3 tbsp extra virgin olive oil"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Make the Dressing",
+            "text": "In a jar or small bowl, combine the palm sugar syrup and balsamic vinegar. Whisk until blended. Slowly drizzle in the olive oil while whisking continuously to emulsify. Season with salt and pepper."
+          },
+          {
+            "name": "Step 2: Assemble Salad",
+            "text": "In a large salad bowl, combine the salad greens and cooked quinoa."
+          },
+          {
+            "name": "Step 3: Toss and Serve",
+            "text": "Pour the dressing over the salad and toss gently to combine everything before serving."
+          }
+        ],
+        "nutrition": {
+          "calories": "320 kcal per serving",
+          "sugarContent": "10 g"
+        }
+      },
+      "15": {
+        "name": "For the Bartender: 'Taan Old Fashioned' Cocktail",
+        "alt": "A sophisticated Taan Old Fashioned cocktail in a rocks glass.",
+        "description": "A classic cocktail, reinterpreted. The palm sugar syrup provides a dimensional sweetness with a faint smoky note that pairs wonderfully with fine whiskey, creating a memorable drinking experience.",
+        "recipeIngredient": [
+          "2 oz Bourbon or Rye Whiskey",
+          "1/4 oz Golden Taan Palm Sugar Syrup",
+          "2 dashes Angostura Bitters",
+          "Orange peel for garnish"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Combine",
+            "text": "In a mixing glass, add ice, palm sugar syrup, and bitters."
+          },
+          {
+            "name": "Step 2: Stir",
+            "text": "Pour in the whiskey. Use a bar spoon to stir for about 20-30 seconds until the glass is well-chilled."
+          },
+          {
+            "name": "Step 3: Serve",
+            "text": "Strain the mixture into an Old Fashioned glass with a large ice cube. Express the oils from an orange peel over the drink and drop it in."
+          }
+        ],
+        "nutrition": {
+          "calories": "170 kcal",
+          "sugarContent": "9 g"
+        }
+      },
+      "16": {
+        "name": "For the Chef: Seared Duck Breast with Berry Palm Sugar Sauce",
+        "alt": "Perfectly seared duck breast with a rich berry sauce.",
+        "description": "A luxurious dish that's easy to make. The sweet-tart berry sauce is balanced and deepened by the palm sugar, perfectly glazing the crispy-skinned duck.",
+        "recipeIngredient": [
+          "1 duck breast",
+          "1/2 cup frozen mixed berries",
+          "2 tbsp Golden Taan Palm Sugar Powder",
+          "1/4 cup red wine",
+          "1 sprig fresh thyme"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Sear the Duck",
+            "text": "Score the duck skin, season with salt and pepper. Place skin-side down in a cold pan over low heat to render the fat until the skin is golden and crispy. Sear the other side until cooked to your liking. Remove and rest."
+          },
+          {
+            "name": "Step 2: Make the Sauce",
+            "text": "In the same pan, pour off excess duck fat. Deglaze with red wine, scraping up any bits. Add the mixed berries, palm sugar, and thyme."
+          },
+          {
+            "name": "Step 3: Simmer",
+            "text": "Simmer the sauce over medium heat until the berries break down and the sauce thickens. Taste and adjust seasoning. Pour over the sliced duck breast."
+          }
+        ],
+        "nutrition": {
+          "calories": "550 kcal per serving",
+          "sugarContent": "18 g"
+        }
+      },
+      "17": {
+        "name": "For BBQ Lovers: Smoked Palm Sugar BBQ Sauce",
+        "alt": "A jar of homemade, dark, and rich BBQ sauce.",
+        "description": "A homemade BBQ sauce with a unique flavor profile. The smoky sweetness of palm sugar provides an excellent base, creating a rich sauce that perfectly coats ribs or grilled chicken.",
+        "recipeIngredient": [
+          "1 cup ketchup",
+          "1/2 cup Golden Taan Palm Sugar Powder",
+          "1/4 cup Apple Cider Vinegar",
+          "2 tbsp Worcestershire Sauce",
+          "1 tsp smoked paprika"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Combine Ingredients",
+            "text": "Place all ingredients in a saucepan."
+          },
+          {
+            "name": "Step 2: Simmer",
+            "text": "Bring to a simmer over medium heat, stirring until the sugar dissolves. Reduce heat to low and cook for 20-30 minutes until the sauce has thickened and the flavors have melded."
+          },
+          {
+            "name": "Step 3: Use or Store",
+            "text": "Let the sauce cool. It can be stored in the refrigerator for up to a week. Ideal for brushing on meat during grilling or as a dipping sauce."
+          }
+        ],
+        "nutrition": {
+          "calories": "60 kcal per 2 tbsp",
+          "sugarContent": "12 g"
+        }
+      },
+      "18": {
+        "name": "For Bakers: Soft-Baked Chocolate Chip Palm Sugar Cookies",
+        "alt": "A stack of soft and chewy chocolate chip cookies.",
+        "description": "Transform ordinary chocolate chip cookies. Palm sugar provides moisture and a deep, toffee-like flavor, resulting in a cookie with a softer, chewier texture and a more aromatic taste than ever before.",
+        "recipeIngredient": [
+          "1 1/2 cups all-purpose flour",
+          "3/4 cup Golden Taan Palm Sugar Powder",
+          "1/2 cup melted unsalted butter",
+          "1 large egg",
+          "1 cup chocolate chips"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Mix Wet Ingredients",
+            "text": "In a mixing bowl, whisk the melted butter and palm sugar together. Then, add the egg and vanilla extract, mixing until combined."
+          },
+          {
+            "name": "Step 2: Add Dry Ingredients",
+            "text": "Sift in the flour, baking soda, and salt. Mix until just combined, then fold in the chocolate chips."
+          },
+          {
+            "name": "Step 3: Bake",
+            "text": "Scoop rounded tablespoons of dough onto a baking sheet. Bake at 175°C (350°F) for 10-12 minutes, until the edges are golden brown."
+          }
+        ],
+        "nutrition": {
+          "calories": "150 kcal per cookie",
+          "sugarContent": "14 g"
+        }
+      },
+      "19": {
+        "name": "For Brunch Lovers: Candied Bacon with Palm Sugar & Black Pepper",
+        "alt": "Crispy strips of candied bacon on a wire rack.",
+        "description": "A wildly popular snack or side dish that perfectly combines the saltiness of bacon, the sweet aroma of palm sugar, and a slight kick from black pepper.",
+        "recipeIngredient": [
+          "8 thick-cut bacon strips",
+          "1/4 cup Golden Taan Palm Sugar Powder",
+          "1 tsp coarsely ground black pepper",
+          "Pinch of cayenne pepper (optional)"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Prepare Bacon",
+            "text": "Arrange the bacon strips on a wire rack set over a baking sheet."
+          },
+          {
+            "name": "Step 2: Coat with Sugar",
+            "text": "Mix the palm sugar with the black pepper (and cayenne). Sprinkle evenly over the bacon strips."
+          },
+          {
+            "name": "Step 3: Bake",
+            "text": "Bake at 200°C (400°F) for 15-20 minutes, or until the bacon is crispy and the sugar is beautifully caramelized."
+          }
+        ],
+        "nutrition": {
+          "calories": "120 kcal per strip",
+          "sugarContent": "8 g"
+        }
+      },
+      "20": {
+        "name": "For Chefs: Roasted Carrots & Sweet Potatoes with Palm Sugar Glaze",
+        "alt": "A bowl of roasted carrots and sweet potatoes with a shiny glaze.",
+        "description": "A simple yet elegant side dish. The sweetness of the palm sugar brings out the natural flavors of the root vegetables and gives them an appetizing, shiny glaze.",
+        "recipeIngredient": [
+          "2 cups carrots, cut into sticks",
+          "2 cups sweet potatoes, cubed",
+          "2 tbsp olive oil",
+          "2 tbsp Golden Taan Palm Sugar Syrup",
+          "Fresh thyme"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Toss",
+            "text": "In a large bowl, combine the carrots and sweet potatoes. Drizzle with olive oil and palm sugar syrup. Season with salt, pepper, and fresh thyme. Toss to coat."
+          },
+          {
+            "name": "Step 2: Roast",
+            "text": "Spread the vegetables in a single layer on a baking sheet. Roast at 200°C (400°F) for 25-30 minutes, or until tender and caramelized, flipping once halfway through."
+          },
+          {
+            "name": "Step 3: Serve",
+            "text": "Serve hot as a side dish."
+          }
+        ],
+        "nutrition": {
+          "calories": "180 kcal per serving",
+          "sugarContent": "15 g"
+        }
+      },
+      "21": {
+        "name": "For the Health-Conscious: Homemade Palm Sugar Granola",
+        "alt": "A jar filled with homemade granola clusters.",
+        "description": "A homemade granola that's more fragrant and healthier than store-bought versions. Palm sugar provides just the right amount of sweetness and helps create satisfyingly crunchy clusters.",
+        "recipeIngredient": [
+          "2 cups rolled oats",
+          "1 cup mixed nuts and seeds",
+          "1/4 cup coconut oil",
+          "1/4 cup Golden Taan Palm Sugar Syrup",
+          "1 tsp ground cinnamon"
+        ],
+        "recipeInstructions": [
+          {
+            "name": "Step 1: Mix Dry Ingredients",
+            "text": "In a large bowl, combine the oats, nuts, seeds, and cinnamon."
+          },
+          {
+            "name": "Step 2: Mix Wet Ingredients",
+            "text": "In a small bowl, warm the coconut oil and palm sugar syrup together until combined."
+          },
+          {
+            "name": "Step 3: Bake",
+            "text": "Pour the wet mixture over the dry ingredients and toss to coat. Spread onto a baking sheet and bake at 150°C (300°F) for 30-40 minutes, stirring every 15 minutes, until golden and crisp. Let cool completely before storing in a jar."
+          }
+        ],
+        "nutrition": {
+          "calories": "250 kcal per 1/2 cup",
+          "sugarContent": "12 g"
+        }
+      },
+      "22": {
+        "name": "For the Ultimate Dip: Nam Pla Wan (Sweet Fish Sauce Dip)",
+        "alt": "Nam Pla Wan dipping sauce served with grilled catfish.",
+        "description": "An essential dipping sauce for sour mangoes or grilled catfish with neem. The quality of Nam Pla Wan is measured by its concentration and the aroma of palm sugar, and Golden Taan provides a perfectly balanced sweet-salty taste and ideal thickness.",
+        "recipeIngredient": [ "1 cup Golden Taan Palm Sugar Block", "1/2 cup good quality fish sauce", "1/4 cup tamarind paste", "1/2 cup sliced shallots", "1/4 cup ground dried shrimp", "Bird's eye chilies, sliced, to taste" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Simmer the Sauce", "text": "In a small pot, add palm sugar, fish sauce, and tamarind paste. Set over low heat and gently simmer until the sugar dissolves and the sauce thickens." },
+          { "name": "Step 2: Add Aromatics", "text": "Once the sauce has thickened, turn off the heat." },
+          { "name": "Step 3: Serve", "text": "Add the sliced shallots, ground dried shrimp, and sliced chilies. Stir to combine. Let it cool and serve with sour mangoes or grilled catfish." }
+        ],
+        "nutrition": { "calories": "80 kcal per tablespoon", "sugarContent": "15 g" }
+      },
+      "23": {
+        "name": "For a Royal Classic: Mee Krob (Crispy Noodles)",
+        "alt": "A mound of crispy Mee Krob noodles, garnished with shrimp and tofu.",
+        "description": "An ancient, elaborate snack. The secret to the perfectly balanced sweet, sour, and salty sauce for these crispy noodles lies in using authentic palm sugar, which gives a mellow sweetness and a beautiful, natural color.",
+        "recipeIngredient": [ "150g rice vermicelli, soaked until soft", "Fresh shrimp, tofu, and small pieces of pork", "1/2 cup Golden Taan Palm Sugar Block", "3 tbsp fish sauce", "3 tbsp tamarind paste", "1/4 cup sliced shallots", "Zest of a som saa (citrus hystrix), if available" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Fry the Noodles", "text": "Heat oil until very hot. Fry the drained vermicelli in small batches until they puff up and turn golden and crispy. Remove and set aside." },
+          { "name": "Step 2: Make the Sauce", "text": "In a new pan, sauté shallots with a little oil until fragrant. Add the palm sugar block, fish sauce, and tamarind paste. Simmer on low heat until the sugar dissolves and the sauce thickens." },
+          { "name": "Step 3: Add Proteins and Toss", "text": "Add shrimp, tofu, and pork to the sauce and stir-fry until cooked. Turn off the heat. Quickly add the crispy noodles and toss to coat them evenly in the sauce. Garnish with som saa zest before serving." }
+        ],
+        "nutrition": { "calories": "350 kcal per serving", "sugarContent": "25 g" }
+      },
+      "24": {
+        "name": "For a Main Course: Pla Rad Prik (Fish with Three-Flavor Sauce)",
+        "alt": "A whole fried fish covered in a glossy, red three-flavor chili sauce.",
+        "description": "A fried fish dish renowned for its three-flavored sauce (sour, sweet, salty). The heart of the sauce is the dimensional sweetness of palm sugar, which glazes the fried fish, making it glossy and intensely flavorful.",
+        "recipeIngredient": [ "1 sea bass or tilapia", "3 tbsp Golden Taan Palm Sugar Block", "2 tbsp fish sauce", "3 tbsp tamarind paste", "2 tbsp pounded red spur chilies and garlic" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Fry the Fish", "text": "Score the fish and deep-fry in hot oil until golden and crispy on both sides. Remove and set aside." },
+          { "name": "Step 2: Make the Three-Flavor Sauce", "text": "In a pan, sauté the pounded chili-garlic paste in a little oil until fragrant. Then add the palm sugar, fish sauce, and tamarind paste." },
+          { "name": "Step 3: Simmer and Glaze", "text": "Simmer the sauce on low heat until it thickens. Taste to ensure a balanced three-flavor profile. Pour the hot sauce over the fried fish before serving." }
+        ],
+        "nutrition": { "calories": "500 kcal per serving", "sugarContent": "20 g" }
+      },
+      "25": {
+        "name": "For a Special Meal: Gaeng Massaman (Massaman Curry)",
+        "alt": "A rich and fragrant bowl of Massaman chicken curry with potatoes and peanuts.",
+        "description": "A Thai curry with foreign influences and a unique flavor. Palm sugar is the secret ingredient that balances the curry, giving it a deep, mellow sweetness that harmonizes with the heat of the spices.",
+        "recipeIngredient": [ "500g chicken (thighs or drumsticks)", "2 tbsp Massaman curry paste", "1 cup coconut cream and 2 cups coconut milk", "Diced potatoes and onions", "Roasted peanuts", "1-2 tbsp Golden Taan Palm Sugar Block" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Sauté the Curry Paste", "text": "In a pot, heat the coconut cream until the oil separates beautifully. Add the Massaman curry paste and sauté until fragrant." },
+          { "name": "Step 2: Add Chicken and Season", "text": "Add the chicken and stir-fry with the paste until the surface is cooked. Then, add the coconut milk. Season with fish sauce, tamarind paste, and palm sugar." },
+          { "name": "Step 3: Simmer", "text": "Add the onions and potatoes. Simmer on low heat until the chicken and potatoes are tender. Finally, add the roasted peanuts before turning off the heat." }
+        ],
+        "nutrition": { "calories": "480 kcal per serving", "sugarContent": "12 g" }
+      },
+      "26": {
+        "name": "For Southern Food Lovers: Moo Hong (Phuket-Style Braised Pork Belly)",
+        "alt": "Tender, dark braised pork belly (Moo Hong) in a bowl.",
+        "description": "A Phuket-style braised pork belly dish that's melt-in-your-mouth tender. Its harmonious salty-sweet flavor comes from authentic palm sugar simmered with soy sauce and spices until it infuses the meat.",
+        "recipeIngredient": [ "500g pork belly", "2 tbsp pounded 'three-buddy' paste (coriander root, garlic, pepper)", "2 tbsp dark soy sauce", "3 tbsp light soy sauce", "2-3 tbsp Golden Taan Palm Sugar Block", "1 cinnamon stick" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Sauté the Paste", "text": "In a pot, sauté the 'three-buddy' paste with a little oil until fragrant." },
+          { "name": "Step 2: Add Pork and Season", "text": "Add the pork belly and stir-fry until the surface is seared. Season with dark soy sauce, light soy sauce, and palm sugar. Stir until the sugar dissolves and coats the pork pieces." },
+          { "name": "Step 3: Braise", "text": "Add water to cover the pork and add the cinnamon stick. Bring to a boil, then reduce to low heat. Braise for 1.5 - 2 hours, or until the pork is perfectly tender." }
+        ],
+        "nutrition": { "calories": "600 kcal per serving", "sugarContent": "18 g" }
+      },
+      "27": {
+        "name": "For Isaan Food Lovers: Nam Jim Jaew (Jaew Dipping Sauce)",
+        "alt": "A small bowl of Nam Jim Jaew, a spicy Thai dipping sauce.",
+        "description": "The perfect spicy dip for grilled pork neck or 'crying tiger' beef. The secret to a delicious Jaew is the balance of sour, salty, and sweet, for which palm sugar provides a softer sweetness than cane sugar.",
+        "recipeIngredient": [ "3 tbsp fish sauce", "2 tbsp tamarind paste", "1 tbsp Golden Taan Palm Sugar Powder", "1 tbsp toasted rice powder", "Chili flakes, to taste", "Sliced shallots and chopped spring onions/coriander" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Make the Base", "text": "In a mixing bowl, add palm sugar powder, fish sauce, and tamarind paste. Stir until the sugar is completely dissolved." },
+          { "name": "Step 2: Add Aromatics", "text": "Add the toasted rice powder, chili flakes, shallots, and spring onions/coriander. Stir to combine." },
+          { "name": "Step 3: Serve", "text": "Let it sit for a moment to allow the toasted rice powder to swell slightly. Serve with various grilled meats." }
+        ],
+        "nutrition": { "calories": "40 kcal per serving", "sugarContent": "8 g" }
+      },
+      "28": {
+        "name": "For Noodle Dishes: Pad Thai Sauce",
+        "alt": "A jar of rich, dark Pad Thai sauce.",
+        "description": "The heart of a delicious Pad Thai is its meticulously prepared sauce. Authentic palm sugar is an indispensable ingredient for creating a Pad Thai sauce with a perfectly balanced sweet, salty, and sour flavor and a beautiful color.",
+        "recipeIngredient": [ "1/2 cup concentrated tamarind paste", "1/2 cup Golden Taan Palm Sugar Block", "1/4 cup fish sauce", "2 tbsp minced shallots" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Simmer the Sauce", "text": "Combine all ingredients in a pot over low heat." },
+          { "name": "Step 2: Stir until Combined", "text": "Stir the mixture continuously until the palm sugar has completely dissolved and the sauce begins to thicken." },
+          { "name": "Step 3: Store", "text": "Let the sauce cool completely. It can be stored in a jar in the refrigerator, ready to use for stir-frying Pad Thai noodles anytime." }
+        ],
+        "nutrition": { "calories": "60 kcal per serving", "sugarContent": "14 g" }
+      },
+      "29": {
+        "name": "For a Snack: Miang Kham (Leaf-Wrapped Bites)",
+        "alt": "A platter of Miang Kham ingredients ready for wrapping.",
+        "description": "A traditional Thai snack rich in herbs. The rich dipping sauce, with its sweet and salty notes, is the star of this dish, requiring authentic palm sugar to achieve the right texture and aroma.",
+        "recipeIngredient": [ "Wild betel leaves (cha-phlu)", "Toasted coconut, roasted peanuts, ginger, shallots, lime (diced), bird's eye chilies", "1 cup Golden Taan Palm Sugar Block", "Shrimp paste, galangal, lemongrass" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Make the Dipping Sauce", "text": "Pound galangal, lemongrass, and shrimp paste until fine. Simmer with palm sugar and water over low heat until thick and sticky. Let cool." },
+          { "name": "Step 2: Prepare the Fillings", "text": "Prepare the various ingredients: toasted coconut, peanuts, ginger, shallots, lime, and chilies." },
+          { "name": "Step 3: Serve", "text": "Arrange the betel leaves with all the fillings and the cooled dipping sauce. To eat, wrap the fillings in a leaf and top with the sauce." }
+        ],
+        "nutrition": { "calories": "150 kcal per serving", "sugarContent": "18 g" }
+      },
+      "30": {
+        "name": "For a Side: Tod Mun Dipping Sauce (Fish Cake Dip)",
+        "alt": "A sweet and sour cucumber relish for Thai fish cakes.",
+        "description": "The 'ajat' dipping sauce for fish or shrimp cakes. Its refreshing sweet and sour flavor comes from palm sugar simmered with vinegar, balanced with cucumber and spur chilies.",
+        "recipeIngredient": [ "1/2 cup Golden Taan Palm Sugar Powder", "1/2 cup vinegar", "1 tsp salt", "Sliced cucumber, sliced shallots, sliced red spur chilies", "Coarsely crushed roasted peanuts" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Make the Syrup", "text": "Combine palm sugar, vinegar, and salt in a pot. Heat on low, stirring until the sugar dissolves completely. Let it cool completely." },
+          { "name": "Step 2: Add Vegetables", "text": "Once the syrup is cool, add the sliced cucumber, shallots, and spur chilies." },
+          { "name": "Step 3: Garnish", "text": "Sprinkle with crushed roasted peanuts before serving with hot fish cakes." }
+        ],
+        "nutrition": { "calories": "70 kcal per serving", "sugarContent": "16 g" }
+      },
+      "31": {
+        "name": "For Stir-Fries: Gai Pad Med Mamuang (Chicken with Cashew Nuts)",
+        "alt": "A plate of stir-fried chicken with cashew nuts and dried chilies.",
+        "description": "A popular stir-fry with a balanced flavor. A little palm sugar enhances the taste of the oyster sauce and chili paste, giving the dish a beautiful glaze.",
+        "recipeIngredient": [ "200g sliced chicken", "1/2 cup fried cashew nuts", "Fried dried chilies", "Sliced onion, and spring onions cut into chunks", "2 tbsp oyster sauce", "1 tbsp chili paste in oil", "1 tsp Golden Taan Palm Sugar Powder" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Stir-fry Chicken", "text": "Heat oil in a wok, sauté garlic until fragrant. Add the chicken and stir-fry until cooked." },
+          { "name": "Step 2: Season", "text": "Add the onion and stir-fry until translucent. Season with oyster sauce, chili paste, and palm sugar. Stir well to combine." },
+          { "name": "Step 3: Add Final Ingredients", "text": "Add the cashew nuts, fried dried chilies, and spring onions. Give it a quick toss to combine, then turn off the heat." }
+        ],
+        "nutrition": { "calories": "400 kcal per serving", "sugarContent": "9 g" }
+      },
+      "32": {
+        "name": "For a Lanna Classic: Khao Soi (Northern Thai Noodle Curry)",
+        "alt": "A rich bowl of Khao Soi with chicken and crispy noodles.",
+        "description": "A Northern Thai noodle dish with a rich flavor from curry paste and coconut milk. Adding a little palm sugar cuts the saltiness and makes the broth's flavor smoother and more well-rounded.",
+        "recipeIngredient": [ "500g chicken drumsticks or beef", "3 tbsp Khao Soi curry paste", "2 cups coconut milk", "Egg noodles (boiled and deep-fried for topping)", "1 tbsp Golden Taan Palm Sugar Block" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Sauté the Curry Paste", "text": "Sauté a little coconut cream with the Khao Soi curry paste until fragrant and the oil separates." },
+          { "name": "Step 2: Simmer the Meat", "text": "Add the chicken or beef and stir-fry with the paste. Then, add the remaining coconut milk. Simmer on low heat until the meat is tender." },
+          { "name": "Step 3: Season", "text": "Season with fish sauce and palm sugar. Taste for a balanced flavor. Serve with boiled and crispy noodles, along with side condiments." }
+        ],
+        "nutrition": { "calories": "550 kcal per serving", "sugarContent": "10 g" }
+      },
+      "33": {
+        "name": "For Grilling: Gai Yang Dipping Sauce (Grilled Chicken Dip)",
+        "alt": "A spicy and savory dipping sauce perfect for Thai grilled chicken.",
+        "description": "An indispensable dipping sauce for grilled chicken and sticky rice. The sweetness of palm sugar, when mixed with tamarind paste and chili flakes, creates a zesty and perfectly balanced flavor.",
+        "recipeIngredient": [ "3 tbsp fish sauce", "3 tbsp tamarind paste", "1.5 tbsp Golden Taan Palm Sugar Powder", "1 tbsp chili flakes", "1 tbsp toasted rice powder", "Chopped spring onions and coriander" ],
+        "recipeInstructions": [
+          { "name": "Step 1: Dissolve the Sugar", "text": "In a mixing bowl, add palm sugar, fish sauce, and tamarind paste. Stir until the sugar is well dissolved." },
+          { "name": "Step 2: Add Seasonings", "text": "Add the chili flakes and toasted rice powder. Mix well." },
+          { "name": "Step 3: Serve", "text": "Garnish with chopped spring onions and coriander. Serve with hot grilled chicken." }
+        ],
+        "nutrition": { "calories": "50 kcal per serving", "sugarContent": "10 g" }
       }
     }
   },
@@ -516,7 +1131,7 @@
       },
       "2": {
         "question": "What is the shelf life of your products?",
-        "answer": "Our products are packaged to ensure maximum freshness.\n\nBars & Powder: 24 months from the production date.\nSyrup: 12 months. Please refrigerate after opening to maintain its quality."
+        "answer": "Our products are packaged to ensure maximum freshness.\n\n*Bars & Powder:* 24 months from the production date.\n*Syrup:* 12 months. Please refrigerate after opening to maintain its quality."
       },
       "3": {
         "question": "Do you export to the U.S., Europe, or other parts of Asia?",
@@ -571,5 +1186,46 @@
   },
   "liveChat": {
     "title": "Chat with us!"
+  },
+  "recipesPage": {
+    "title": "Palmyra Palm Sugar Recipes & Usage Ideas",
+    "subtitle": "From traditional desserts to modern cocktails, discover how to use our natural palm sugar.",
+    "categories": {
+      "all": "All Recipes",
+      "thai-dessert": "Thai Traditional Desserts",
+      "thai-traditional": "Traditional Thai Recipes",
+      "western-dish": "Modern Western Dishes",
+      "beverage": "Drinks & Beverages"
+    },
+    "noRecipes": "There are currently no recipes in this category. Please check back soon!"
+  },
+  "benefitsPage": {
+    "title": "The Wholesome Difference of a Low GI Sweetener",
+    "subtitle": "Why Choose Golden Taan as a Healthy Sugar Alternative?"
+  },
+  "compareSugars": {
+    "title": "How Does Golden Taan Compare?",
+    "subtitle": "A side-by-side look at Golden Taan versus other common sweeteners.",
+    "table": {
+      "intro": "The key differences lie in the source, nutritional profile, and production process. Here’s a detailed comparison:",
+      "headerFeature": "Feature",
+      "headerGoldenTaan": "Golden Taan",
+      "headerCommonSugar": "Refined White/Brown Sugar",
+      "row1Title": "Source & Process",
+      "row1Taan": "100% pure sap from Palmyra Palm (Toddy Palm). Minimally processed; unrefined.",
+      "row1Common": "From sugarcane or sugar beets. Highly refined, bleached, and stripped of molasses.",
+      "row2Title": "Glycemic Index (GI)",
+      "row2Taan": "Low (approx. 35). Slower energy release, avoids blood sugar spikes.",
+      "row2Common": "High (approx. 65). Causes rapid blood sugar spikes.",
+      "row3Title": "Nutrient Content",
+      "row3Taan": "Rich in minerals like Potassium, Magnesium, Iron, and Zinc.",
+      "row3Common": "Essentially zero nutritional value beyond empty calories.",
+      "row4Title": "Flavor Profile",
+      "row4Taan": "Complex, rich caramel and butterscotch notes with a subtle smoky finish.",
+      "row4Common": "One-dimensionally sweet (White). Molasses flavor (Brown).",
+      "row5Title": "Chemicals/Additives",
+      "row5Taan": "None. 100% natural, no anti-caking agents or bleaching chemicals.",
+      "row5Common": "Often processed with chemicals like sulfur dioxide and filtered with bone char."
+    }
   }
 }

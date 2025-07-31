@@ -1,5 +1,6 @@
 
 
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMessageSquare, FiX } from 'react-icons/fi';
@@ -29,9 +30,9 @@ const LiveChatButton: React.FC = () => {
                         initial="hidden"
                         animate="visible"
                         exit="hidden"
-                        className="absolute bottom-20 right-0 bg-[#FAF9F6] rounded-lg shadow-2xl p-4 w-64 origin-bottom-right"
+                        className="absolute bottom-20 right-0 bg-white rounded-lg shadow-2xl p-4 w-64 origin-bottom-right border border-gray-200"
                     >
-                        <h3 className="font-bold text-center text-[#3D2B1F] mb-3">{t('liveChat.title')}</h3>
+                        <h3 className="font-bold text-center text-[#2c2c2c] mb-3">{t('liveChat.title')}</h3>
                         <div className="space-y-3">
                             {CHAT_OPTIONS.map(option => (
                                 <motion.a
@@ -40,10 +41,10 @@ const LiveChatButton: React.FC = () => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     variants={itemVariants}
-                                    className="flex items-center p-3 space-x-3 rounded-lg hover:bg-[#A0522D]/10 transition-colors"
+                                    className="flex items-center p-3 space-x-3 rounded-lg hover:bg-[#c39b6f]/10 transition-colors"
                                 >
-                                    <span className="text-[#A0522D]">{option.icon}</span>
-                                    <span className="font-medium text-[#3D2B1F]">{option.name}</span>
+                                    <span className="text-[#c39b6f]">{option.icon}</span>
+                                    <span className="font-medium text-[#2c2c2c]">{option.name}</span>
                                 </motion.a>
                             ))}
                         </div>
@@ -54,7 +55,7 @@ const LiveChatButton: React.FC = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="bg-[#556B2F] text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg"
+                className="bg-[#a5a58d] text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg"
             >
                 {isOpen ? <FiX className="w-8 h-8"/> : <FiMessageSquare className="w-8 h-8" />}
             </motion.button>

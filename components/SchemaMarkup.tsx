@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { useTranslations } from '../hooks/useTranslations';
 import { Product, Recipe } from '../types';
@@ -80,7 +81,7 @@ const SchemaMarkup: React.FC<SchemaMarkupProps> = ({ products }) => {
             "name": item.question,
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": item.answerIsTable ? t('faq.table.intro') : item.answer
+                "text": item.answer
             }
         }))
     };
@@ -155,7 +156,7 @@ const SchemaMarkup: React.FC<SchemaMarkupProps> = ({ products }) => {
     const breadcrumbSchema = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
-        "itemListElement": MENU_ITEMS.filter(item => !item.subItems).map((item, index) => ({
+        "itemListElement": MENU_ITEMS.map((item, index) => ({
             "@type": "ListItem",
             "position": index + 1,
             "name": t(item.name),
