@@ -1,12 +1,22 @@
-
-
-
-
 import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { Page, NutrientData, SustainabilityData, FAQ, Product, CartItem, BlogPost, BlogContent, Language, Translations } from './types';
 import { useIntersectionObserver } from './hooks/useIntersectionObserver';
 import { siteContent } from './translations';
+
+// --- GA4 Tracking ---
+declare global {
+    interface Window { gtag: (...args: any[]) => void; }
+}
+
+const trackPageView = (path: string) => {
+    if (typeof window.gtag === 'function') {
+        window.gtag('config', 'G-01XHYZQ38G', {
+            page_path: path
+        });
+    }
+};
+
 
 // --- Localization Context & Hooks ---
 interface LocalizationContextType {
@@ -202,7 +212,7 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
                     <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden Taan Logo" className="h-24 md:h-32 mx-auto mb-8" />
                     <h1 className="text-5xl md:text-7xl font-display mb-4">{t.hero.headline}</h1>
                     <p className="text-xl md:text-2xl mb-8 font-sans">{t.hero.subheadline}</p>
-                    <a href="#our-story" className="bg-golden-accent text-primary-text font-bold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">{t.hero.cta}</a>
+                    <a href="#our-story" onClick={() => trackPageView('/#our-story')} className="bg-golden-accent text-primary-text font-bold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">{t.hero.cta}</a>
                 </div>
             </section>
             
@@ -822,7 +832,7 @@ const ShopNowPage = ({ cartItems, onUpdateQuantity, setPage }: { cartItems: Cart
                     <div className="max-w-6xl mx-auto text-center py-20">
                         <h3 className="text-3xl font-display text-dark-golden">{t.emptyCart.title}</h3>
                         <p className="mt-4 mb-8 text-lg">{t.emptyCart.text}</p>
-                        <button onClick={() => setPage(Page.Home)} className="bg-golden-accent text-primary-text font-bold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
+                        <button onClick={() => { setPage(Page.Home); trackPageView(`/#${Page.Home}`); }} className="bg-golden-accent text-primary-text font-bold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
                             {t.emptyCart.cta}
                         </button>
                     </div>
@@ -927,11 +937,13 @@ const BlogPage = () => {
     const handleSelectPost = (post: BlogPost) => {
         setSelectedPost(post);
         window.scrollTo(0, 0);
+        trackPageView(`/#blog/${post.id}`);
     };
     
     const handleBackToList = () => {
         setSelectedPost(null);
         window.scrollTo(0, 0);
+        trackPageView('/#blog');
     };
 
     if (selectedPost) {
@@ -1020,6 +1032,8 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
     const homeSubItems = t.homeSubItems;
 
     const handleHomeClick = (hash?: string) => {
+        const path = hash || `/#${Page.Home}`;
+        trackPageView(path);
         setPage(Page.Home);
         setIsMenuOpen(false);
         if (hash) {
@@ -1032,6 +1046,7 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
     };
     
     const handleNavClick = (page: Page) => {
+        trackPageView(`/#${page}`);
         setPage(page);
         setIsMenuOpen(false); // also close for mobile
         window.scrollTo(0, 0);
@@ -1116,7 +1131,7 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
                             <div className="relative">
                                 <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="flex items-center gap-2 text-sm font-medium text-primary-text hover:text-dark-golden p-2 rounded-md hover:bg-medium-bg/50">
                                     {languages.find(l => l.code === language)?.flag}
-                                    <span>{languages.find(l => l.code === language)?.name}</span>
+                                    <span className='hidden sm:inline'>{languages.find(l => l.code === language)?.name}</span>
                                 </button>
                                 {isLangDropdownOpen && (
                                     <div className="absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
@@ -1179,6 +1194,7 @@ const Footer = ({ setPage }: { setPage: (page: Page) => void }) => {
     const t_en = siteContent.en.footer; // Always use English for contact details
 
     const handleFooterLinkClick = (page: Page) => {
+        trackPageView(`/#${page}`);
         setPage(page);
         window.scrollTo(0, 0);
     }
