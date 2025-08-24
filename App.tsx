@@ -1,6 +1,7 @@
 
 
 
+
 import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { Page, NutrientData, SustainabilityData, FAQ, Product, CartItem, BlogPost, BlogContent, Language, Translations } from './types';
@@ -1175,6 +1176,8 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
 const Footer = ({ setPage }: { setPage: (page: Page) => void }) => {
     const { translations } = useLocalization();
     const t = translations.footer;
+    const t_en = siteContent.en.footer; // Always use English for contact details
+
     const handleFooterLinkClick = (page: Page) => {
         setPage(page);
         window.scrollTo(0, 0);
@@ -1192,10 +1195,10 @@ const Footer = ({ setPage }: { setPage: (page: Page) => void }) => {
             <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
                 <div>
                     <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden Taan Logo" className="h-12 mb-4" />
-                    <p>{t.address}</p>
-                    <p className="mt-2">{t.contactPerson.label}: {t.contactPerson.name}</p>
-                    <p>{t.phone.label}: {t.phone.number}</p>
-                    <p>{t.email.label}: {t.email.address}</p>
+                    <p>{t_en.address}</p>
+                    <p className="mt-2">{t_en.contactPerson.label}: {t_en.contactPerson.name}</p>
+                    <p>{t_en.phone.label}: {t_en.phone.number}</p>
+                    <p>{t_en.email.label}: {t_en.email.address}</p>
                 </div>
                 <div>
                      <h3 className="font-display text-xl text-light-text mb-4">{t.quickLinks}</h3>

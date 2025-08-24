@@ -19,7 +19,6 @@ const nutrientData = {
         { name: 'Zink (mg)', goldenTaan: 0.3, unrefinedSugarcane: 0.4, refinedWhiteSugar: 0 },
         { name: 'Kupfer (mg)', goldenTaan: 0.2, unrefinedSugarcane: 0.5, refinedWhiteSugar: 0 },
     ],
-    // For other languages, use English names as fallback, translation can be complex for nutrients
     default: [
         { name: 'Potassium (mg)', goldenTaan: 1030, unrefinedSugarcane: 450, refinedWhiteSugar: 2 },
         { name: 'Phosphorus (mg)', goldenTaan: 79, unrefinedSugarcane: 40, refinedWhiteSugar: 0 },
@@ -1535,7 +1534,7 @@ const ja: Translations = {
         timeline: [
             { title: "東南アジアでの起源", era: "9世紀", description: "初期の記録には、東南アジア全域でパルミラヤシの蜜が貴重な甘味料として使用されていたことが示されています。" },
             { title: "家族の伝統", era: "世代から世代へ", description: "ヤシの蜜を採取し、ゆっくりと煮詰める伝統的な方法は、家族の知恵として受け継がれています。" },
-            { title: "王宮とアーユルヴェーダで", era: "王宮とアーユルヴェーда", description: "パルミラ椰子糖はタイ王室のデザートや古代アーユルヴェーダ医学の重要な成分として使用されていました。" },
+            { title: "王宮とアーユルヴェーダで", era: "王宮とアーユルヴェーダ", description: "パルミラ椰子糖はタイ王室のデザートや古代アーユルヴェーダ医学の重要な成分として使用されていました。" },
             { title: "ゴールデン・ターンの誕生", era: "現代", description: "この伝統を保存し、純粋な甘さを世界に届けるという使命を持って、「ゴールデン・ターン」ブランドが設立されました。" }
         ],
         people: {
