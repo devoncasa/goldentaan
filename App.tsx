@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { Page, NutrientData, SustainabilityData, FAQ, Product, CartItem, BlogPost, BlogContent, Language, Translations } from './types';
@@ -73,6 +74,56 @@ const AnimatedCounter = ({ to }: { to: number }) => {
     return <span ref={ref}>{count.toLocaleString('en-US')}</span>;
 };
 
+
+// --- Parallax Section Component ---
+const ParallaxSection: React.FC<{ index: number; children: React.ReactNode; className?: string; id?: string }> = ({ index, children, className, id }) => {
+    const imageNumber = (index % 52) + 1;
+    const imageUrl = `https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/goldentaan-section-background/goldentaan-section-background-${imageNumber}.webp`;
+
+    const isDarkContrast = index % 2 === 0;
+    const contrastFilter = isDarkContrast
+        ? 'contrast(110%) sepia(10%) hue-rotate(-10deg)'
+        : 'contrast(90%) sepia(10%) hue-rotate(20deg)';
+
+    const backgroundStyles: React.CSSProperties = {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -2,
+        backgroundImage: `url('${imageUrl}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        filter: `blur(10px) ${contrastFilter}`,
+    };
+
+    const overlayStyles: React.CSSProperties = {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -1,
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+    };
+    
+    const sectionStyles: React.CSSProperties = {
+        position: 'relative',
+        isolation: 'isolate',
+    };
+
+    return (
+        <section id={id} className={className} style={sectionStyles}>
+            <div style={backgroundStyles} aria-hidden="true" />
+            <div style={overlayStyles} aria-hidden="true" />
+            {children}
+        </section>
+    );
+};
+
+
 // --- Chart Components ---
 
 const NutrientComparisonChart = () => {
@@ -80,13 +131,13 @@ const NutrientComparisonChart = () => {
     const data = translations.home.health.nutrientData;
 
     return (
-        <div className="w-full h-96 bg-primary-text/30 p-4 rounded-lg">
+        <div className="w-full h-96 bg-white/50 p-4 rounded-lg">
             <ResponsiveContainer>
                 <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <XAxis dataKey="name" stroke="#FBF8F1" />
-                    <YAxis stroke="#FBF8F1" />
+                    <XAxis dataKey="name" stroke="#5A3E2B" />
+                    <YAxis stroke="#5A3E2B" />
                     <Tooltip contentStyle={{ backgroundColor: '#5A3E2B', border: 'none', color: '#FBF8F1' }} />
-                    <Legend wrapperStyle={{ color: '#FBF8F1' }} />
+                    <Legend wrapperStyle={{ color: '#5A3E2B' }} />
                     <Bar dataKey="goldenTaan" name={translations.home.health.goldenTaan} fill="#E5B84B" />
                     <Bar dataKey="unrefinedSugarcane" name={translations.home.health.unrefinedSugarcane} fill="#8C6D46" />
                     <Bar dataKey="refinedWhiteSugar" name={translations.home.health.refinedWhiteSugar} fill="#EAE0D5" />
@@ -101,13 +152,13 @@ const SustainabilityChart = () => {
     const data = translations.home.impact.sustainabilityData;
     
     return (
-        <div className="w-full h-96 bg-primary-text/30 p-4 rounded-lg">
+        <div className="w-full h-96 bg-white/50 p-4 rounded-lg">
             <ResponsiveContainer>
                 <BarChart data={data} layout="vertical" margin={{ top: 20, right: 30, left: 40, bottom: 5 }}>
-                    <XAxis type="number" stroke="#FBF8F1" domain={[0, 10]} />
-                    <YAxis type="category" dataKey="name" stroke="#FBF8F1" width={100} />
+                    <XAxis type="number" stroke="#5A3E2B" domain={[0, 10]} />
+                    <YAxis type="category" dataKey="name" stroke="#5A3E2B" width={100} />
                     <Tooltip contentStyle={{ backgroundColor: '#5A3E2B', border: 'none', color: '#FBF8F1' }} />
-                    <Legend wrapperStyle={{ color: '#FBF8F1' }} />
+                    <Legend wrapperStyle={{ color: '#5A3E2B' }} />
                     <Bar dataKey="goldenTaan" name={translations.home.health.goldenTaan} fill="#E5B84B" />
                     <Bar dataKey="sugarcane" name={translations.home.impact.conventionalSugarcane} fill="#EAE0D5" />
                 </BarChart>
@@ -121,14 +172,14 @@ const ResourceEfficiencyRadarChart = () => {
     const data = translations.sustainability.resourceChartData;
 
     return (
-        <div className="w-full h-96 bg-primary-text/30 p-4 rounded-lg">
+        <div className="w-full h-96 bg-white/50 p-4 rounded-lg">
             <ResponsiveContainer>
                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-                    <PolarGrid stroke="#FBF8F1" />
-                    <PolarAngleAxis dataKey="subject" stroke="#FBF8F1" tick={{ fontSize: 12 }} />
-                    <PolarRadiusAxis angle={30} domain={[0, 10]} stroke="#FBF8F1" />
+                    <PolarGrid stroke="#5A3E2B" />
+                    <PolarAngleAxis dataKey="subject" stroke="#5A3E2B" tick={{ fontSize: 12 }} />
+                    <PolarRadiusAxis angle={30} domain={[0, 10]} stroke="#5A3E2B" />
                     <Tooltip contentStyle={{ backgroundColor: '#5A3E2B', border: 'none', color: '#FBF8F1' }} />
-                    <Legend wrapperStyle={{ color: '#FBF8F1' }} />
+                    <Legend wrapperStyle={{ color: '#5A3E2B' }} />
                     <Radar name="Golden Taan" dataKey="Golden Taan" stroke="#E5B84B" fill="#E5B84B" fillOpacity={0.6} />
                     <Radar name="Cane Sugar" dataKey="Cane Sugar" stroke="#EAE0D5" fill="#EAE0D5" fillOpacity={0.6} />
                 </RadarChart>
@@ -217,7 +268,7 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
             </section>
             
             {/* Global Trends Section */}
-            <section id="our-story" className="py-20 px-4 md:px-8 bg-light-bg">
+            <ParallaxSection index={0} id="our-story" className="py-20 px-4 md:px-8">
                 <div className="max-w-6xl mx-auto">
                     <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{t.trends.headline}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.trends.description}</p>
@@ -235,36 +286,36 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
                         </div>
                     </div>
                 </div>
-            </section>
+            </ParallaxSection>
 
             {/* Health Benefits Section */}
-            <section id="health-benefits" className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text">
+            <ParallaxSection index={1} id="health-benefits" className="py-20 px-4 md:px-8 text-primary-text">
                 <div className="max-w-6xl mx-auto">
-                    <h2 className="text-4xl md:text-5xl font-display text-center text-golden-accent mb-4">{t.health.headline}</h2>
+                    <h2 className="text-4xl md:text-5xl font-display text-center text-dark-golden mb-4">{t.health.headline}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.health.description}</p>
                     <h3 className="text-2xl font-display text-center mb-4">{t.health.chartTitle}</h3>
                     <NutrientComparisonChart />
                     
                     <div className="max-w-3xl mx-auto mt-8 bg-golden-accent/10 border border-golden-accent/30 rounded-lg p-6 flex items-start space-x-4">
                         <div className="flex-shrink-0">
-                            <SvgIcon path="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.565L16.5 21.75l-.398-1.185a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.185-.398a2.25 2.25 0 001.423-1.423L16.5 15.75l.398 1.185a2.25 2.25 0 001.423 1.423L19.5 18.75l-1.185.398a2.25 2.25 0 00-1.423 1.423z" className="w-8 h-8 text-golden-accent" />
+                            <SvgIcon path="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.565L16.5 21.75l-.398-1.185a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.185-.398a2.25 2.25 0 001.423-1.423L16.5 15.75l.398 1.185a2.25 2.25 0 001.423 1.423L19.5 18.75l-1.185.398a2.25 2.25 0 00-1.423 1.423z" className="w-8 h-8 text-dark-golden" />
                         </div>
                         <div>
-                            <h4 className="font-display text-xl text-golden-accent">{t.health.insight.title}</h4>
-                            <p className="mt-1 text-light-text/90">{t.health.insight.text}</p>
+                            <h4 className="font-display text-xl text-dark-golden">{t.health.insight.title}</h4>
+                            <p className="mt-1 text-primary-text/90">{t.health.insight.text}</p>
                         </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-8 mt-12">
-                        <div className="bg-primary-text/50 p-8 rounded-lg text-center shadow-2xl flex flex-col items-center">
+                        <div className="bg-white/50 p-8 rounded-lg text-center shadow-2xl flex flex-col items-center">
                             <h3 className="font-display text-2xl mb-2">{t.health.goldenTaan}</h3>
                             <div className="flex items-baseline justify-center gap-4">
-                                <p className="text-6xl font-bold text-golden-accent">35</p>
-                                <SvgIcon path="M3 6c2.446 0 4.28.67 5.83 1.95.16.13.3.26.45.39.42.36.87.66 1.38.86.5.2 1.03.3 1.6.3s1.1-.1 1.6-.3c.51-.2.96-.5 1.38-.86.15-.13.29-.26.45-.39C16.72 6.67 18.554 6 21 6v2c-2.446 0-4.28.67-5.83 1.95-.16.13-.3.26-.45.39-.42.36-.87.66-1.38.86-.5.2-1.03.3-1.6.3s-1.1-.1-1.6-.3c-.51-.2-.96-.5-1.38-.86-.15-.13-.29-.26-.45-.39C7.28 8.67 5.446 8 3 8V6zm0 6c2.446 0 4.28.67 5.83 1.95.16.13.3.26.45.39.42.36.87.66 1.38.86.5.2 1.03.3 1.6.3s1.1-.1 1.6-.3c.51-.2-.96-.5-1.38-.86.15-.13.29-.26.45-.39C16.72 12.67 18.554 12 21 12v2c-2.446 0-4.28.67-5.83 1.95-.16.13-.3.26-.45.39-.42.36-.87.66-1.38.86-.5.2-1.03.3-1.6.3s-1.1-.1-1.6-.3c-.51-.2-.96-.5-1.38-.86-.15-.13-.29-.26-.45-.39C7.28 14.67 5.446 14 3 14v-2z" className="w-10 h-10 text-golden-accent/70"/>
+                                <p className="text-6xl font-bold text-dark-golden">35</p>
+                                <SvgIcon path="M3 6c2.446 0 4.28.67 5.83 1.95.16.13.3.26.45.39.42.36.87.66 1.38.86.5.2 1.03.3 1.6.3s1.1-.1 1.6-.3c.51-.2.96-.5 1.38-.86.15-.13.29-.26.45-.39C16.72 6.67 18.554 6 21 6v2c-2.446 0-4.28.67-5.83 1.95-.16.13-.3.26-.45.39-.42.36-.87.66-1.38.86-.5.2-1.03.3-1.6.3s-1.1-.1-1.6-.3c-.51-.2-.96-.5-1.38-.86-.15-.13-.29-.26-.45-.39C7.28 8.67 5.446 8 3 8V6zm0 6c2.446 0 4.28.67 5.83 1.95.16.13.3.26.45.39.42.36.87.66 1.38.86.5.2 1.03.3 1.6.3s1.1-.1 1.6-.3c.51-.2-.96-.5-1.38-.86.15-.13.29-.26.45-.39C16.72 12.67 18.554 12 21 12v2c-2.446 0-4.28.67-5.83 1.95-.16.13-.3.26-.45.39-.42.36-.87.66-1.38.86-.5.2-1.03.3-1.6.3s-1.1-.1-1.6-.3c-.51-.2-.96-.5-1.38-.86-.15-.13-.29-.26-.45-.39C7.28 14.67 5.446 14 3 14v-2z" className="w-10 h-10 text-dark-golden/70"/>
                             </div>
                             <p className="mt-4">{t.health.goldenTaanEffect}</p>
                         </div>
-                        <div className="bg-primary-text/50 p-8 rounded-lg text-center shadow-2xl flex flex-col items-center">
+                        <div className="bg-white/50 p-8 rounded-lg text-center shadow-2xl flex flex-col items-center">
                             <h3 className="font-display text-2xl mb-2">{t.health.refinedWhiteSugar}</h3>
                             <div className="flex items-baseline justify-center gap-4">
                                 <p className="text-6xl font-bold text-red-400">65</p>
@@ -274,10 +325,10 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
                         </div>
                     </div>
                 </div>
-            </section>
+            </ParallaxSection>
 
             {/* Process Section */}
-            <section className="py-20 px-4 md:px-8 bg-light-bg">
+            <ParallaxSection index={2} className="py-20 px-4 md:px-8">
                 <div className="max-w-6xl mx-auto">
                     <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{t.process.headline}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.process.description}</p>
@@ -298,32 +349,32 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
                         </div>
                     </div>
                 </div>
-            </section>
+            </ParallaxSection>
 
             {/* Impact Section */}
-            <section id="sustainability" className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text">
+            <ParallaxSection index={3} id="sustainability" className="py-20 px-4 md:px-8 text-primary-text">
                 <div className="max-w-6xl mx-auto">
-                    <h2 className="text-4xl md:text-5xl font-display text-center text-golden-accent mb-4">{t.impact.headline}</h2>
+                    <h2 className="text-4xl md:text-5xl font-display text-center text-dark-golden mb-4">{t.impact.headline}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.impact.description}</p>
                     <h3 className="text-2xl font-display text-center mb-4">{t.impact.chartTitle}</h3>
                     <SustainabilityChart />
 
-                    <h2 className="text-4xl md:text-5xl font-display text-center text-golden-accent mt-20 mb-4">{t.impact.community.headline}</h2>
+                    <h2 className="text-4xl md:text-5xl font-display text-center text-dark-golden mt-20 mb-4">{t.impact.community.headline}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.impact.community.description}</p>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center mb-12">
                         {t.impact.community.stats.map((stat, i) => (
-                             <div key={i} className="bg-primary-text/50 p-6 rounded-lg">
-                                <p className="text-4xl font-bold text-golden-accent"><AnimatedCounter to={stat.value} />{stat.unit}</p>
+                             <div key={i} className="bg-white/50 p-6 rounded-lg">
+                                <p className="text-4xl font-bold text-dark-golden"><AnimatedCounter to={stat.value} />{stat.unit}</p>
                                 <p>{stat.label}</p>
                             </div>
                         ))}
                     </div>
                     <img src="https://via.placeholder.com/1200x600.png?text=Our+Community+(2:1)" alt="A collage showing the vibrant community of farmers and artisans behind Golden Taan" className="rounded-lg shadow-xl"/>
                 </div>
-            </section>
+            </ParallaxSection>
             
             {/* Products Section */}
-            <section id="products" className="py-20 px-4 md:px-8 bg-light-bg">
+            <ParallaxSection index={4} id="products" className="py-20 px-4 md:px-8">
                 <div className="max-w-6xl mx-auto">
                     <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{t.productSection.headline}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.productSection.description}</p>
@@ -346,10 +397,10 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
                         ))}
                     </div>
                 </div>
-            </section>
+            </ParallaxSection>
 
             {/* FAQ Section */}
-            <section className="py-20 px-4 md:px-8 bg-light-bg">
+            <ParallaxSection index={5} className="py-20 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto">
                     <h2 className="text-4xl md:text-5xl font-display text-center mb-12">{t.faq.headline}</h2>
                     <div className="space-y-2">
@@ -372,7 +423,7 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
                         </div>
                     )}
                 </div>
-            </section>
+            </ParallaxSection>
         </div>
     );
 };
@@ -391,7 +442,7 @@ const AboutUsPage = () => {
             <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
         </header>
 
-        <section className="py-16 px-4 md:px-8 bg-light-bg">
+        <ParallaxSection index={0} className="py-16 px-4 md:px-8">
             <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                 <div>
                     <h3 className="text-4xl font-display text-dark-golden mb-4">{t.roots.title}</h3>
@@ -402,9 +453,9 @@ const AboutUsPage = () => {
                     <img src="https://via.placeholder.com/400x533.png?text=Ratchaburi+Palm+Grove+(3:4)" alt="A serene Palmyra palm grove in Ratchaburi, Thailand at sunset." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
                 </div>
             </div>
-        </section>
+        </ParallaxSection>
 
-         <section className="py-16 px-4 md:px-8 bg-medium-bg">
+         <ParallaxSection index={1} className="py-16 px-4 md:px-8">
             <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                  <div className="grid grid-cols-2 gap-4 order-last md:order-first">
                     <img src="https://via.placeholder.com/400x533.png?text=Pure+Palm+Sugar+Crystals+(3:4)" alt="Close-up of pure, unrefined Palmyra palm sugar crystals." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
@@ -415,9 +466,9 @@ const AboutUsPage = () => {
                     <p className="text-lg text-primary-text/90">{t.fadingGold.text}</p>
                 </div>
             </div>
-        </section>
+        </ParallaxSection>
 
-        <section className="py-16 px-4 md:px-8 bg-light-bg">
+        <ParallaxSection index={2} className="py-16 px-4 md:px-8">
             <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                 <div>
                     <h3 className="text-4xl font-display text-dark-golden mb-4">{t.mission.title}</h3>
@@ -428,10 +479,10 @@ const AboutUsPage = () => {
                     <img src="https://via.placeholder.com/400x533.png?text=Healthy+Lifestyle+(3:4)" alt="A person incorporating Golden Taan into a healthy, active lifestyle." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
                 </div>
             </div>
-        </section>
+        </ParallaxSection>
         
         {/* Timeline Section */}
-        <section className="py-20 px-4 md:px-8 bg-light-bg">
+        <ParallaxSection index={3} className="py-20 px-4 md:px-8">
             <div className="max-w-4xl mx-auto text-center">
                  <h3 className="text-4xl font-display text-dark-golden mb-16">{t.timelineTitle}</h3>
             </div>
@@ -450,35 +501,35 @@ const AboutUsPage = () => {
                     </div>
                 ))}
             </div>
-        </section>
+        </ParallaxSection>
 
         {/* People Behind the Purity Section */}
-        <section className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text">
+        <ParallaxSection index={4} className="py-20 px-4 md:px-8 text-primary-text">
             <div className="max-w-6xl mx-auto">
-                <h3 className="text-4xl font-display text-center text-golden-accent mb-12">{t.people.title}</h3>
+                <h3 className="text-4xl font-display text-center text-dark-golden mb-12">{t.people.title}</h3>
                  <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="text-center md:text-left">
                         <img src="https://via.placeholder.com/400x533.png?text=Krisada+Laohasiri+(3:4)" alt="Portrait of Krisada Laohasiri, founder of Golden Taan" className="rounded-lg shadow-xl aspect-[3/4] object-cover mx-auto md:mx-0 w-64"/>
-                        <h4 className="text-2xl font-display text-light-text mt-6">{t.people.founderName}</h4>
-                        <p className="mt-4 text-xl italic text-light-text/80">"{t.people.founderQuote}"</p>
+                        <h4 className="text-2xl font-display text-primary-text mt-6">{t.people.founderName}</h4>
+                        <p className="mt-4 text-xl italic text-primary-text/80">"{t.people.founderQuote}"</p>
                     </div>
                     <div>
                         <img src="https://via.placeholder.com/600x400.png?text=Community+of+Artisans+(3:2)" alt="A community of smiling, skilled palm sugar artisans in Thailand." className="rounded-lg shadow-xl aspect-video md:aspect-[4/3] object-cover w-full"/>
-                        <h4 className="text-2xl font-display text-light-text mt-6">{t.people.communityTitle}</h4>
-                        <p className="mt-2 text-light-text/90">{t.people.communityText}</p>
+                        <h4 className="text-2xl font-display text-primary-text mt-6">{t.people.communityTitle}</h4>
+                        <p className="mt-2 text-primary-text/90">{t.people.communityText}</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </ParallaxSection>
 
 
-         <section className="py-16 px-4 md:px-8 bg-medium-bg">
+         <ParallaxSection index={5} className="py-16 px-4 md:px-8">
             <div className="max-w-4xl mx-auto text-center">
                 <h3 className="text-4xl font-display text-dark-golden mb-4">{t.choice.title}</h3>
                 <p className="text-lg text-primary-text/90 mb-8">{t.choice.text}</p>
                 <img src="https://via.placeholder.com/1200x675.png?text=Natural+Sweeteners+(16:9)" alt="A beautiful flat-lay of various natural sweeteners, with Golden Taan palm sugar at the center." className="rounded-lg shadow-xl aspect-video object-cover"/>
             </div>
-        </section>
+        </ParallaxSection>
     </div>
     )
 };
@@ -511,7 +562,7 @@ const HeritagePage = () => {
                 </div>
             </div>
 
-            <main className="py-16 px-4 md:px-8 bg-light-bg">
+            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                 <div className="max-w-6xl mx-auto">
                     {activeTab === 'origin' && (
                         <div className="grid md:grid-cols-2 gap-12 items-center animate-fade-in">
@@ -574,7 +625,7 @@ const HeritagePage = () => {
                         </div>
                     )}
                 </div>
-            </main>
+            </ParallaxSection>
         </div>
     )
 }
@@ -591,7 +642,7 @@ const SustainabilityPage = () => {
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
             </header>
 
-            <section className="py-16 px-4 md:px-8 bg-light-bg">
+            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                     <img src="https://via.placeholder.com/600x700.png?text=Lush+Palm+Grove+(6:7)" alt="A lush, green, and biodiverse Palmyra palm grove." className="rounded-lg shadow-xl object-cover w-full h-full" />
                     <div>
@@ -601,21 +652,21 @@ const SustainabilityPage = () => {
                         </ul>
                     </div>
                 </div>
-            </section>
+            </ParallaxSection>
 
-            <section className="py-16 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text">
+            <ParallaxSection index={1} className="py-16 px-4 md:px-8 text-primary-text">
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                     <div className="order-last md:order-first">
-                        <h3 className="text-4xl font-display text-golden-accent mb-4">{t.social.title}</h3>
-                        <ul className="list-disc list-inside space-y-3 text-lg text-light-text/90">
+                        <h3 className="text-4xl font-display text-dark-golden mb-4">{t.social.title}</h3>
+                        <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
                             {t.social.points.map((point, i) => <li key={i}><strong>{point.title}:</strong> {point.text}</li>)}
                         </ul>
                     </div>
                     <img src="https://via.placeholder.com/600x700.png?text=Community+Hands+(6:7)" alt="The hands of community farmers holding fresh palmyra palm sugar." className="rounded-lg shadow-xl object-cover w-full h-full" />
                 </div>
-            </section>
+            </ParallaxSection>
 
-            <section className="py-16 px-4 md:px-8 bg-light-bg">
+            <ParallaxSection index={2} className="py-16 px-4 md:px-8">
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                     <img src="https://via.placeholder.com/600x700.png?text=Quality+Seal+(6:7)" alt="A Golden Taan product with a seal of quality and transparency." className="rounded-lg shadow-xl object-cover w-full h-full" />
                     <div>
@@ -625,11 +676,11 @@ const SustainabilityPage = () => {
                         </ul>
                     </div>
                 </div>
-            </section>
+            </ParallaxSection>
 
-            <section className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text">
+            <ParallaxSection index={3} className="py-20 px-4 md:px-8 text-primary-text">
                 <div className="max-w-6xl mx-auto">
-                    <h3 className="text-4xl font-display text-center text-golden-accent mb-12">{t.insights.title}</h3>
+                    <h3 className="text-4xl font-display text-center text-dark-golden mb-12">{t.insights.title}</h3>
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div>
                             <h4 className="text-2xl font-display text-center mb-4">{t.insights.chartTitle}</h4>
@@ -645,7 +696,7 @@ const SustainabilityPage = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </ParallaxSection>
         </div>
     );
 }
@@ -690,7 +741,7 @@ const WholesalePage = () => {
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
             </header>
             
-            <section className="py-16 px-4 md:px-8 bg-light-bg">
+            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                     <div>
                         <h3 className="text-4xl font-display text-dark-golden mb-4">{t.insights.title}</h3>
@@ -698,15 +749,15 @@ const WholesalePage = () => {
                     </div>
                     <img src="https://via.placeholder.com/600x400.png?text=Global+Market+Map+(3:2)" alt="A map of the world highlighting key growth markets for natural sweeteners." className="rounded-lg shadow-xl" />
                 </div>
-            </section>
+            </ParallaxSection>
 
-            <section className="py-16 px-4 md:px-8 bg-white">
+            <ParallaxSection index={1} className="py-16 px-4 md:px-8">
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-12">
                          <h3 className="text-4xl font-display text-dark-golden mb-4">{t.pricing.title}</h3>
                         <p className="text-lg max-w-3xl mx-auto">{t.pricing.text}</p>
                     </div>
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto bg-white p-4 rounded-lg">
                         <table className="w-full text-left border-collapse">
                             <thead className="bg-dark-golden text-light-text">
                                 <tr>
@@ -715,7 +766,7 @@ const WholesalePage = () => {
                             </thead>
                             <tbody>
                                 {t.pricing.table.rows.map((row, index) => (
-                                    <tr key={index} className={`border-b border-medium-bg ${index % 2 !== 0 ? 'bg-light-bg' : ''}`}>
+                                    <tr key={index} className={`border-b border-medium-bg ${index % 2 !== 0 ? 'bg-light-bg' : 'bg-white'}`}>
                                         <td className="p-4">{row.moq}</td>
                                         <td className="p-4">{row.domestic}</td>
                                         <td className="p-4">{row.export}</td>
@@ -730,21 +781,21 @@ const WholesalePage = () => {
                     </div>
                     <p className="text-sm mt-4 text-right">{t.pricing.table.note}</p>
                 </div>
-            </section>
+            </ParallaxSection>
 
-            <section className="py-16 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text">
+            <ParallaxSection index={2} className="py-16 px-4 md:px-8 text-primary-text">
                 <div className="max-w-6xl mx-auto text-center">
-                    <h3 className="text-4xl font-display text-golden-accent mb-12">{t.logistics.title}</h3>
+                    <h3 className="text-4xl font-display text-dark-golden mb-12">{t.logistics.title}</h3>
                     <div className="grid md:grid-cols-2 gap-12 items-start text-left">
                         <div>
-                            <h4 className="text-3xl font-display text-light-text mb-4">{t.logistics.packaging.title}</h4>
+                            <h4 className="text-3xl font-display text-primary-text mb-4">{t.logistics.packaging.title}</h4>
                             <ul className="list-disc list-inside space-y-2 text-lg">
                                 {t.logistics.packaging.options.map(opt => <li key={opt}>{opt}</li>)}
                             </ul>
                             <img src="https://via.placeholder.com/600x400.png?text=Packaging+Options+(3:2)" alt="Various wholesale and retail packaging options for Golden Taan products." className="rounded-lg shadow-xl mt-8" />
                         </div>
                          <div>
-                            <h4 className="text-3xl font-display text-light-text mb-4">{t.logistics.export.title}</h4>
+                            <h4 className="text-3xl font-display text-primary-text mb-4">{t.logistics.export.title}</h4>
                              <ul className="list-disc list-inside space-y-2 text-lg">
                                  {t.logistics.export.services.map(srv => <li key={srv}>{srv}</li>)}
                             </ul>
@@ -752,9 +803,9 @@ const WholesalePage = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </ParallaxSection>
             
-            <section className="py-16 px-4 md:px-8 bg-light-bg">
+            <ParallaxSection index={3} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-lg shadow-2xl">
                     <h2 className="text-4xl font-display text-dark-golden mb-8 text-center">{t.form.title}</h2>
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -805,7 +856,7 @@ const WholesalePage = () => {
                         </div>
                     </form>
                 </div>
-            </section>
+            </ParallaxSection>
         </div>
     );
 };
@@ -827,7 +878,7 @@ const ShopNowPage = ({ cartItems, onUpdateQuantity, setPage }: { cartItems: Cart
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
             </header>
 
-            <section className="py-16 px-4 md:px-8 bg-light-bg">
+            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                 {cartItems.length === 0 ? (
                     <div className="max-w-6xl mx-auto text-center py-20">
                         <h3 className="text-3xl font-display text-dark-golden">{t.emptyCart.title}</h3>
@@ -924,7 +975,7 @@ const ShopNowPage = ({ cartItems, onUpdateQuantity, setPage }: { cartItems: Cart
                         </div>
                     </div>
                 )}
-            </section>
+            </ParallaxSection>
         </div>
     );
 }
@@ -948,7 +999,7 @@ const BlogPage = () => {
 
     if (selectedPost) {
         return (
-            <div className="bg-light-bg">
+            <ParallaxSection index={0}>
                 <div className="max-w-4xl mx-auto px-4 py-16">
                     <button onClick={handleBackToList} className="mb-8 text-dark-golden font-semibold hover:underline">
                         &larr; {t.back}
@@ -970,7 +1021,7 @@ const BlogPage = () => {
                         })}
                     </div>
                 </div>
-            </div>
+            </ParallaxSection>
         );
     }
     
@@ -980,7 +1031,7 @@ const BlogPage = () => {
                 <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{t.header.title}</h2>
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
             </header>
-            <main className="py-16 px-4 md:px-8 bg-light-bg">
+            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto space-y-8">
                     {t.posts.map(post => (
                         <div key={post.id} onClick={() => handleSelectPost(post)} className="bg-white rounded-lg shadow-xl overflow-hidden group transition-shadow duration-300 hover:shadow-2xl cursor-pointer flex">
@@ -997,7 +1048,7 @@ const BlogPage = () => {
                         </div>
                     ))}
                 </div>
-            </main>
+            </ParallaxSection>
         </div>
     );
 };
@@ -1018,335 +1069,260 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
         { code: 'ja', name: '日本語', flag: '🇯🇵' },
         { code: 'ko', name: '한국어', flag: '🇰🇷' },
         { code: 'fr', name: 'Français', flag: '🇫🇷' },
-        { code: 'zh', name: '简体中文', flag: '🇨🇳' },
+        { code: 'zh', name: '中文', flag: '🇨🇳' },
     ];
-    
-    const navItems = [
-        { id: Page.About, label: t.ourStory },
-        { id: Page.Heritage, label: t.heritage },
-        { id: Page.Blog, label: t.blog },
-        { id: Page.Sustainability, label: t.sustainability },
-        { id: Page.Wholesale, label: t.wholesale },
-    ];
-    
-    const homeSubItems = t.homeSubItems;
+    const currentLang = languages.find(l => l.code === language);
 
-    const handleHomeClick = (hash?: string) => {
-        const path = hash || `/#${Page.Home}`;
-        trackPageView(path);
-        setPage(Page.Home);
-        setIsMenuOpen(false);
-        if (hash) {
-            setTimeout(() => {
-                document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-        } else {
-            window.scrollTo(0, 0);
-        }
-    };
-    
-    const handleNavClick = (page: Page) => {
-        trackPageView(`/#${page}`);
+    const navigate = (page: Page) => {
         setPage(page);
-        setIsMenuOpen(false); // also close for mobile
-        window.scrollTo(0, 0);
+        setIsMenuOpen(false);
+        setIsDropdownOpen(false);
+        trackPageView(`/#${page}`);
     };
 
-    const handleLangChange = (lang: Language) => {
+    const handleSetLanguage = (lang: Language) => {
         setLanguage(lang);
         setIsLangDropdownOpen(false);
-    }
+    };
 
     return (
-        <header className="bg-light-bg/80 backdrop-blur-md sticky top-0 left-0 right-0 z-50 shadow-md">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-light-bg/80 backdrop-blur-md border-b border-medium-bg">
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
-                    
-                    {/* Desktop Menu */}
-                    <div className="hidden lg:flex w-full items-center justify-between">
-                        <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <button onClick={() => handleHomeClick()} aria-label="Go to homepage" className="flex items-center space-x-3">
-                                    <img className="h-12 w-auto" src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden Taan Logo" />
-                                    <span className="font-display text-2xl text-dark-golden font-bold">Golden TAAN</span>
-                                </button>
-                            </div>
-                            <div className="ml-10 flex items-baseline space-x-4">
-                                <div className="relative" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
-                                    <button onClick={() => handleHomeClick()} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Home ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>
-                                        {t.home}
-                                    </button>
-                                    {isDropdownOpen && (
-                                        <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                            <div className="py-1">
-                                                {homeSubItems.map(item => (
-                                                    <a key={item.id} href={item.id} onClick={(e) => { e.preventDefault(); handleHomeClick(item.id); }} className="block px-4 py-2 text-sm text-primary-text hover:bg-gray-100">{item.label}</a>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                                {navItems.map(item => (
-                                    <button key={item.id} onClick={() => handleNavClick(item.id)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === item.id ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>
-                                        {item.label}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <div className="relative">
-                                 <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="flex items-center gap-2 text-sm font-medium text-primary-text hover:text-dark-golden">
-                                    {languages.find(l => l.code === language)?.flag}
-                                    <span>{languages.find(l => l.code === language)?.name}</span>
-                                    <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-4 h-4" />
-                                </button>
-                                {isLangDropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                        <div className="py-1">
-                                            {languages.map(lang => (
-                                                <button key={lang.code} onClick={() => handleLangChange(lang.code)} className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-primary-text hover:bg-gray-100">
-                                                    <span>{lang.flag}</span>
-                                                    <span>{lang.name}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                             <button onClick={() => handleNavClick(Page.ShopNow)} className="bg-golden-accent text-primary-text font-bold py-2 px-6 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">{t.shopNow}</button>
-                        </div>
+                    {/* Logo */}
+                    <div className="flex-shrink-0">
+                        <a href="#" onClick={() => navigate(Page.Home)} className="flex items-center space-x-2">
+                            <img className="h-12 w-auto" src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden Taan Logo" />
+                             <span className="font-display text-2xl text-primary-text">Golden Taan</span>
+                        </a>
                     </div>
 
-                    {/* Mobile Header */}
-                    <div className="flex lg:hidden items-center justify-between w-full">
-                        {/* Left: Logo & Name */}
-                        <button onClick={() => handleHomeClick()} aria-label="Go to homepage" className="flex items-center space-x-2">
-                            <img className="h-10 w-auto" src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden Taan Logo" />
-                            <span className="font-display text-xl text-dark-golden font-bold">Golden TAAN</span>
-                        </button>
-    
-                        {/* Right: Language Switcher and Hamburger */}
-                        <div className="flex items-center">
-                            {/* Language Switcher */}
+                    {/* Desktop Menu */}
+                    <div className="hidden md:block">
+                        <div className="ml-10 flex items-baseline space-x-4">
                             <div className="relative">
-                                <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="flex items-center gap-2 text-sm font-medium text-primary-text hover:text-dark-golden p-2 rounded-md hover:bg-medium-bg/50">
-                                    {languages.find(l => l.code === language)?.flag}
-                                    <span className='hidden sm:inline'>{languages.find(l => l.code === language)?.name}</span>
+                                <button onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)} onClick={() => navigate(Page.Home)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Home ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>
+                                    {t.home}
+                                </button>
+                                {isDropdownOpen && (
+                                    <div onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)} className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                        <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                            {t.homeSubItems.map(item => (
+                                                <a href={item.id} key={item.id} onClick={(e) => { e.preventDefault(); document.querySelector(item.id)?.scrollIntoView({ behavior: 'smooth' }); setIsDropdownOpen(false); trackPageView(`/${item.id}`); }} className="block px-4 py-2 text-sm text-primary-text hover:bg-light-bg">{item.label}</a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <button onClick={() => navigate(Page.About)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.About ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>{t.ourStory}</button>
+                            <button onClick={() => navigate(Page.Heritage)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Heritage ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>{t.heritage}</button>
+                            <button onClick={() => navigate(Page.Sustainability)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Sustainability ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>{t.sustainability}</button>
+                            <button onClick={() => navigate(Page.Wholesale)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Wholesale ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>{t.wholesale}</button>
+                            <button onClick={() => navigate(Page.Blog)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Blog ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>{t.blog}</button>
+                            
+                             {/* Language Selector */}
+                            <div className="relative">
+                                <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="px-3 py-2 rounded-md text-sm font-medium text-primary-text hover:text-dark-golden flex items-center">
+                                    <span>{currentLang?.flag}</span>
+                                    <span className="ml-2">{currentLang?.name}</span>
                                 </button>
                                 {isLangDropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                                        <div className="py-1">
+                                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                        <div className="py-1" role="menu" aria-orientation="vertical">
                                             {languages.map(lang => (
-                                                <button key={lang.code} onClick={() => handleLangChange(lang.code)} className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-primary-text hover:bg-gray-100">
-                                                    <span>{lang.flag}</span>
-                                                    <span>{lang.name}</span>
+                                                <button key={lang.code} onClick={() => handleSetLanguage(lang.code)} className="w-full text-left block px-4 py-2 text-sm text-primary-text hover:bg-light-bg">
+                                                    {lang.flag} {lang.name}
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
                                 )}
                             </div>
-    
-                            {/* Hamburger Icon */}
-                            <button
-                                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                                className="relative z-50 flex items-center justify-center p-2 rounded-md hover:bg-medium-bg/50"
-                                aria-controls="mobile-menu"
-                                aria-expanded={isMenuOpen}
-                            >
-                                <span className="sr-only">Open main menu</span>
-                                <div className="relative h-6 w-6">
-                                    <span aria-hidden="true" className={`absolute block h-0.5 w-6 transform bg-primary-text transition duration-300 ease-in-out ${isMenuOpen ? 'rotate-45' : '-translate-y-2'}`}></span>
-                                    <span aria-hidden="true" className={`absolute block h-0.5 w-6 bg-primary-text transition duration-300 ease-in-out ${isMenuOpen ? 'opacity-0' : ''}`}></span>
-                                    <span aria-hidden="true" className={`absolute block h-0.5 w-6 transform bg-primary-text transition duration-300 ease-in-out ${isMenuOpen ? '-rotate-45' : 'translate-y-2'}`}></span>
-                                </div>
+
+                             <button onClick={() => navigate(Page.ShopNow)} className="ml-4 bg-golden-accent text-primary-text font-bold py-2 px-4 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
+                                {t.shopNow}
                             </button>
                         </div>
+                    </div>
+                    
+                    {/* Mobile Menu Button */}
+                    <div className="-mr-2 flex md:hidden">
+                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="inline-flex items-center justify-center p-2 rounded-md text-primary-text hover:text-dark-golden focus:outline-none">
+                            <SvgIcon path={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"} />
+                        </button>
                     </div>
                 </div>
             </nav>
 
-            {/* Mobile Menu Panel (slides down) */}
-            <div
-                id="mobile-menu"
-                className={`lg:hidden bg-white shadow-lg overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-96' : 'max-h-0'}`}
-            >
-                <div className="flex flex-col items-center py-6 space-y-6">
-                    <button onClick={() => handleHomeClick()} className="text-xl font-sans font-medium text-primary-text hover:text-dark-golden">{t.home}</button>
-                    {navItems.map(item => (
-                        <button key={item.id} onClick={() => handleNavClick(item.id)} className="text-xl font-sans font-medium text-primary-text hover:text-dark-golden">
-                            {item.label}
+            {/* Mobile Menu */}
+            {isMenuOpen && (
+                <div className="md:hidden">
+                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                        <button onClick={() => navigate(Page.Home)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.home}</button>
+                        <button onClick={() => navigate(Page.About)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.ourStory}</button>
+                        <button onClick={() => navigate(Page.Heritage)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.heritage}</button>
+                        <button onClick={() => navigate(Page.Sustainability)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.sustainability}</button>
+                        <button onClick={() => navigate(Page.Wholesale)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.wholesale}</button>
+                        <button onClick={() => navigate(Page.Blog)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.blog}</button>
+                        
+                        <div className="relative pt-2">
+                             <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="w-full flex justify-between items-center px-3 py-2 text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg rounded-md">
+                                <span>{currentLang?.flag} {currentLang?.name}</span>
+                                <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-5 h-5"/>
+                             </button>
+                             {isLangDropdownOpen && (
+                                <div className="mt-2 space-y-1">
+                                {languages.map(lang => (
+                                    <button key={lang.code} onClick={() => { handleSetLanguage(lang.code); setIsMenuOpen(false); }} className="block w-full text-left pl-8 pr-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">
+                                        {lang.flag} {lang.name}
+                                    </button>
+                                ))}
+                                </div>
+                             )}
+                        </div>
+
+                        <button onClick={() => navigate(Page.ShopNow)} className="block w-full text-center mt-4 bg-golden-accent text-primary-text font-bold py-2 px-4 rounded-full hover:bg-yellow-500">
+                            {t.shopNow}
                         </button>
-                    ))}
-                    <button onClick={() => handleNavClick(Page.ShopNow)} className="mt-4 bg-golden-accent text-primary-text font-medium py-2.5 px-6 rounded-full text-xl hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
-                        {t.shopNow}
-                    </button>
+                    </div>
                 </div>
-            </div>
+            )}
         </header>
     );
 };
 
-
-const Footer = ({ setPage }: { setPage: (page: Page) => void }) => {
+const Footer = () => {
     const { translations } = useLocalization();
     const t = translations.footer;
-    const t_en = siteContent.en.footer; // Always use English for contact details
+    const year = new Date().getFullYear();
 
-    const handleFooterLinkClick = (page: Page) => {
-        trackPageView(`/#${page}`);
-        setPage(page);
-        window.scrollTo(0, 0);
-    }
-    const links = [
-        { page: Page.Home, label: translations.nav.home },
-        { page: Page.About, label: translations.nav.ourStory },
-        { page: Page.Heritage, label: translations.nav.heritage },
-        { page: Page.Sustainability, label: translations.nav.sustainability },
-        { page: Page.Wholesale, label: translations.nav.wholesale },
-        { page: Page.ShopNow, label: translations.nav.shopNow },
-    ];
     return (
-        <footer id="contact" className="bg-primary-text text-light-text/80 py-16 px-4 md:px-8">
-            <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
+        <footer id="contact" className="bg-primary-text text-light-text/80 py-12 px-4 md:px-8">
+            <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
                 <div>
-                    <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden Taan Logo" className="h-12 mb-4" />
-                    <p>{t_en.address}</p>
-                    <p className="mt-2">{t_en.contactPerson.label}: {t_en.contactPerson.name}</p>
-                    <p>{t_en.phone.label}: {t_en.phone.number}</p>
-                    <p>{t_en.email.label}: {t_en.email.address}</p>
+                    <h3 className="font-display text-2xl text-light-text mb-4">Golden TAAN Co., Ltd.</h3>
+                    <p>{t.address}</p>
                 </div>
                 <div>
-                     <h3 className="font-display text-xl text-light-text mb-4">{t.quickLinks}</h3>
+                    <h3 className="font-display text-2xl text-light-text mb-4">Contact</h3>
+                    <p>{t.contactPerson.label}: {t.contactPerson.name}</p>
+                    <p>{t.phone.label}: {t.phone.number}</p>
+                    <p>{t.email.label}: <a href={`mailto:${t.email.address}`} className="hover:text-golden-accent">{t.email.address}</a></p>
+                </div>
+                <div>
+                    <h3 className="font-display text-2xl text-light-text mb-4">{t.quickLinks}</h3>
                      <ul className="space-y-2">
-                        {links.map(link => (
-                            <li key={link.page}><button onClick={() => handleFooterLinkClick(link.page)} className="hover:text-golden-accent transition-colors">{link.label}</button></li>
-                        ))}
-                     </ul>
-                </div>
-                <div>
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.875235889239!2d100.52199041535712!3d13.72594630188613!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e298df36357429%3A0x8e122783363364f!2sJewelry%20Trade%20Center!5e0!3m2!1sen!2sth!4v1684321098765!5m2!1sen!2sth" 
-                        width="100%" 
-                        height="200" 
-                        style={{ border: 0 }} 
-                        allowFullScreen={false}
-                        loading="lazy" 
-                        referrerPolicy="no-referrer-when-downgrade"
-                        title="Golden Taan Office Location"
-                        className="rounded-md"
-                    ></iframe>
+                        <li><a href="#our-story" className="hover:text-golden-accent">{translations.nav.ourStory}</a></li>
+                        <li><a href="#health-benefits" className="hover:text-golden-accent">{translations.nav.homeSubItems[1].label}</a></li>
+                        <li><a href="#sustainability" className="hover:text-golden-accent">{translations.nav.sustainability}</a></li>
+                        <li><a href="#products" className="hover:text-golden-accent">{translations.nav.homeSubItems[2].label}</a></li>
+                    </ul>
                 </div>
             </div>
-            <div className="max-w-7xl mx-auto mt-12 border-t border-light-text/20 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p className="text-sm">{t.copyright.replace('{year}', new Date().getFullYear().toString())}</p>
-                <div className="flex space-x-4 mt-4 md:mt-0">
-                    <a href="#" aria-label="Facebook"><SvgIcon path="M12 2.032c-5.514 0-9.968 4.454-9.968 9.968s4.454 9.968 9.968 9.968c5.514 0 9.968-4.454 9.968-9.968S17.514 2.032 12 2.032zm3.11 6.232h-1.396c-.732 0-.874.348-.874.858v1.11h2.24l-.292 2.268H12.84v6.86h-2.34v-6.86H9.172V9.232h1.328V8.01c0-1.316.804-2.032 1.978-2.032h1.672v2.284z"/></a>
-                    <a href="#" aria-label="Instagram"><SvgIcon path="M11.97 2.017c-2.67 0-3.01.01-4.05.058-.97.045-1.64.22-2.23.447-.63.245-1.13.56-1.64.96-.5.41-.82.91-1.06 1.54-.23.59-.4 1.26-.45 2.23-.05 1.03-.06 1.38-.06 4.05s.01 3.01.06 4.05c.04.97.22 1.64.45 2.23.24.63.56 1.13.96 1.64.41.5.91.82 1.54 1.06.59.23 1.26.4 2.23.45 1.03.05 1.38.06 4.05.06s3.01-.01 4.05-.06c.97-.04 1.64-.22 2.23-.45.63-.24 1.13-.56 1.64-.96.5-.41.82.91 1.06-1.54.23-.59.4-1.26.45-2.23.05-1.03.06-1.38.06-4.05s-.01-3.01-.06-4.05c-.04-.97-.22-1.64-.45-2.23-.24-.63-.56-1.13-.96-1.64-.41-.5-.91-.82-1.54-1.06-.59-.23-1.26-.4-2.23-.45-1.03-.05-1.38-.06-4.05-.06zm0 1.8c2.6 0 2.92.01 3.95.057.88.04 1.4.21 1.8.36.49.18.82.41 1.15.74.33.33.56.66.74 1.15.15.4.32.91.36 1.8.047 1.02.057 1.34.057 3.95s-.01 2.92-.057 3.95c-.04.88-.21 1.4-.36 1.8-.18.49-.41.82-.74 1.15-.33.33-.66.56-1.15.74-.4.15-.91.32-1.8.36-1.02.047-1.34.057-3.95.057s-2.92-.01-3.95-.057c-.88-.04-1.4-.21-1.8-.36-.49-.18-.82-.41-1.15-.74-.33-.33-.56-.66-.74-1.15-.15-.4-.32-.91-.36-1.8-.047-1.02-.057-1.34-.057-3.95s.01-2.92.057-3.95c.04-.88.21 1.4.36-1.8.18.49.41.82.74-1.15.33-.33.66.56 1.15-.74.4-.15.91.32 1.8-.36C9.05 3.827 9.37 3.817 11.97 3.817zm0 2.73c-2.97 0-5.38 2.41-5.38 5.38s2.41 5.38 5.38 5.38 5.38-2.41 5.38-5.38-2.41-5.38-5.38-5.38zm0 8.82c-1.9 0-3.43-1.54-3.43-3.43s1.54-3.43 3.43 3.43 3.43 1.54 3.43 3.43-1.54 3.43-3.43 3.43zm6.34-8.98c-.74 0-1.34-.6-1.34-1.34s.6-1.34 1.34-1.34 1.34.6 1.34 1.34-.6 1.34-1.34 1.34z"/></a>
-                    <a href="#" aria-label="TikTok"><SvgIcon path="M21.5 8.1v6.9c0 1.17-1.04 2.06-2.2 1.88-1.51-.23-2.33-1.7-2.3-3.04V9.85c0-1.37.8-2.8 2.28-3.02 1.1-.16 2.22.75 2.22 1.8V8.1zm-8.8 3.55v-2.3c0-1.28-1.06-2.3-2.35-2.3-1.3 0-2.35 1.02-2.35 2.3v5.1c0 1.28 1.05 2.3 2.35 2.3 1.3 0 2.35-1.02 2.35-2.3v-2.8zm-6.92-3.83c-1.3 0-2.35 1.02-2.35 2.3v2.85c0 1.28 1.05 2.3 2.35 2.3 1.3 0 2.35-1.02 2.35-2.3V10.1c0-1.28-1.05-2.3-2.35-2.3z" /></a>
-                </div>
+            <div className="mt-8 pt-8 border-t border-light-text/20 text-center text-sm">
+                <p>{t.copyright.replace('{year}', year.toString())}</p>
             </div>
         </footer>
     )
 };
 
-// --- Main App Component ---
+const App = () => {
+    const [currentPage, setCurrentPage] = useState<Page>(() => {
+        const hash = window.location.hash.replace('#', '');
+        return Object.values(Page).includes(hash as Page) ? hash as Page : Page.Home;
+    });
 
-const AppContent = () => {
-    const [currentPage, setCurrentPage] = useState<Page>(Page.Home);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const { translations } = useLocalization();
+    
+    // --- Localization State ---
+    const [language, setLanguage] = useState<Language>('en');
 
+    useEffect(() => {
+        const handleHashChange = () => {
+            const hash = window.location.hash.replace('#', '');
+            if (Object.values(Page).includes(hash as Page)) {
+                setCurrentPage(hash as Page);
+                trackPageView(`/#${hash}`);
+            } else {
+                setCurrentPage(Page.Home);
+                trackPageView('/#home');
+            }
+        };
+
+        window.addEventListener('hashchange', handleHashChange);
+        handleHashChange(); // Initial check
+
+        return () => {
+            window.removeEventListener('hashchange', handleHashChange);
+        };
+    }, []);
+
+    const setPage = (page: Page) => {
+        window.location.hash = page;
+    };
+    
     const handleAddToCart = (product: Product) => {
         setCartItems(prevItems => {
-            // Use translated product details for the cart
-            const p = translations.home.products.find(tp => tp.id === product.id) || product;
-            const existingItem = prevItems.find(item => item.id === p.id);
-            if (existingItem) {
+            const itemInCart = prevItems.find(item => item.id === product.id);
+            if (itemInCart) {
                 return prevItems.map(item =>
-                    item.id === p.id ? { ...item, quantity: item.quantity + 1 } : item
+                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
                 );
             }
-            return [...prevItems, { ...p, quantity: 1 }];
+            return [...prevItems, { ...product, quantity: 1 }];
+        });
+    };
+    
+    const handleUpdateQuantity = (id: string, amount: number) => {
+        setCartItems(prevItems => {
+            return prevItems
+                .map(item => item.id === id ? { ...item, quantity: item.quantity + amount } : item)
+                .filter(item => item.quantity > 0);
         });
     };
 
-    const handleUpdateCartQuantity = (id: string, amount: number) => {
-        setCartItems(prevItems => {
-            return prevItems.map(item =>
-                item.id === id ? { ...item, quantity: item.quantity + amount } : item
-            ).filter(item => item.quantity > 0);
-        });
+    const localizationContextValue: LocalizationContextType = {
+        language,
+        setLanguage: (lang: Language) => {
+            setLanguage(lang);
+            document.documentElement.lang = lang;
+        },
+        translations: siteContent[language] || siteContent.en
     };
 
     const renderPage = () => {
         switch (currentPage) {
-            case Page.Home:
-                return <HomePage onAddToCart={handleAddToCart} />;
-            case Page.About:
-                return <AboutUsPage />;
-            case Page.Heritage:
-                return <HeritagePage />;
-            case Page.Sustainability:
-                return <SustainabilityPage />;
-            case Page.Wholesale:
-                return <WholesalePage />;
-            case Page.ShopNow:
-                return <ShopNowPage cartItems={cartItems} onUpdateQuantity={handleUpdateCartQuantity} setPage={setCurrentPage} />;
-            case Page.Blog:
-                return <BlogPage />;
-            default:
-                return <HomePage onAddToCart={handleAddToCart} />;
+            case Page.Home: return <HomePage onAddToCart={handleAddToCart} />;
+            case Page.About: return <AboutUsPage />;
+            case Page.Heritage: return <HeritagePage />;
+            case Page.Sustainability: return <SustainabilityPage />;
+            case Page.Wholesale: return <WholesalePage />;
+            case Page.Blog: return <BlogPage />;
+            case Page.ShopNow: return <ShopNowPage cartItems={cartItems} onUpdateQuantity={handleUpdateQuantity} setPage={setPage} />;
+            default: return <HomePage onAddToCart={handleAddToCart} />;
         }
     };
     
     useEffect(() => {
-        if (currentPage !== Page.Home) {
-            window.scrollTo(0, 0);
+        const t = localizationContextValue.translations;
+        document.title = t.metaTitle;
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+            metaDesc.setAttribute('content', t.metaDescription);
         }
-    }, [currentPage]);
+    }, [localizationContextValue.translations]);
 
     return (
-        <div className="bg-light-bg">
-            <Header setPage={setCurrentPage} currentPage={currentPage} />
-            <main>
-                {renderPage()}
-            </main>
-            <Footer setPage={setCurrentPage} />
-        </div>
-    );
-}
-
-const App = () => {
-    const [language, setLanguageState] = useState<Language>(() => {
-        const storedLang = localStorage.getItem('language');
-        return (storedLang && ['en', 'th', 'de', 'ja', 'ko', 'fr', 'zh'].includes(storedLang) ? storedLang : 'en') as Language;
-    });
-
-    const setLanguage = (lang: Language) => {
-        localStorage.setItem('language', lang);
-        setLanguageState(lang);
-    };
-
-    useEffect(() => {
-        const translations = siteContent[language];
-        document.title = translations.metaTitle;
-        document.querySelector('meta[name="description"]')?.setAttribute('content', translations.metaDescription);
-        document.documentElement.lang = language;
-    }, [language]);
-
-    const contextValue = {
-        language,
-        setLanguage,
-        translations: siteContent[language],
-    };
-
-    return (
-        <LocalizationContext.Provider value={contextValue}>
-            <AppContent />
+        <LocalizationContext.Provider value={localizationContextValue}>
+            <div className="pt-20">
+                <Header setPage={setPage} currentPage={currentPage} />
+                <main>
+                    {renderPage()}
+                </main>
+                <Footer />
+            </div>
         </LocalizationContext.Provider>
     );
 };
-
 
 export default App;
