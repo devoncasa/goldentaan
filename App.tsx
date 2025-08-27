@@ -1,9 +1,13 @@
 
+
+
+
 import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { Page, NutrientData, SustainabilityData, FAQ, Product, CartItem, BlogPost, BlogContent, Language, Translations } from './types';
 import { useIntersectionObserver } from './hooks/useIntersectionObserver';
 import { siteContent } from './translations';
+
 
 // --- GA4 Tracking ---
 declare global {
@@ -126,39 +130,18 @@ const ParallaxSection: React.FC<{ index: number; children: React.ReactNode; clas
 
 // --- Chart Components ---
 
-const NutrientComparisonChart = () => {
-    const { translations } = useLocalization();
-    const data = translations.home.health.nutrientData;
-
-    return (
-        <div className="w-full h-96 bg-white/50 p-4 rounded-lg">
-            <ResponsiveContainer>
-                <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <XAxis dataKey="name" stroke="#5A3E2B" />
-                    <YAxis stroke="#5A3E2B" />
-                    <Tooltip contentStyle={{ backgroundColor: '#5A3E2B', border: 'none', color: '#FBF8F1' }} />
-                    <Legend wrapperStyle={{ color: '#5A3E2B' }} />
-                    <Bar dataKey="goldenTaan" name={translations.home.health.goldenTaan} fill="#E5B84B" />
-                    <Bar dataKey="unrefinedSugarcane" name={translations.home.health.unrefinedSugarcane} fill="#8C6D46" />
-                    <Bar dataKey="refinedWhiteSugar" name={translations.home.health.refinedWhiteSugar} fill="#EAE0D5" />
-                </BarChart>
-            </ResponsiveContainer>
-        </div>
-    );
-};
-
 const SustainabilityChart = () => {
     const { translations } = useLocalization();
     const data = translations.home.impact.sustainabilityData;
     
     return (
-        <div className="w-full h-96 bg-white/50 p-4 rounded-lg">
+        <div className="w-full h-96">
             <ResponsiveContainer>
                 <BarChart data={data} layout="vertical" margin={{ top: 20, right: 30, left: 40, bottom: 5 }}>
-                    <XAxis type="number" stroke="#5A3E2B" domain={[0, 10]} />
-                    <YAxis type="category" dataKey="name" stroke="#5A3E2B" width={100} />
-                    <Tooltip contentStyle={{ backgroundColor: '#5A3E2B', border: 'none', color: '#FBF8F1' }} />
-                    <Legend wrapperStyle={{ color: '#5A3E2B' }} />
+                    <XAxis type="number" stroke="#3D2B1F" domain={[0, 10]} />
+                    <YAxis type="category" dataKey="name" stroke="#3D2B1F" width={100} />
+                    <Tooltip contentStyle={{ backgroundColor: '#3D2B1F', border: 'none', color: '#FBF8F1' }} />
+                    <Legend wrapperStyle={{ color: '#3D2B1F' }} />
                     <Bar dataKey="goldenTaan" name={translations.home.health.goldenTaan} fill="#E5B84B" />
                     <Bar dataKey="sugarcane" name={translations.home.impact.conventionalSugarcane} fill="#EAE0D5" />
                 </BarChart>
@@ -172,14 +155,14 @@ const ResourceEfficiencyRadarChart = () => {
     const data = translations.sustainability.resourceChartData;
 
     return (
-        <div className="w-full h-96 bg-white/50 p-4 rounded-lg">
+        <div className="w-full h-96">
             <ResponsiveContainer>
                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-                    <PolarGrid stroke="#5A3E2B" />
-                    <PolarAngleAxis dataKey="subject" stroke="#5A3E2B" tick={{ fontSize: 12 }} />
-                    <PolarRadiusAxis angle={30} domain={[0, 10]} stroke="#5A3E2B" />
-                    <Tooltip contentStyle={{ backgroundColor: '#5A3E2B', border: 'none', color: '#FBF8F1' }} />
-                    <Legend wrapperStyle={{ color: '#5A3E2B' }} />
+                    <PolarGrid stroke="#3D2B1F" />
+                    <PolarAngleAxis dataKey="subject" stroke="#3D2B1F" tick={{ fontSize: 12 }} />
+                    <PolarRadiusAxis angle={30} domain={[0, 10]} stroke="#3D2B1F" />
+                    <Tooltip contentStyle={{ backgroundColor: '#3D2B1F', border: 'none', color: '#FBF8F1' }} />
+                    <Legend wrapperStyle={{ color: '#3D2B1F' }} />
                     <Radar name="Golden Taan" dataKey="Golden Taan" stroke="#E5B84B" fill="#E5B84B" fillOpacity={0.6} />
                     <Radar name="Cane Sugar" dataKey="Cane Sugar" stroke="#EAE0D5" fill="#EAE0D5" fillOpacity={0.6} />
                 </RadarChart>
@@ -213,14 +196,169 @@ const FaqItem = ({ faq, isOpen, onClick, index }: { faq: FAQ, isOpen: boolean, o
     </div>
 );
 
+// --- Product Detail Modal ---
+const DetailSection = ({ title, content, isList = false, isLightBg = false }: { title: string, content: string | string[], isList?: boolean, isLightBg?: boolean }) => {
+    return (
+        <div className={`p-6 rounded-lg ${isLightBg ? 'bg-medium-bg/20' : 'bg-transparent'}`}>
+            <h4 className="font-display text-2xl text-dark-golden mb-3">{title}</h4>
+            {isList && Array.isArray(content) ? (
+                <ul className="list-disc list-inside space-y-1 text-primary-text/90">
+                    {content.map((item, index) => <li key={index}>{item}</li>)}
+                </ul>
+            ) : (
+                <p className="text-primary-text/90 whitespace-pre-wrap">{typeof content === 'string' ? content : ''}</p>
+            )}
+        </div>
+    );
+};
+
+const ProductDetailModal = ({ product, onClose, onAddToCart, setPage, setSelectedPost }: { product: Product, onClose: () => void, onAddToCart: (product: Product) => void, setPage: (page: Page) => void, setSelectedPost: (post: BlogPost) => void }) => {
+    const { translations } = useLocalization();
+    const t = translations.home.productSection;
+    const allPosts = translations.blog.posts;
+    const featuredRecipes = allPosts.filter(post => product.featuredInRecipes?.includes(post.id));
+    const [isAdded, setIsAdded] = useState(false);
+
+    const galleryImages = [
+        product.img,
+        'https://via.placeholder.com/600x600.png?text=Product+in+Use',
+        'https://via.placeholder.com/600x600.png?text=Lifestyle',
+        'https://via.placeholder.com/600x600.png?text=Packaging',
+        'https://via.placeholder.com/600x600.png?text=Texture',
+    ];
+    const [mainImage, setMainImage] = useState(galleryImages[0]);
+
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [onClose]);
+    
+    const handleAddToCartInModal = (product: Product) => {
+        onAddToCart(product);
+        setIsAdded(true);
+        setTimeout(() => setIsAdded(false), 2000);
+    };
+
+    const handleRecipeClick = (post: BlogPost) => {
+        setSelectedPost(post);
+        setPage(Page.Blog);
+        onClose();
+    };
+
+    return (
+        <div 
+            className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 animate-fade-in"
+            onClick={onClose}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="product-modal-title"
+        >
+            <div 
+                className="bg-light-bg rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+                onClick={e => e.stopPropagation()}
+            >
+                <div className="p-8 relative">
+                    <button onClick={onClose} className="absolute top-4 right-4 text-primary-text/50 hover:text-primary-text z-10" aria-label="Close modal">
+                        <SvgIcon path="M6 18L18 6M6 6l12 12" className="w-6 h-6" />
+                    </button>
+                    
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <img src={mainImage} alt={product.title} className="w-full h-auto object-cover rounded-lg aspect-square mb-4 transition-all duration-300" />
+                            <div className="grid grid-cols-5 gap-2">
+                                {galleryImages.map((img, index) => (
+                                    <button key={index} onClick={() => setMainImage(img)} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dark-golden rounded-md">
+                                        <img 
+                                            src={img} 
+                                            alt={`${product.title} view ${index + 1}`} 
+                                            className={`w-full h-auto object-cover rounded-md aspect-square cursor-pointer transition-all ${mainImage === img ? 'ring-2 ring-dark-golden' : 'opacity-70 hover:opacity-100'}`}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="flex flex-col">
+                            <h2 id="product-modal-title" className="text-4xl font-display text-dark-golden">{product.title}</h2>
+                            <p className="text-lg text-primary-text/70 mt-1">{product.size}</p>
+                            
+                            <div className="mt-4">
+                                <h4 className="font-bold text-primary-text">Ingredients:</h4>
+                                <p className="text-primary-text/80">{product.ingredients}</p>
+                            </div>
+                            
+                            <div className="flex-grow"></div>
+
+                            <div className="mt-6 flex items-center justify-between">
+                                <span className="text-3xl font-display text-primary-text">${product.price.toFixed(2)}</span>
+                                <button
+                                    onClick={() => handleAddToCartInModal(product)}
+                                    disabled={isAdded}
+                                    className="bg-dark-golden text-light-text font-bold py-3 px-8 rounded-full hover:bg-primary-text transition duration-300 disabled:bg-green-600"
+                                >
+                                    {isAdded ? t.added : t.addToCart}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-12 pt-8 border-t border-medium-bg space-y-6">
+                        <DetailSection title="Description" content={product.description} />
+                        <DetailSection title="Nutritional Highlights" content={product.nutrition_highlights} isList={true} isLightBg={true} />
+                        <DetailSection title="Perfect For" content={product.dietary_suitability} isList={true} />
+                        <DetailSection title="Pairing Suggestions" content={product.pairings} isList={true} isLightBg={true} />
+                        {product.packagingInfo && (
+                            <DetailSection 
+                                title={product.packagingInfo.title}
+                                content={[
+                                    `Case Size: ${product.packagingInfo.caseSize}`,
+                                    `Pallet Quantity: ${product.packagingInfo.palletQuantity}`,
+                                    `Availability: ${product.packagingInfo.availability}`
+                                ]}
+                                isList={true} 
+                            />
+                        )}
+                    </div>
+
+
+                    {featuredRecipes.length > 0 && (
+                        <div className="mt-12 pt-8 border-t border-medium-bg">
+                            <h3 className="text-3xl font-display text-center text-dark-golden mb-8">Featured Recipes</h3>
+                            <div className="grid sm:grid-cols-2 gap-6">
+                                {featuredRecipes.map(recipe => (
+                                    <div key={recipe.id} onClick={() => handleRecipeClick(recipe)} className="bg-white/50 rounded-lg shadow-lg overflow-hidden group cursor-pointer transition-transform hover:scale-105">
+                                        <img src={recipe.coverImage} alt={recipe.title} className="w-full h-40 object-cover" />
+                                        <div className="p-4">
+                                            <h4 className="font-semibold text-primary-text group-hover:text-dark-golden">{recipe.title}</h4>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
 // --- Page Components ---
 
-const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) => {
+const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (product: Product) => void, setPage: (page: Page) => void, setSelectedPost: (post: BlogPost) => void }) => {
     const { translations } = useLocalization();
     const t = translations.home;
     const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
     const [showAllFaqs, setShowAllFaqs] = useState(false);
     const [addedProductId, setAddedProductId] = useState<string | null>(null);
+    const [modalProduct, setModalProduct] = useState<Product | null>(null);
     
     const faqs = t.faq.items;
 
@@ -269,17 +407,17 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
             
             {/* Global Trends Section */}
             <ParallaxSection index={0} id="our-story" className="py-20 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{t.trends.headline}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.trends.description}</p>
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <img src="https://via.placeholder.com/600x700.png?text=Natural+Choices+(6:7)" alt="A display of natural, healthy food choices reflecting the global trend towards authenticity" className="rounded-lg shadow-xl" />
                         <div className="space-y-8">
-                            <div className="bg-white p-6 rounded-lg shadow-lg">
+                            <div className="border border-medium-bg/50 p-6 rounded-lg">
                                 <h3 className="text-5xl font-display text-dark-golden">$<AnimatedCounter to={55} />+ <span className="text-3xl">{t.trends.billion}</span></h3>
                                 <p className="mt-2">{t.trends.marketStat}</p>
                             </div>
-                            <div className="bg-white p-6 rounded-lg shadow-lg">
+                            <div className="border border-medium-bg/50 p-6 rounded-lg">
                                 <h3 className="text-5xl font-display text-dark-golden"><AnimatedCounter to={70} /><span className="text-3xl">%</span></h3>
                                 <p className="mt-2">{t.trends.consumerStat}</p>
                             </div>
@@ -290,38 +428,54 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
 
             {/* Health Benefits Section */}
             <ParallaxSection index={1} id="health-benefits" className="py-20 px-4 md:px-8 text-primary-text">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <h2 className="text-4xl md:text-5xl font-display text-center text-dark-golden mb-4">{t.health.headline}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.health.description}</p>
-                    <h3 className="text-2xl font-display text-center mb-4">{t.health.chartTitle}</h3>
-                    <NutrientComparisonChart />
                     
-                    <div className="max-w-3xl mx-auto mt-8 bg-golden-accent/10 border border-golden-accent/30 rounded-lg p-6 flex items-start space-x-4">
-                        <div className="flex-shrink-0">
-                            <SvgIcon path="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.565L16.5 21.75l-.398-1.185a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.185-.398a2.25 2.25 0 001.423-1.423L16.5 15.75l.398 1.185a2.25 2.25 0 001.423 1.423L19.5 18.75l-1.185.398a2.25 2.25 0 00-1.423 1.423z" className="w-8 h-8 text-dark-golden" />
-                        </div>
+                    <h3 className="text-2xl font-display text-center mb-4">{t.health.chartTitle}</h3>
+                    <div className="overflow-x-auto mt-8 rounded-lg shadow-lg border border-dark-accent/20">
+                        <table className="min-w-full text-left border-collapse">
+                            <thead className="bg-dark-golden/10">
+                                <tr>
+                                    <th className="p-4 font-display text-lg text-primary-text border-b border-r border-dark-accent/20">Nutrient (per 100g)</th>
+                                    <th className="p-4 font-display text-lg text-dark-golden border-b border-dark-accent/20 text-center">{t.health.goldenTaan}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text border-b border-dark-accent/20 text-center">{t.health.unrefinedSugarcane}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text border-b border-dark-accent/20 text-center">{t.health.coconutSugar}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text border-b border-dark-accent/20 text-center">{t.health.refinedWhiteSugar}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {t.health.nutrientData.map((nutrient, index) => (
+                                    <tr key={nutrient.name} className={`transition-colors hover:bg-dark-golden/10 ${index % 2 === 0 ? 'bg-medium-bg/20' : 'bg-transparent'}`}>
+                                        <td className="p-4 font-semibold text-primary-text/90 border-r border-dark-accent/20">{nutrient.name}</td>
+                                        <td className="p-4 text-center font-sans text-lg font-bold text-dark-golden">{nutrient.goldenTaan.toLocaleString('en-US')}</td>
+                                        <td className="p-4 text-center font-sans text-primary-text/80">{nutrient.unrefinedSugarcane.toLocaleString('en-US')}</td>
+                                        <td className="p-4 text-center font-sans text-primary-text/80">{nutrient.coconutSugar.toLocaleString('en-US')}</td>
+                                        <td className="p-4 text-center font-sans text-primary-text/80">{nutrient.refinedWhiteSugar.toLocaleString('en-US')}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div className="max-w-3xl mx-auto mt-12 bg-golden-accent/10 border border-golden-accent/30 rounded-lg p-6 flex items-start space-x-4">
                         <div>
                             <h4 className="font-display text-xl text-dark-golden">{t.health.insight.title}</h4>
                             <p className="mt-1 text-primary-text/90">{t.health.insight.text}</p>
                         </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-8 mt-12">
-                        <div className="bg-white/50 p-8 rounded-lg text-center shadow-2xl flex flex-col items-center">
-                            <h3 className="font-display text-2xl mb-2">{t.health.goldenTaan}</h3>
-                            <div className="flex items-baseline justify-center gap-4">
-                                <p className="text-6xl font-bold text-dark-golden">35</p>
-                                <SvgIcon path="M3 6c2.446 0 4.28.67 5.83 1.95.16.13.3.26.45.39.42.36.87.66 1.38.86.5.2 1.03.3 1.6.3s1.1-.1 1.6-.3c.51-.2.96-.5 1.38-.86.15-.13.29-.26.45-.39C16.72 6.67 18.554 6 21 6v2c-2.446 0-4.28.67-5.83 1.95-.16.13-.3.26-.45.39-.42.36-.87.66-1.38.86-.5.2-1.03.3-1.6.3s-1.1-.1-1.6-.3c-.51-.2-.96-.5-1.38-.86-.15-.13-.29-.26-.45-.39C7.28 8.67 5.446 8 3 8V6zm0 6c2.446 0 4.28.67 5.83 1.95.16.13.3.26.45.39.42.36.87.66 1.38.86.5.2 1.03.3 1.6.3s1.1-.1 1.6-.3c.51-.2-.96-.5-1.38-.86.15-.13.29-.26.45-.39C16.72 12.67 18.554 12 21 12v2c-2.446 0-4.28.67-5.83 1.95-.16.13-.3.26-.45.39-.42.36-.87.66-1.38.86-.5.2-1.03.3-1.6.3s-1.1-.1-1.6-.3c-.51-.2-.96-.5-1.38-.86-.15-.13-.29-.26-.45-.39C7.28 14.67 5.446 14 3 14v-2z" className="w-10 h-10 text-dark-golden/70"/>
+                    <div className="mt-12">
+                        <h3 className="text-3xl font-display text-center text-primary-text mb-6">{t.health.glycemicIndexTitle}</h3>
+                        <div className="grid md:grid-cols-2 gap-8">
+                            <div className="bg-golden-accent/10 border border-golden-accent/30 rounded-lg p-6 text-center">
+                                <h4 className="font-display text-2xl mb-2">⚡ {t.health.goldenTaan}: GI ≈ 35</h4>
+                                <p className="text-primary-text/90">{t.health.goldenTaanEffect}</p>
                             </div>
-                            <p className="mt-4">{t.health.goldenTaanEffect}</p>
-                        </div>
-                        <div className="bg-white/50 p-8 rounded-lg text-center shadow-2xl flex flex-col items-center">
-                            <h3 className="font-display text-2xl mb-2">{t.health.refinedWhiteSugar}</h3>
-                            <div className="flex items-baseline justify-center gap-4">
-                                <p className="text-6xl font-bold text-red-400">65</p>
-                                <SvgIcon path="M3 13.998l3.75-6.999L9 12l2.25-8.999L13.5 9l2.25-5.249L18 10.498l3-7.499V6.5l-3 7.499L15.75 8l-2.25 5.249L11.25 9 9 14.998 5.25 8 3 13.998z" className="w-10 h-10 text-red-400/70"/>
+                            <div className="bg-medium-bg/40 border border-dark-accent/30 rounded-lg p-6 text-center">
+                                <h4 className="font-display text-2xl mb-2">📉 {t.health.refinedWhiteSugar}: GI ≈ 65</h4>
+                                <p className="text-primary-text/90">{t.health.whiteSugarEffect}</p>
                             </div>
-                            <p className="mt-4">{t.health.whiteSugarEffect}</p>
                         </div>
                     </div>
                 </div>
@@ -329,18 +483,18 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
 
             {/* Process Section */}
             <ParallaxSection index={2} className="py-20 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{t.process.headline}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.process.description}</p>
                     <div className="grid md:grid-cols-2 gap-12">
-                        <div className="bg-white p-8 rounded-lg shadow-xl">
+                        <div className="border border-medium-bg/50 p-8 rounded-lg">
                             <h3 className="text-2xl font-display text-dark-golden mb-4">{t.process.artisanal.title}</h3>
                             <img src="https://via.placeholder.com/600x400.png?text=Artisanal+Process+(3:2)" alt="The traditional, artisanal process of boiling palmyra palm nectar to create Golden Taan sugar" className="rounded-md mb-6"/>
                             <ul className="space-y-2 list-decimal list-inside">
                                 {t.process.artisanal.steps.map((step, i) => <li key={i}><strong>{step.title}:</strong> {step.description}</li>)}
                             </ul>
                         </div>
-                        <div className="bg-white p-8 rounded-lg shadow-xl">
+                        <div className="border border-medium-bg/50 p-8 rounded-lg">
                             <h3 className="text-2xl font-display text-gray-600 mb-4">{t.process.industrial.title}</h3>
                             <img src="https://via.placeholder.com/600x400.png?text=Industrial+Process+(3:2)" alt="The multi-stage industrial refining process of white cane sugar" className="rounded-md mb-6"/>
                             <ul className="space-y-2 list-decimal list-inside">
@@ -353,7 +507,7 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
 
             {/* Impact Section */}
             <ParallaxSection index={3} id="sustainability" className="py-20 px-4 md:px-8 text-primary-text">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <h2 className="text-4xl md:text-5xl font-display text-center text-dark-golden mb-4">{t.impact.headline}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.impact.description}</p>
                     <h3 className="text-2xl font-display text-center mb-4">{t.impact.chartTitle}</h3>
@@ -363,7 +517,7 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.impact.community.description}</p>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center mb-12">
                         {t.impact.community.stats.map((stat, i) => (
-                             <div key={i} className="bg-white/50 p-6 rounded-lg">
+                             <div key={i} className="border border-medium-bg/50 p-6 rounded-lg">
                                 <p className="text-4xl font-bold text-dark-golden"><AnimatedCounter to={stat.value} />{stat.unit}</p>
                                 <p>{stat.label}</p>
                             </div>
@@ -375,22 +529,28 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
             
             {/* Products Section */}
             <ParallaxSection index={4} id="products" className="py-20 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{t.productSection.headline}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.productSection.description}</p>
                     <div className="grid md:grid-cols-3 gap-8">
                         {products.map(p => (
-                            <div key={p.id} className="bg-white rounded-lg shadow-xl overflow-hidden group transition-transform duration-300 hover:scale-105">
-                                <img src={p.img} alt={p.title} className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" />
-                                <div className="p-6">
+                             <div key={p.id} className="border border-medium-bg/50 rounded-lg overflow-hidden group transition-transform duration-300 hover:scale-105 flex flex-col">
+                                <div onClick={() => setModalProduct(p)} className="cursor-pointer">
+                                    <img src={p.img} alt={p.title} className="w-full h-64 object-cover" />
+                                </div>
+                                <div className="p-6 flex-grow flex flex-col">
                                     <h3 className="text-2xl font-display text-dark-golden">{p.title}</h3>
-                                    <p className="mt-2 mb-4 text-primary-text/80">{p.description}</p>
+                                    <p className="text-md font-sans text-primary-text/60">{p.size}</p>
+                                    <p className="mt-2 text-primary-text/80 flex-grow">{p.shortDescription}</p>
+                                    <p className="text-2xl font-display text-primary-text mt-4">${p.price.toFixed(2)}</p>
+                                </div>
+                                <div className="p-6 pt-0 mt-auto">
                                     <button 
                                         onClick={() => handleAddToCartClick(p)}
                                         disabled={addedProductId === p.id}
                                         className="w-full bg-dark-golden text-light-text font-bold py-2 px-4 rounded-full hover:bg-primary-text transition duration-300 disabled:bg-green-600"
                                     >
-                                        {addedProductId === p.id ? t.productSection.added : `${t.productSection.addToCart} - $${p.price}`}
+                                        {addedProductId === p.id ? t.productSection.added : t.productSection.addToCart}
                                     </button>
                                 </div>
                             </div>
@@ -401,7 +561,7 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
 
             {/* FAQ Section */}
             <ParallaxSection index={5} className="py-20 px-4 md:px-8">
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <h2 className="text-4xl md:text-5xl font-display text-center mb-12">{t.faq.headline}</h2>
                     <div className="space-y-2">
                         {mainFaqs.map((faq, index) => (
@@ -424,6 +584,16 @@ const HomePage = ({ onAddToCart }: { onAddToCart: (product: Product) => void }) 
                     )}
                 </div>
             </ParallaxSection>
+
+            {modalProduct && (
+                <ProductDetailModal
+                    product={modalProduct}
+                    onClose={() => setModalProduct(null)}
+                    onAddToCart={onAddToCart}
+                    setPage={setPage}
+                    setSelectedPost={setSelectedPost}
+                />
+            )}
         </div>
     );
 };
@@ -443,69 +613,77 @@ const AboutUsPage = () => {
         </header>
 
         <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-            <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h3 className="text-4xl font-display text-dark-golden mb-4">{t.roots.title}</h3>
-                    <p className="text-lg text-primary-text/90">{t.roots.text}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                    <img src="https://via.placeholder.com/400x533.png?text=Family+Tradition+(3:4)" alt="A multi-generational photo of a family of palm sugar farmers." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
-                    <img src="https://via.placeholder.com/400x533.png?text=Ratchaburi+Palm+Grove+(3:4)" alt="A serene Palmyra palm grove in Ratchaburi, Thailand at sunset." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+            <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 className="text-4xl font-display text-dark-golden mb-4">{t.roots.title}</h3>
+                        <p className="text-lg text-primary-text/90">{t.roots.text}</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <img src="https://via.placeholder.com/400x533.png?text=Family+Tradition+(3:4)" alt="A multi-generational photo of a family of palm sugar farmers." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
+                        <img src="https://via.placeholder.com/400x533.png?text=Ratchaburi+Palm+Grove+(3:4)" alt="A serene Palmyra palm grove in Ratchaburi, Thailand at sunset." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+                    </div>
                 </div>
             </div>
         </ParallaxSection>
 
          <ParallaxSection index={1} className="py-16 px-4 md:px-8">
-            <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                 <div className="grid grid-cols-2 gap-4 order-last md:order-first">
-                    <img src="https://via.placeholder.com/400x533.png?text=Pure+Palm+Sugar+Crystals+(3:4)" alt="Close-up of pure, unrefined Palmyra palm sugar crystals." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
-                    <img src="https://via.placeholder.com/400x533.png?text=Artisanal+Craft+(3:4)" alt="An artisan farmer carefully crafting a block of palm sugar." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
-                </div>
-                <div>
-                    <h3 className="text-4xl font-display text-dark-golden mb-4">{t.fadingGold.title}</h3>
-                    <p className="text-lg text-primary-text/90">{t.fadingGold.text}</p>
+            <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                     <div className="grid grid-cols-2 gap-4 order-last md:order-first">
+                        <img src="https://via.placeholder.com/400x533.png?text=Pure+Palm+Sugar+Crystals+(3:4)" alt="Close-up of pure, unrefined Palmyra palm sugar crystals." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
+                        <img src="https://via.placeholder.com/400x533.png?text=Artisanal+Craft+(3:4)" alt="An artisan farmer carefully crafting a block of palm sugar." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+                    </div>
+                    <div>
+                        <h3 className="text-4xl font-display text-dark-golden mb-4">{t.fadingGold.title}</h3>
+                        <p className="text-lg text-primary-text/90">{t.fadingGold.text}</p>
+                    </div>
                 </div>
             </div>
         </ParallaxSection>
 
         <ParallaxSection index={2} className="py-16 px-4 md:px-8">
-            <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h3 className="text-4xl font-display text-dark-golden mb-4">{t.mission.title}</h3>
-                    <p className="text-lg text-primary-text/90">{t.mission.text}</p>
-                </div>
-                 <div className="grid grid-cols-2 gap-4">
-                    <img src="https://via.placeholder.com/400x533.png?text=Global+Kitchen+(3:4)" alt="Golden Taan palm sugar being used in a modern, global kitchen." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
-                    <img src="https://via.placeholder.com/400x533.png?text=Healthy+Lifestyle+(3:4)" alt="A person incorporating Golden Taan into a healthy, active lifestyle." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+            <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 className="text-4xl font-display text-dark-golden mb-4">{t.mission.title}</h3>
+                        <p className="text-lg text-primary-text/90">{t.mission.text}</p>
+                    </div>
+                     <div className="grid grid-cols-2 gap-4">
+                        <img src="https://via.placeholder.com/400x533.png?text=Global+Kitchen+(3:4)" alt="Golden Taan palm sugar being used in a modern, global kitchen." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
+                        <img src="https://via.placeholder.com/400x533.png?text=Healthy+Lifestyle+(3:4)" alt="A person incorporating Golden Taan into a healthy, active lifestyle." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+                    </div>
                 </div>
             </div>
         </ParallaxSection>
         
         {/* Timeline Section */}
         <ParallaxSection index={3} className="py-20 px-4 md:px-8">
-            <div className="max-w-4xl mx-auto text-center">
-                 <h3 className="text-4xl font-display text-dark-golden mb-16">{t.timelineTitle}</h3>
-            </div>
-            <div className="max-w-xl md:max-w-3xl mx-auto relative">
-                <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-medium-bg transform -translate-x-1/2"></div>
-                {timelineData.map((item, index) => (
-                    <div key={index} className="mb-12 flex items-center w-full">
-                        <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
+            <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                <div className="text-center">
+                     <h3 className="text-4xl font-display text-dark-golden mb-16">{t.timelineTitle}</h3>
+                </div>
+                <div className="max-w-xl md:max-w-3xl mx-auto relative">
+                    <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-medium-bg transform -translate-x-1/2"></div>
+                    {timelineData.map((item, index) => (
+                        <div key={index} className="mb-12 flex items-center w-full">
+                            <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
+                            </div>
+                            <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-dark-golden ring-4 ring-light-bg"></div>
+                            <div className={`w-1/2 p-4 rounded-lg shadow-lg border border-medium-bg/50 ${index % 2 === 0 ? 'ml-auto text-left' : 'mr-auto text-right'}`}>
+                                 <p className="text-sm font-semibold text-dark-golden">{item.era}</p>
+                                <h4 className="text-xl font-display text-primary-text mt-1">{item.title}</h4>
+                                <p className="text-primary-text/80 mt-2">{item.description}</p>
+                            </div>
                         </div>
-                        <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-dark-golden ring-4 ring-light-bg"></div>
-                        <div className={`w-1/2 p-4 rounded-lg shadow-lg bg-white ${index % 2 === 0 ? 'ml-auto text-left' : 'mr-auto text-right'}`}>
-                             <p className="text-sm font-semibold text-dark-golden">{item.era}</p>
-                            <h4 className="text-xl font-display text-primary-text mt-1">{item.title}</h4>
-                            <p className="text-primary-text/80 mt-2">{item.description}</p>
-                        </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </ParallaxSection>
 
         {/* People Behind the Purity Section */}
         <ParallaxSection index={4} className="py-20 px-4 md:px-8 text-primary-text">
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                 <h3 className="text-4xl font-display text-center text-dark-golden mb-12">{t.people.title}</h3>
                  <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="text-center md:text-left">
@@ -524,7 +702,7 @@ const AboutUsPage = () => {
 
 
          <ParallaxSection index={5} className="py-16 px-4 md:px-8">
-            <div className="max-w-4xl mx-auto text-center">
+            <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl text-center">
                 <h3 className="text-4xl font-display text-dark-golden mb-4">{t.choice.title}</h3>
                 <p className="text-lg text-primary-text/90 mb-8">{t.choice.text}</p>
                 <img src="https://via.placeholder.com/1200x675.png?text=Natural+Sweeteners+(16:9)" alt="A beautiful flat-lay of various natural sweeteners, with Golden Taan palm sugar at the center." className="rounded-lg shadow-xl aspect-video object-cover"/>
@@ -537,98 +715,139 @@ const AboutUsPage = () => {
 const HeritagePage = () => {
     const { translations } = useLocalization();
     const t = translations.heritage;
-    const [activeTab, setActiveTab] = useState('origin');
+    const [openKey, setOpenKey] = useState<string | null>('terroir'); // Default first item open
 
-    const CertificationCard = ({ title, issuer, description }: { title: string, issuer: string, description: string }) => (
-        <div className="bg-white p-6 rounded-lg shadow-lg transition-transform hover:scale-105">
-            <h4 className="font-display text-xl text-dark-golden">{title}</h4>
-            <p className="text-sm font-semibold text-primary-text/70 mb-2">{issuer}</p>
-            <p className="text-primary-text/90">{description}</p>
+    const ContentRenderer = ({ content }: { content: string }) => {
+        const parts = content.split('\n• ').map(part => part.trim());
+        const introParagraphs = parts[0].split('\n').filter(p => p);
+        const bulletPoints = parts.slice(1);
+
+        return (
+            <div className="text-primary-text/90 space-y-4 text-lg">
+                {introParagraphs.map((para, index) => <p key={`p-${index}`}>{para}</p>)}
+                {bulletPoints.length > 0 && (
+                    <ul className="list-disc list-inside space-y-2 pl-4">
+                        {bulletPoints.map((bullet, index) => <li key={`b-${index}`}>{bullet}</li>)}
+                    </ul>
+                )}
+            </div>
+        );
+    };
+
+    const AccordionItem = ({ title, content, imageUrl, newImageUrl, isOpen, onToggle }: {
+        title: string;
+        content: string;
+        imageUrl: string;
+        newImageUrl?: string | null;
+        isOpen: boolean;
+        onToggle: () => void;
+    }) => (
+        <div className="border-b border-dark-accent/20 last:border-b-0">
+            <button
+                onClick={onToggle}
+                className="w-full text-left py-5 px-6 flex justify-between items-center transition-colors hover:bg-dark-golden/5"
+                aria-expanded={isOpen}
+            >
+                <h3 className="text-2xl font-display text-dark-golden">{title}</h3>
+                <span className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+                    <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-6 h-6 text-dark-golden"/>
+                </span>
+            </button>
+            <div
+                className={`grid transition-all duration-700 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+                style={{ transitionProperty: 'grid-template-rows, opacity' }}
+            >
+                <div className="overflow-hidden">
+                    <div className="p-6 space-y-6 bg-dark-golden/5">
+                        <ContentRenderer content={content} />
+                        <img src={imageUrl} alt={title} className="rounded-lg shadow-xl aspect-[16/9] object-cover w-full" />
+                        {newImageUrl && <img src={newImageUrl} alt={`${title} detail`} className="rounded-lg shadow-xl aspect-[16/9] object-cover w-full" />}
+                    </div>
+                </div>
+            </div>
         </div>
     );
+
+    const heritageSections = [
+        {
+            group: t.technical.title,
+            items: [
+                { 
+                    key: 'terroir', 
+                    title: t.technical.terroir.title, 
+                    content: t.technical.terroir.content,
+                    imageUrl: "https://via.placeholder.com/800x450.png?text=Phetchaburi+Terroir+(16:9)",
+                },
+                { 
+                    key: 'artisanal', 
+                    title: t.technical.artisanal.title, 
+                    content: t.technical.artisanal.content,
+                    imageUrl: "https://via.placeholder.com/800x450.png?text=Artisanal+Processing+(16:9)",
+                    newImageUrl: "https://via.placeholder.com/800x450.png?text=Slow-Simmering+Process+(16:9)"
+                }
+            ]
+        },
+        {
+            group: t.marketing.title,
+            items: [
+                { 
+                    key: 'story', 
+                    title: t.marketing.story.title, 
+                    content: t.marketing.story.content,
+                    imageUrl: "https://via.placeholder.com/800x450.png?text=Story+of+Heritage+(16:9)",
+                    newImageUrl: "https://via.placeholder.com/800x450.png?text=GI+Certified+Product+(16:9)"
+                },
+                { 
+                    key: 'appeal', 
+                    title: t.marketing.appeal.title, 
+                    content: t.marketing.appeal.content,
+                    imageUrl: "https://via.placeholder.com/800x450.png?text=Purity+and+Wellness+(16:9)",
+                }
+            ]
+        }
+    ];
+
+    const handleToggle = (key: string) => {
+        setOpenKey(prevKey => (prevKey === key ? null : key));
+    };
     
     return (
         <div>
              <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{t.header.title}</h2>
+                <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{t.header.title}</h1>
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
             </header>
 
-            <div className="sticky top-20 bg-light-bg/80 backdrop-blur-md z-40 border-b border-medium-bg">
-                <div className="max-w-6xl mx-auto flex justify-center">
-                    <button onClick={() => setActiveTab('origin')} className={`py-4 px-6 font-semibold border-b-4 transition-colors ${activeTab === 'origin' ? 'border-dark-golden text-primary-text' : 'border-transparent text-primary-text/60 hover:text-primary-text'}`}>{t.tabs.origin}</button>
-                    <button onClick={() => setActiveTab('export')} className={`py-4 px-6 font-semibold border-b-4 transition-colors ${activeTab === 'export' ? 'border-dark-golden text-primary-text' : 'border-transparent text-primary-text/60 hover:text-primary-text'}`}>{t.tabs.export}</button>
-                    <button onClick={() => setActiveTab('certs')} className={`py-4 px-6 font-semibold border-b-4 transition-colors ${activeTab === 'certs' ? 'border-dark-golden text-primary-text' : 'border-transparent text-primary-text/60 hover:text-primary-text'}`}>{t.tabs.certs}</button>
-                </div>
-            </div>
-
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto">
-                    {activeTab === 'origin' && (
-                        <div className="grid md:grid-cols-2 gap-12 items-center animate-fade-in">
-                             <div>
-                                <h3 className="text-4xl font-display text-dark-golden mb-4">{t.origin.title}</h3>
-                                {t.origin.paragraphs.map((p, i) => <p key={i} className="text-primary-text/90 mb-4">{p}</p>)}
-                            </div>
-                            <img src="https://via.placeholder.com/600x700.png?text=Palmyra+Palm+Tree+(6:7)" alt="A majestic Palmyra Palm Tree, the source of Golden Taan sugar, in rural Thailand." className="rounded-lg shadow-xl object-cover w-full h-full" />
-                        </div>
-                    )}
-                    {activeTab === 'export' && (
-                         <div className="animate-fade-in">
-                            <h3 className="text-4xl font-display text-dark-golden mb-4 text-center">{t.export.title}</h3>
-                             <p className="text-lg text-primary-text/90 mb-12 max-w-4xl mx-auto text-center">{t.export.intro}</p>
-                             <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md mx-auto mb-12">
-                                <p className="text-lg">{t.export.market.intro}</p>
-                                <p className="text-5xl font-display text-dark-golden my-2">{t.export.market.value}</p>
-                                <p>{t.export.market.outro}</p>
-                            </div>
-
-                            <h4 className="text-3xl font-display text-dark-golden mb-8 text-center">{t.export.keyMarkets.title}</h4>
-                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                                {t.export.keyMarkets.markets.map(market => (
-                                    <div key={market.name} className="bg-white p-6 rounded-lg shadow-lg">
-                                        <h5 className="font-display text-xl text-primary-text mb-2">{market.name}</h5>
-                                        <p>{market.description}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                    {activeTab === 'certs' && (
-                        <div className="animate-fade-in">
-                            <h3 className="text-4xl font-display text-dark-golden mb-4 text-center">{t.certs.title}</h3>
-                            <p className="text-lg text-primary-text/90 mb-12 max-w-4xl mx-auto text-center">{t.certs.intro}</p>
-
-                            <h4 className="text-3xl font-display text-dark-golden mb-8">{t.certs.thai.title}</h4>
-                             <div className="grid md:grid-cols-3 gap-8 mb-12">
-                                {t.certs.thai.items.map(cert => (
-                                    <CertificationCard 
-                                        key={cert.title}
-                                        title={cert.title}
-                                        issuer={cert.issuer}
-                                        description={cert.description}
-                                    />
-                                ))}
-                            </div>
-
-                             <h4 className="text-3xl font-display text-dark-golden mb-8">{t.certs.international.title}</h4>
-                             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                                {t.certs.international.items.map(cert => (
-                                    <CertificationCard 
-                                        key={cert.title}
-                                        title={cert.title}
-                                        issuer={cert.issuer}
-                                        description={cert.description}
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    {heritageSections.map((section, index) => (
+                        <div key={section.group} className={index > 0 ? 'mt-12' : ''}>
+                             <h2 className="text-4xl font-display text-center text-primary-text mb-8">{section.group}</h2>
+                             <div className="border border-dark-accent/20 rounded-lg overflow-hidden shadow-lg">
+                                {section.items.map(item => (
+                                    <AccordionItem
+                                        key={item.key}
+                                        title={item.title}
+                                        content={item.content}
+                                        imageUrl={item.imageUrl}
+                                        newImageUrl={item.newImageUrl}
+                                        isOpen={openKey === item.key}
+                                        onToggle={() => handleToggle(item.key)}
                                     />
                                 ))}
                             </div>
                         </div>
-                    )}
+                    ))}
+
+                    <div className="mt-12 pt-8 border-t border-medium-bg">
+                        <p className="text-lg text-primary-text/90 italic">{t.conclusion}</p>
+                    </div>
                 </div>
             </ParallaxSection>
         </div>
-    )
+    );
 }
+
 
 
 const SustainabilityPage = () => {
@@ -643,43 +862,49 @@ const SustainabilityPage = () => {
             </header>
 
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                    <img src="https://via.placeholder.com/600x700.png?text=Lush+Palm+Grove+(6:7)" alt="A lush, green, and biodiverse Palmyra palm grove." className="rounded-lg shadow-xl object-cover w-full h-full" />
-                    <div>
-                        <h3 className="text-4xl font-display text-dark-golden mb-4">{t.environmental.title}</h3>
-                        <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
-                            {t.environmental.points.map((point, i) => <li key={i}><strong>{point.title}:</strong> {point.text}</li>)}
-                        </ul>
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                        <img src="https://via.placeholder.com/600x700.png?text=Lush+Palm+Grove+(6:7)" alt="A lush, green, and biodiverse Palmyra palm grove." className="rounded-lg shadow-xl object-cover w-full h-full" />
+                        <div>
+                            <h3 className="text-4xl font-display text-dark-golden mb-4">{t.environmental.title}</h3>
+                            <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
+                                {t.environmental.points.map((point, i) => <li key={i}><strong>{point.title}:</strong> {point.text}</li>)}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </ParallaxSection>
 
             <ParallaxSection index={1} className="py-16 px-4 md:px-8 text-primary-text">
-                <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                    <div className="order-last md:order-first">
-                        <h3 className="text-4xl font-display text-dark-golden mb-4">{t.social.title}</h3>
-                        <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
-                            {t.social.points.map((point, i) => <li key={i}><strong>{point.title}:</strong> {point.text}</li>)}
-                        </ul>
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                        <div className="order-last md:order-first">
+                            <h3 className="text-4xl font-display text-dark-golden mb-4">{t.social.title}</h3>
+                            <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
+                                {t.social.points.map((point, i) => <li key={i}><strong>{point.title}:</strong> {point.text}</li>)}
+                            </ul>
+                        </div>
+                        <img src="https://via.placeholder.com/600x700.png?text=Community+Hands+(6:7)" alt="The hands of community farmers holding fresh palmyra palm sugar." className="rounded-lg shadow-xl object-cover w-full h-full" />
                     </div>
-                    <img src="https://via.placeholder.com/600x700.png?text=Community+Hands+(6:7)" alt="The hands of community farmers holding fresh palmyra palm sugar." className="rounded-lg shadow-xl object-cover w-full h-full" />
                 </div>
             </ParallaxSection>
 
             <ParallaxSection index={2} className="py-16 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                    <img src="https://via.placeholder.com/600x700.png?text=Quality+Seal+(6:7)" alt="A Golden Taan product with a seal of quality and transparency." className="rounded-lg shadow-xl object-cover w-full h-full" />
-                    <div>
-                        <h3 className="text-4xl font-display text-dark-golden mb-4">{t.governance.title}</h3>
-                        <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
-                            {t.governance.points.map((point, i) => <li key={i}><strong>{point.title}:</strong> {point.text}</li>)}
-                        </ul>
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                        <img src="https://via.placeholder.com/600x700.png?text=Quality+Seal+(6:7)" alt="A Golden Taan product with a seal of quality and transparency." className="rounded-lg shadow-xl object-cover w-full h-full" />
+                        <div>
+                            <h3 className="text-4xl font-display text-dark-golden mb-4">{t.governance.title}</h3>
+                            <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
+                                {t.governance.points.map((point, i) => <li key={i}><strong>{point.title}:</strong> {point.text}</li>)}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </ParallaxSection>
 
             <ParallaxSection index={3} className="py-20 px-4 md:px-8 text-primary-text">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <h3 className="text-4xl font-display text-center text-dark-golden mb-12">{t.insights.title}</h3>
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div>
@@ -704,35 +929,6 @@ const SustainabilityPage = () => {
 const WholesalePage = () => {
     const { translations } = useLocalization();
     const t = translations.wholesale;
-    
-    const [formState, setFormState] = useState({
-        companyName: '',
-        contactPerson: '',
-        email: '',
-        country: '',
-        volume: '',
-        productType: 'Solid',
-        packaging: '',
-        message: '',
-    });
-    
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormState(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('RFQ Submitted:', formState);
-        alert(t.form.successMessage);
-        setFormState({
-            companyName: '', contactPerson: '', email: '', country: '',
-            volume: '', productType: 'Solid', packaging: '', message: '',
-        });
-    };
 
     return (
         <div>
@@ -742,119 +938,44 @@ const WholesalePage = () => {
             </header>
             
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                    <div>
-                        <h3 className="text-4xl font-display text-dark-golden mb-4">{t.insights.title}</h3>
-                        <p className="text-lg text-primary-text/90">{t.insights.text}</p>
-                    </div>
-                    <img src="https://via.placeholder.com/600x400.png?text=Global+Market+Map+(3:2)" alt="A map of the world highlighting key growth markets for natural sweeteners." className="rounded-lg shadow-xl" />
-                </div>
-            </ParallaxSection>
-
-            <ParallaxSection index={1} className="py-16 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-6xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <div className="text-center mb-12">
-                         <h3 className="text-4xl font-display text-dark-golden mb-4">{t.pricing.title}</h3>
+                         <h1 className="text-4xl font-display text-dark-golden mb-4">{t.pricing.title}</h1>
                         <p className="text-lg max-w-3xl mx-auto">{t.pricing.text}</p>
                     </div>
-                    <div className="overflow-x-auto bg-white p-4 rounded-lg">
+                    <div className="overflow-x-auto rounded-lg shadow-lg border border-medium-bg/50">
                         <table className="w-full text-left border-collapse">
                             <thead className="bg-dark-golden text-light-text">
                                 <tr>
-                                    {t.pricing.table.headers.map(header => <th key={header} className="p-4">{header}</th>)}
+                                    <th className="p-4 font-semibold">{t.pricing.table.headers.productLine}</th>
+                                    <th className="p-4 font-semibold">{t.pricing.table.headers.sku}</th>
+                                    <th className="p-4 font-semibold text-center">{t.pricing.table.headers.tier1}</th>
+                                    <th className="p-4 font-semibold text-center">{t.pricing.table.headers.tier2}</th>
+                                    <th className="p-4 font-semibold text-center">{t.pricing.table.headers.tier3}</th>
+                                    <th className="p-4 font-semibold text-center">{t.pricing.table.headers.tier4}</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {t.pricing.table.rows.map((row, index) => (
-                                    <tr key={index} className={`border-b border-medium-bg ${index % 2 !== 0 ? 'bg-light-bg' : 'bg-white'}`}>
-                                        <td className="p-4">{row.moq}</td>
-                                        <td className="p-4">{row.domestic}</td>
-                                        <td className="p-4">{row.export}</td>
-                                    </tr>
-                                ))}
-                                <tr className="border-b border-medium-bg bg-light-bg">
-                                    <td className="p-4 font-bold">{t.pricing.table.contactRow.moq}</td>
-                                    <td className="p-4 font-bold" colSpan={2}>{t.pricing.table.contactRow.price}</td>
-                                </tr>
+                            <tbody className="bg-light-bg">
+                                {t.pricing.table.data.flatMap((productGroup) => 
+                                    productGroup.skus.map((sku, skuIndex) => (
+                                        <tr key={`${productGroup.productLine}-${sku.name}`} className="border-t border-medium-bg hover:bg-medium-bg/30 transition-colors">
+                                            {skuIndex === 0 ? (
+                                                <td rowSpan={productGroup.skus.length} className="p-4 align-top font-display text-lg text-dark-golden border-r border-medium-bg">
+                                                    {productGroup.productLine}
+                                                </td>
+                                            ) : null}
+                                            <td className="p-4 text-primary-text/90 border-r border-medium-bg">{sku.name}</td>
+                                            <td className="p-4 text-center font-mono">{sku.tier1}</td>
+                                            <td className="p-4 text-center font-mono">{sku.tier2}</td>
+                                            <td className="p-4 text-center font-mono">{sku.tier3}</td>
+                                            <td className="p-4 text-center font-mono">{sku.tier4}</td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
-                    <p className="text-sm mt-4 text-right">{t.pricing.table.note}</p>
-                </div>
-            </ParallaxSection>
-
-            <ParallaxSection index={2} className="py-16 px-4 md:px-8 text-primary-text">
-                <div className="max-w-6xl mx-auto text-center">
-                    <h3 className="text-4xl font-display text-dark-golden mb-12">{t.logistics.title}</h3>
-                    <div className="grid md:grid-cols-2 gap-12 items-start text-left">
-                        <div>
-                            <h4 className="text-3xl font-display text-primary-text mb-4">{t.logistics.packaging.title}</h4>
-                            <ul className="list-disc list-inside space-y-2 text-lg">
-                                {t.logistics.packaging.options.map(opt => <li key={opt}>{opt}</li>)}
-                            </ul>
-                            <img src="https://via.placeholder.com/600x400.png?text=Packaging+Options+(3:2)" alt="Various wholesale and retail packaging options for Golden Taan products." className="rounded-lg shadow-xl mt-8" />
-                        </div>
-                         <div>
-                            <h4 className="text-3xl font-display text-primary-text mb-4">{t.logistics.export.title}</h4>
-                             <ul className="list-disc list-inside space-y-2 text-lg">
-                                 {t.logistics.export.services.map(srv => <li key={srv}>{srv}</li>)}
-                            </ul>
-                            <img src="https://via.placeholder.com/600x400.png?text=Global+Logistics+(3:2)" alt="A visual representation of Golden Taan's global logistics network." className="rounded-lg shadow-xl mt-8" />
-                        </div>
-                    </div>
-                </div>
-            </ParallaxSection>
-            
-            <ParallaxSection index={3} className="py-16 px-4 md:px-8">
-                <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h2 className="text-4xl font-display text-dark-golden mb-8 text-center">{t.form.title}</h2>
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <label htmlFor="companyName" className="block text-sm font-medium text-primary-text">{t.form.companyName}</label>
-                                <input type="text" name="companyName" id="companyName" value={formState.companyName} onChange={handleInputChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-dark-golden focus:ring-dark-golden"/>
-                            </div>
-                             <div>
-                                <label htmlFor="contactPerson" className="block text-sm font-medium text-primary-text">{t.form.contactPerson}</label>
-                                <input type="text" name="contactPerson" id="contactPerson" value={formState.contactPerson} onChange={handleInputChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-dark-golden focus:ring-dark-golden"/>
-                            </div>
-                        </div>
-                         <div className="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-primary-text">{t.form.email}</label>
-                                <input type="email" name="email" id="email" value={formState.email} onChange={handleInputChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-dark-golden focus:ring-dark-golden"/>
-                            </div>
-                             <div>
-                                <label htmlFor="country" className="block text-sm font-medium text-primary-text">{t.form.country}</label>
-                                <input type="text" name="country" id="country" value={formState.country} onChange={handleInputChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-dark-golden focus:ring-dark-golden"/>
-                            </div>
-                        </div>
-                         <div className="grid md:grid-cols-2 gap-6">
-                             <div>
-                                <label htmlFor="volume" className="block text-sm font-medium text-primary-text">{t.form.volume}</label>
-                                <input type="text" name="volume" id="volume" value={formState.volume} onChange={handleInputChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-dark-golden focus:ring-dark-golden"/>
-                            </div>
-                            <div>
-                                <label htmlFor="productType" className="block text-sm font-medium text-primary-text">{t.form.productType.label}</label>
-                                <select id="productType" name="productType" value={formState.productType} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-dark-golden focus:ring-dark-golden">
-                                    {t.form.productType.options.map(opt => <option key={opt}>{opt}</option>)}
-                                </select>
-                            </div>
-                        </div>
-                        <div>
-                            <label htmlFor="packaging" className="block text-sm font-medium text-primary-text">{t.form.packaging.label}</label>
-                            <input type="text" name="packaging" id="packaging" value={formState.packaging} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-dark-golden focus:ring-dark-golden" placeholder={t.form.packaging.placeholder}/>
-                        </div>
-                         <div>
-                            <label htmlFor="message" className="block text-sm font-medium text-primary-text">{t.form.message}</label>
-                            <textarea id="message" name="message" rows={4} value={formState.message} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-dark-golden focus:ring-dark-golden"></textarea>
-                        </div>
-                        <div className="text-center">
-                            <button type="submit" className="bg-golden-accent text-primary-text font-bold py-3 px-12 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
-                                {t.form.submit}
-                            </button>
-                        </div>
-                    </form>
+                    <p className="text-sm mt-4 text-right text-primary-text/70">{t.pricing.table.note}</p>
                 </div>
             </ParallaxSection>
         </div>
@@ -880,7 +1001,7 @@ const ShopNowPage = ({ cartItems, onUpdateQuantity, setPage }: { cartItems: Cart
 
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                 {cartItems.length === 0 ? (
-                    <div className="max-w-6xl mx-auto text-center py-20">
+                    <div className="max-w-4xl mx-auto text-center py-20 bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                         <h3 className="text-3xl font-display text-dark-golden">{t.emptyCart.title}</h3>
                         <p className="mt-4 mb-8 text-lg">{t.emptyCart.text}</p>
                         <button onClick={() => { setPage(Page.Home); trackPageView(`/#${Page.Home}`); }} className="bg-golden-accent text-primary-text font-bold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
@@ -888,9 +1009,9 @@ const ShopNowPage = ({ cartItems, onUpdateQuantity, setPage }: { cartItems: Cart
                         </button>
                     </div>
                 ) : (
-                    <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12">
+                    <div className="max-w-4xl mx-auto grid lg:grid-cols-2 gap-12 bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                         {/* Cart Summary */}
-                        <div className="bg-white p-8 rounded-lg shadow-xl">
+                        <div className="border border-medium-bg/50 p-8 rounded-lg">
                             <h3 className="text-3xl font-display text-dark-golden mb-6">{t.summary.title}</h3>
                             <div className="space-y-4">
                                 {cartItems.map(item => (
@@ -916,7 +1037,7 @@ const ShopNowPage = ({ cartItems, onUpdateQuantity, setPage }: { cartItems: Cart
                             </div>
                         </div>
                         {/* Payment Options */}
-                        <div className="bg-white p-8 rounded-lg shadow-xl">
+                        <div className="border border-medium-bg/50 p-8 rounded-lg">
                             <h3 className="text-3xl font-display text-dark-golden mb-6">{t.payment.title}</h3>
                             <div className="flex border-b" role="tablist" aria-label="Payment methods">
                                 <button id="tab-qr" onClick={() => setPaymentTab('qr')} role="tab" aria-selected={paymentTab === 'qr'} aria-controls="panel-qr" className={`py-2 px-4 ${paymentTab === 'qr' ? 'border-b-2 border-dark-golden font-semibold' : 'text-gray-500'}`}>{t.payment.tabs.qr}</button>
@@ -976,14 +1097,33 @@ const ShopNowPage = ({ cartItems, onUpdateQuantity, setPage }: { cartItems: Cart
                     </div>
                 )}
             </ParallaxSection>
+            
+            <ParallaxSection index={1} className="py-16 px-4 md:px-8">
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    <h3 className="text-3xl font-display text-dark-golden mb-8 text-center">{t.shippingInfo.title}</h3>
+                    <div className="space-y-6 text-primary-text/90">
+                        <div>
+                            <h4 className="font-bold text-lg text-primary-text mb-2">{t.shippingInfo.policy.title}</h4>
+                            <p>{t.shippingInfo.policy.text}</p>
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-lg text-primary-text mb-2">{t.shippingInfo.delivery.title}</h4>
+                            <p className="whitespace-pre-wrap">{t.shippingInfo.delivery.text}</p>
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-lg text-primary-text mb-2">{t.shippingInfo.customs.title}</h4>
+                            <p>{t.shippingInfo.customs.text}</p>
+                        </div>
+                    </div>
+                </div>
+            </ParallaxSection>
         </div>
     );
 }
 
-const BlogPage = () => {
+const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | null, setSelectedPost: (post: BlogPost | null) => void }) => {
     const { translations } = useLocalization();
     const t = translations.blog;
-    const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
 
     const handleSelectPost = (post: BlogPost) => {
         setSelectedPost(post);
@@ -999,8 +1139,8 @@ const BlogPage = () => {
 
     if (selectedPost) {
         return (
-            <ParallaxSection index={0}>
-                <div className="max-w-4xl mx-auto px-4 py-16">
+            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <button onClick={handleBackToList} className="mb-8 text-dark-golden font-semibold hover:underline">
                         &larr; {t.back}
                     </button>
@@ -1032,21 +1172,23 @@ const BlogPage = () => {
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
             </header>
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                <div className="max-w-4xl mx-auto space-y-8">
-                    {t.posts.map(post => (
-                        <div key={post.id} onClick={() => handleSelectPost(post)} className="bg-white rounded-lg shadow-xl overflow-hidden group transition-shadow duration-300 hover:shadow-2xl cursor-pointer flex">
-                            <img src={post.coverImage} alt={post.title} className="w-1/3 object-cover aspect-[4/3] group-hover:opacity-90 transition-opacity" />
-                            <div className="p-6 flex flex-col w-2/3">
-                                <h3 className="text-xl font-display text-dark-golden group-hover:text-golden-accent transition-colors">{post.title}</h3>
-                                <p className="mt-2 text-primary-text/80 flex-grow">
-                                    {post.introduction}
-                                </p>
-                                <span className="mt-4 self-start text-dark-golden font-semibold group-hover:underline">
-                                    {t.readMore} &rarr;
-                                </span>
+                <div className="max-w-5xl mx-auto">
+                    <div className="bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl space-y-8">
+                        {t.posts.map(post => (
+                            <div key={post.id} onClick={() => handleSelectPost(post)} className="border border-medium-bg/50 rounded-lg overflow-hidden group transition-shadow duration-300 hover:shadow-2xl cursor-pointer flex flex-col md:flex-row">
+                                <img src={post.coverImage} alt={post.title} className="w-full md:w-1/3 object-cover aspect-video md:aspect-[4/3] group-hover:opacity-90 transition-opacity" />
+                                <div className="p-6 flex flex-col w-full md:w-2/3">
+                                    <h3 className="text-xl font-display text-dark-golden group-hover:text-golden-accent transition-colors">{post.title}</h3>
+                                    <p className="mt-2 text-primary-text/80 flex-grow">
+                                        {post.introduction}
+                                    </p>
+                                    <span className="mt-4 self-start text-dark-golden font-semibold group-hover:underline">
+                                        {t.readMore} &rarr;
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </ParallaxSection>
         </div>
@@ -1093,13 +1235,13 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
                     <div className="flex-shrink-0">
                         <a href="#" onClick={() => navigate(Page.Home)} className="flex items-center space-x-2">
                             <img className="h-12 w-auto" src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden Taan Logo" />
-                             <span className="font-display text-2xl text-primary-text">Golden Taan</span>
+                             <span className="font-display text-2xl text-primary-text tracking-wider">Golden TAAN</span>
                         </a>
                     </div>
 
                     {/* Desktop Menu */}
                     <div className="hidden md:block">
-                        <div className="ml-10 flex items-baseline space-x-4">
+                        <div className="ml-10 flex items-center space-x-4">
                             <div className="relative">
                                 <button onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)} onClick={() => navigate(Page.Home)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Home ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>
                                     {t.home}
@@ -1122,7 +1264,7 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
                             
                              {/* Language Selector */}
                             <div className="relative">
-                                <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="px-3 py-2 rounded-md text-sm font-medium text-primary-text hover:text-dark-golden flex items-center">
+                                <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="px-3 py-2 rounded-md text-sm font-medium text-primary-text hover:text-dark-golden flex items-center" aria-haspopup="true" aria-expanded={isLangDropdownOpen} aria-label="Select language">
                                     <span>{currentLang?.flag}</span>
                                     <span className="ml-2">{currentLang?.name}</span>
                                 </button>
@@ -1130,7 +1272,7 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
                                     <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                                         <div className="py-1" role="menu" aria-orientation="vertical">
                                             {languages.map(lang => (
-                                                <button key={lang.code} onClick={() => handleSetLanguage(lang.code)} className="w-full text-left block px-4 py-2 text-sm text-primary-text hover:bg-light-bg">
+                                                <button key={lang.code} onClick={() => handleSetLanguage(lang.code)} className="w-full text-left block px-4 py-2 text-sm text-primary-text hover:bg-light-bg" role="menuitem">
                                                     {lang.flag} {lang.name}
                                                 </button>
                                             ))}
@@ -1145,9 +1287,29 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
                         </div>
                     </div>
                     
-                    {/* Mobile Menu Button */}
-                    <div className="-mr-2 flex md:hidden">
-                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="inline-flex items-center justify-center p-2 rounded-md text-primary-text hover:text-dark-golden focus:outline-none">
+                    {/* Mobile Menu Controls */}
+                    <div className="flex items-center md:hidden">
+                        {/* Language Selector for Mobile */}
+                        <div className="relative">
+                            <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="p-2 rounded-md text-sm font-medium text-primary-text hover:text-dark-golden flex items-center" aria-haspopup="true" aria-expanded={isLangDropdownOpen} aria-label="Select language">
+                                <span>{currentLang?.flag}</span>
+                            </button>
+                            {isLangDropdownOpen && (
+                                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                                    <div className="py-1" role="menu" aria-orientation="vertical">
+                                        {languages.map(lang => (
+                                            <button key={lang.code} onClick={() => handleSetLanguage(lang.code)} className="w-full text-left block px-4 py-2 text-sm text-primary-text hover:bg-light-bg" role="menuitem">
+                                                {lang.flag} {lang.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Hamburger Menu Button */}
+                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="ml-2 inline-flex items-center justify-center p-2 rounded-md text-primary-text bg-medium-bg/50 hover:bg-medium-bg focus:outline-none focus:ring-2 focus:ring-inset focus:ring-dark-golden" aria-controls="mobile-menu" aria-expanded={isMenuOpen}>
+                            <span className="sr-only">Open main menu</span>
                             <SvgIcon path={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"} />
                         </button>
                     </div>
@@ -1156,7 +1318,7 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
 
             {/* Mobile Menu */}
             {isMenuOpen && (
-                <div className="md:hidden">
+                <div className="md:hidden" id="mobile-menu">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                         <button onClick={() => navigate(Page.Home)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.home}</button>
                         <button onClick={() => navigate(Page.About)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.ourStory}</button>
@@ -1165,22 +1327,6 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
                         <button onClick={() => navigate(Page.Wholesale)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.wholesale}</button>
                         <button onClick={() => navigate(Page.Blog)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.blog}</button>
                         
-                        <div className="relative pt-2">
-                             <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="w-full flex justify-between items-center px-3 py-2 text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg rounded-md">
-                                <span>{currentLang?.flag} {currentLang?.name}</span>
-                                <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-5 h-5"/>
-                             </button>
-                             {isLangDropdownOpen && (
-                                <div className="mt-2 space-y-1">
-                                {languages.map(lang => (
-                                    <button key={lang.code} onClick={() => { handleSetLanguage(lang.code); setIsMenuOpen(false); }} className="block w-full text-left pl-8 pr-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">
-                                        {lang.flag} {lang.name}
-                                    </button>
-                                ))}
-                                </div>
-                             )}
-                        </div>
-
                         <button onClick={() => navigate(Page.ShopNow)} className="block w-full text-center mt-4 bg-golden-accent text-primary-text font-bold py-2 px-4 rounded-full hover:bg-yellow-500">
                             {t.shopNow}
                         </button>
@@ -1195,17 +1341,24 @@ const Footer = () => {
     const { translations } = useLocalization();
     const t = translations.footer;
     const year = new Date().getFullYear();
+    const socialLinks = [
+        { name: 'Facebook', href: '#', path: 'M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.196h3.312z' },
+        { name: 'Instagram', href: '#', path: 'M12 2C8.134 2 5 5.134 5 9c0 1.388.423 2.68.969 3.693-.05.16-.09.324-.128.494-.038.17-.07.342-.1.516-.03.174-.05.35-.07.528-.02.178-.04.356-.05.537-.01.18-.02.36-.02.542V15c0 3.866 3.134 7 7 7s7-3.134 7-7v-.188c0-.182-.01-.362-.02-.542-.01-.18-.03-.36-.05-.537-.02-.178-.04-.354-.07-.528-.03-.174-.06-.346-.1-.516-.038-.17-.08-.334-.128-.494A6.945 6.945 0 0 0 19 9c0-3.866-3.134-7-7-7zm0 2c2.757 0 5 2.243 5 5s-2.243 5-5 5-5-2.243-5-5 2.243-5 5-5zm0 2c-1.654 0-3 1.346-3 3s1.346 3 3 3 3-1.346 3-3-1.346-3-3-3zm5.854-1.5a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0z' },
+        { name: 'TikTok', href: '#', path: 'M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-2.43.05-4.84-.95-6.43-2.8-1.59-1.87-2.13-4.38-1.73-6.73.34-1.94 1.46-3.64 2.96-4.85.94-.75 2.06-1.25 3.25-1.48.02-.48.01-.96.01-1.43.01-2.52 0-5.04 0-7.56C7.81 2.52 9.47.95 12.525.02z'},
+        { name: 'LinkedIn', href: '#', path: 'M16.338 16.338H13.67V12.16c0-.996-.017-2.277-1.387-2.277-1.388 0-1.601 1.086-1.601 2.206v4.248H8.014V8.338h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.651zM5.337 7.163a1.448 1.448 0 1 1 0-2.895 1.448 1.448 0 0 1 0 2.895zM6.617 16.338H4.06v-8h2.557v8zM17.638 2H6.362A4.362 4.362 0 0 0 2 6.362v11.276A4.362 4.362 0 0 0 6.362 22h11.276A4.362 4.362 0 0 0 22 17.638V6.362A4.362 4.362 0 0 0 17.638 2z' },
+        { name: 'X', href: '#', path: 'M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z' }
+    ];
 
     return (
         <footer id="contact" className="bg-primary-text text-light-text/80 py-12 px-4 md:px-8">
-            <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
+            <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-8">
                 <div>
                     <h3 className="font-display text-2xl text-light-text mb-4">Golden TAAN Co., Ltd.</h3>
                     <p>{t.address}</p>
                 </div>
                 <div>
-                    <h3 className="font-display text-2xl text-light-text mb-4">Contact</h3>
-                    <p>{t.contactPerson.label}: {t.contactPerson.name}</p>
+                    <h3 className="font-display text-2xl text-light-text mb-4">{t.contactPerson.label}</h3>
+                    <p>{t.contactPerson.name}</p>
                     <p>{t.phone.label}: {t.phone.number}</p>
                     <p>{t.email.label}: <a href={`mailto:${t.email.address}`} className="hover:text-golden-accent">{t.email.address}</a></p>
                 </div>
@@ -1218,6 +1371,16 @@ const Footer = () => {
                         <li><a href="#products" className="hover:text-golden-accent">{translations.nav.homeSubItems[2].label}</a></li>
                     </ul>
                 </div>
+                 <div>
+                    <h3 className="font-display text-2xl text-light-text mb-4">Follow Us</h3>
+                    <div className="flex space-x-4">
+                        {socialLinks.map(link => (
+                            <a key={link.name} href={link.href} className="text-light-text/80 hover:text-golden-accent transition-colors" aria-label={link.name}>
+                                <SvgIcon path={link.path} className="w-6 h-6" />
+                            </a>
+                        ))}
+                    </div>
+                </div>
             </div>
             <div className="mt-8 pt-8 border-t border-light-text/20 text-center text-sm">
                 <p>{t.copyright.replace('{year}', year.toString())}</p>
@@ -1226,6 +1389,66 @@ const Footer = () => {
     )
 };
 
+const SoftLaunchModal = ({ onClose }: { onClose: () => void }) => {
+    const translations = {
+      en: { title: "Welcome to the New Golden TAAN", body: "Our website is in a soft launch phase as we finalize our content. You are welcome to explore our authentic Palmyra Palm Sugar products. The complete, feature-rich website will officially launch on 15 September 2025.", note: "Last Updated: 27 August 2025", button: "Continue to Site" },
+      th: { title: "ยินดีต้อนรับสู่ โกลเด้น ตาล", body: "เว็บไซต์ของเราอยู่ในช่วง Soft Launch และกำลังปรับปรุงเนื้อหา ขอเชิญทุกท่านเข้าชมผลิตภัณฑ์น้ำตาลโตนดแท้ของเราได้ก่อนใคร เว็บไซต์ฉบับสมบูรณ์จะเปิดตัวอย่างเป็นทางการในวันที่ 15 กันยายน 2025", note: "อัปเดตล่าสุด: 27 สิงหาคม 2025", button: "เข้าชมเว็บไซต์" },
+      de: { title: "Willkommen bei Golden TAAN", body: "Unsere Website befindet sich in einer Soft-Launch-Phase. Entdecken Sie gerne unsere authentischen Palmyra-Palmzucker-Produkte. Die vollständige Website wird am 15. September 2025 offiziell gestartet.", note: "Letzte Aktualisierung: 27. August 2025", button: "Weiter zur Seite" },
+      ja: { title: "ゴールデン・ターンへようこそ", body: "当社のウェブサイトは現在ソフトローンチ段階です。本物のパルミラヤシ糖製品をぜひご覧ください。完全版のウェブサイトは2025年9月15日に正式に公開されます。", note: "最終更新日：2025年8月27日", button: "サイトに進む" },
+      ko: { title: "골든 탄에 오신 것을 환영합니다", body: "저희 웹사이트는 현재 소프트 론칭 단계에 있습니다。 저희의 정통 팔미라 야자 설탕 제품을 둘러보세요。 전체 웹사이트는 2025년 9월 15일에 공식적으로 출시됩니다。", note: "마지막 업데이트: 2025년 8월 27일", button: "사이트 계속 보기" },
+      fr: { title: "Bienvenue chez Golden TAAN", body: "Notre site web est en phase de pré-lancement. N'hésitez pas à découvrir nos produits authentiques de sucre de palme Palmyra. Le site complet sera officiellement lancé le 15 septembre 2025.", note: "Dernière mise à jour : 27 août 2025", button: "Continuer vers le site" },
+      zh: { title: "欢迎来到 Golden TAAN", body: "我们的网站目前处于试运行阶段。欢迎您探索我们正宗的巴尔米拉棕榈糖产品。功能齐全的完整网站将于2025年9月15日正式上线。", note: "最后更新：2025年8月27日", button: "继续浏览" }
+    };
+
+    type ModalLang = keyof typeof translations;
+    const [lang, setLang] = useState<ModalLang>('en');
+    const content = translations[lang];
+
+    const languages: { code: ModalLang, flag: string, name: string }[] = [
+        { code: 'en', flag: '🇬🇧', name: 'English' },
+        { code: 'th', flag: '🇹🇭', name: 'Thai' },
+        { code: 'de', flag: '🇩🇪', name: 'German' },
+        { code: 'ja', flag: '🇯🇵', name: 'Japanese' },
+        { code: 'ko', flag: '🇰🇷', name: 'Korean' },
+        { code: 'fr', flag: '🇫🇷', name: 'French' },
+        { code: 'zh', flag: '🇨🇳', name: 'Chinese' },
+    ];
+
+    return (
+        <div className="fixed inset-0 bg-black/75 z-[200] flex items-center justify-center p-4 animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="softlaunch-title">
+            <div className="bg-[#FAF9F6] text-[#3D2B1F] rounded-lg shadow-2xl max-w-lg w-full p-8 relative font-sans">
+                <div className="absolute top-4 right-4">
+                    <div className="flex space-x-2">
+                        {languages.map(({ code, flag, name }) => (
+                            <button
+                                key={code}
+                                onClick={() => setLang(code)}
+                                className={`px-2 py-1 rounded-md text-xl transition-transform transform hover:scale-110 ${lang === code ? 'bg-black/10' : ''}`}
+                                aria-label={`Switch to ${name}`}
+                            >
+                                {flag}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="text-center pt-8">
+                    <h2 id="softlaunch-title" className="text-3xl font-display mb-4">{content.title}</h2>
+                    <p className="mb-6">{content.body}</p>
+                    <p className="text-sm text-[#3D2B1F]/60 mb-8">{content.note}</p>
+                    <button
+                        onClick={onClose}
+                        className="bg-[#3D2B1F] text-[#FAF9F6] font-bold py-3 px-12 rounded-full hover:bg-opacity-80 transition duration-300 transform hover:scale-105"
+                    >
+                        {content.button}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
 const App = () => {
     const [currentPage, setCurrentPage] = useState<Page>(() => {
         const hash = window.location.hash.replace('#', '');
@@ -1233,6 +1456,8 @@ const App = () => {
     });
 
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
     
     // --- Localization State ---
     const [language, setLanguage] = useState<Language>('en');
@@ -1242,6 +1467,7 @@ const App = () => {
             const hash = window.location.hash.replace('#', '');
             if (Object.values(Page).includes(hash as Page)) {
                 setCurrentPage(hash as Page);
+                if(hash !== Page.Blog) setSelectedPost(null); // Clear selected post when navigating away from blog
                 trackPageView(`/#${hash}`);
             } else {
                 setCurrentPage(Page.Home);
@@ -1256,6 +1482,17 @@ const App = () => {
             window.removeEventListener('hashchange', handleHashChange);
         };
     }, []);
+
+    useEffect(() => {
+        if (sessionStorage.getItem('softLaunchModalClosed') !== 'true') {
+            setIsModalVisible(true);
+        }
+    }, []);
+
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
+        sessionStorage.setItem('softLaunchModalClosed', 'true');
+    };
 
     const setPage = (page: Page) => {
         window.location.hash = page;
@@ -1292,14 +1529,14 @@ const App = () => {
 
     const renderPage = () => {
         switch (currentPage) {
-            case Page.Home: return <HomePage onAddToCart={handleAddToCart} />;
+            case Page.Home: return <HomePage onAddToCart={handleAddToCart} setPage={setPage} setSelectedPost={setSelectedPost} />;
             case Page.About: return <AboutUsPage />;
             case Page.Heritage: return <HeritagePage />;
             case Page.Sustainability: return <SustainabilityPage />;
             case Page.Wholesale: return <WholesalePage />;
-            case Page.Blog: return <BlogPage />;
+            case Page.Blog: return <BlogPage selectedPost={selectedPost} setSelectedPost={setSelectedPost} />;
             case Page.ShopNow: return <ShopNowPage cartItems={cartItems} onUpdateQuantity={handleUpdateQuantity} setPage={setPage} />;
-            default: return <HomePage onAddToCart={handleAddToCart} />;
+            default: return <HomePage onAddToCart={handleAddToCart} setPage={setPage} setSelectedPost={setSelectedPost} />;
         }
     };
     
@@ -1314,6 +1551,7 @@ const App = () => {
 
     return (
         <LocalizationContext.Provider value={localizationContextValue}>
+             {isModalVisible && <SoftLaunchModal onClose={handleCloseModal} />}
             <div className="pt-20">
                 <Header setPage={setPage} currentPage={currentPage} />
                 <main>

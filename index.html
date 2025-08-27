@@ -43,7 +43,7 @@
                         'light-bg': '#FBF8F1',
                         'medium-bg': '#EAE0D5',
                         'dark-accent': '#C6AC8F',
-                        'primary-text': '#5A3E2B',
+                        'primary-text': '#3D2B1F',
                         'light-text': '#FBF8F1',
                         'golden-accent': '#E5B84B',
                         'dark-golden': '#8C6D46',
@@ -51,7 +51,16 @@
                     fontFamily: {
                         'display': ['Playfair Display', 'serif'],
                         'sans': ['Work Sans', 'sans-serif'],
-                    }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                    },
                 }
             }
         }
@@ -59,7 +68,6 @@
 <script type="importmap">
 {
   "imports": {
-    "@google/genai": "https://esm.sh/@google/genai@^1.15.0",
     "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
     "react/": "https://esm.sh/react@^19.1.1/",
     "react": "https://esm.sh/react@^19.1.1",

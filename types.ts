@@ -1,4 +1,6 @@
 
+
+
 export enum Page {
     Home = 'home',
     About = 'about-us',
@@ -13,6 +15,7 @@ export interface NutrientData {
     name: string;
     goldenTaan: number;
     unrefinedSugarcane: number;
+    coconutSugar: number;
     refinedWhiteSugar: number;
 }
 
@@ -27,12 +30,27 @@ export interface FAQ {
     a: string;
 }
 
+export interface PackagingInfo {
+    title: string;
+    caseSize: string;
+    palletQuantity: string;
+    availability: string;
+}
+
 export interface Product {
     id: string;
     img: string;
     title: string;
+    shortDescription: string;
     description: string;
     price: number;
+    size: string;
+    ingredients: string;
+    nutrition_highlights: string[];
+    dietary_suitability: string[];
+    pairings: string[];
+    packagingInfo: PackagingInfo;
+    featuredInRecipes?: number[];
 }
 
 export interface CartItem extends Product {
@@ -56,6 +74,37 @@ export interface BlogPost {
 
 // --- New Types for Localization ---
 export type Language = 'en' | 'th' | 'de' | 'ja' | 'ko' | 'fr' | 'zh';
+
+export interface WholesaleTierPricing {
+    productLine: string;
+    skus: {
+        name: string;
+        tier1: string;
+        tier2: string;
+        tier3: string;
+        tier4: string;
+    }[];
+}
+
+interface HeritageSectionContent {
+    title: string;
+    content: string;
+}
+
+interface HeritagePageContent {
+    header: { title: string; subtitle: string; };
+    technical: {
+        title: string;
+        terroir: HeritageSectionContent;
+        artisanal: HeritageSectionContent;
+    };
+    marketing: {
+        title: string;
+        story: HeritageSectionContent;
+        appeal: HeritageSectionContent;
+    };
+    conclusion: string;
+}
 
 export interface Translations {
     metaTitle: string;
@@ -89,12 +138,14 @@ export interface Translations {
             chartTitle: string;
             goldenTaan: string;
             unrefinedSugarcane: string;
+            coconutSugar: string;
             refinedWhiteSugar: string;
             nutrientData: NutrientData[];
             insight: {
                 title: string;
                 text: string;
             };
+            glycemicIndexTitle: string;
             goldenTaanEffect: string;
             whiteSugarEffect: string;
         };
@@ -151,23 +202,7 @@ export interface Translations {
         };
         choice: { title: string; text: string; };
     };
-    heritage: {
-        header: { title: string; subtitle: string; };
-        tabs: { origin: string; export: string; certs: string; };
-        origin: { title: string; paragraphs: string[]; };
-        export: {
-            title: string;
-            intro: string;
-            market: { intro: string; value: string; outro: string; };
-            keyMarkets: { title: string; markets: { name: string; description: string; }[]; };
-        };
-        certs: {
-            title: string;
-            intro: string;
-            thai: { title: string; items: { title: string; issuer: string; description: string; }[]; };
-            international: { title: string; items: { title: string; issuer: string; description: string; }[]; };
-        };
-    };
+    heritage: HeritagePageContent;
     sustainability: {
         header: { title: string; subtitle: string; };
         environmental: { title: string; points: { title: string, text: string }[] };
@@ -182,34 +217,21 @@ export interface Translations {
     };
     wholesale: {
         header: { title: string; subtitle: string; };
-        insights: { title: string; text: string; };
         pricing: {
             title: string;
             text: string;
             table: {
-                headers: string[];
-                rows: { moq: string; domestic: string; export: string; }[];
-                contactRow: { moq: string; price: string; };
+                headers: {
+                    productLine: string;
+                    sku: string;
+                    tier1: string;
+                    tier2: string;
+                    tier3: string;
+                    tier4: string;
+                };
+                data: WholesaleTierPricing[];
                 note: string;
             }
-        };
-        logistics: {
-            title: string;
-            packaging: { title: string; options: string[]; };
-            export: { title: string; services: string[]; };
-        };
-        form: {
-            title: string;
-            companyName: string;
-            contactPerson: string;
-            email: string;
-            country: string;
-            volume: string;
-            productType: { label: string; options: string[]; };
-            packaging: { label: string; placeholder: string; };
-            message: string;
-            submit: string;
-            successMessage: string;
         };
     };
     shop: {
@@ -222,7 +244,13 @@ export interface Translations {
             qr: { text: string; };
             crypto: { text: string; accept: string; };
             card: { number: string; expiry: string; cvc: string; name: string; pay: string; };
-        }
+        };
+        shippingInfo: {
+            title: string;
+            policy: { title: string; text: string; };
+            delivery: { title: string; text: string; };
+            customs: { title: string; text: string; };
+        };
     };
     blog: {
         header: { title: string; subtitle: string; };

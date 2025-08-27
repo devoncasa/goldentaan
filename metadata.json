@@ -1,5 +1,27 @@
 {
   "name": "Golden Taan 25082025",
   "description": "A premium, interactive website for Golden Taan, a brand specializing in authentic and sustainable Palmyra palm sugar. The site features product information, the brand's story, health benefits, and an AI-powered recipe generator.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "socials": [
+    {
+      "platform": "Facebook",
+      "url": "https://facebook.com/goldentaan"
+    },
+    {
+      "platform": "Instagram",
+      "url": "https://instagram.com/goldentaan"
+    },
+    {
+      "platform": "TikTok",
+      "url": "https://tiktok.com/@goldentaan"
+    },
+    {
+      "platform": "LinkedIn",
+      "url": "https://linkedin.com/company/goldentaan"
+    },
+    {
+      "platform": "X",
+      "url": "https://x.com/goldentaan"
+    }
+  ]
 }
