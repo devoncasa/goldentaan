@@ -1,7 +1,4 @@
 
-
-
-
 import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { Page, NutrientData, SustainabilityData, FAQ, Product, CartItem, BlogPost, BlogContent, Language, Translations } from './types';
@@ -20,6 +17,24 @@ const trackPageView = (path: string) => {
             page_path: path
         });
     }
+};
+
+const ASSET_BASE_URL = 'https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/';
+
+// --- Brand Name Renderer ---
+const renderStyledText = (text: string | undefined) => {
+    if (!text) return null;
+    const parts = text.split(/(Golden TAAN)/g);
+    return (
+        <>
+            {parts.map((part, index) => {
+                if (part === 'Golden TAAN') {
+                    return <strong key={index} className="font-bold text-[#B8860B]">Golden TAAN</strong>;
+                }
+                return part;
+            })}
+        </>
+    );
 };
 
 
@@ -142,7 +157,7 @@ const SustainabilityChart = () => {
                     <YAxis type="category" dataKey="name" stroke="#3D2B1F" width={100} />
                     <Tooltip contentStyle={{ backgroundColor: '#3D2B1F', border: 'none', color: '#FBF8F1' }} />
                     <Legend wrapperStyle={{ color: '#3D2B1F' }} />
-                    <Bar dataKey="goldenTaan" name={translations.home.health.goldenTaan} fill="#E5B84B" />
+                    <Bar dataKey="goldenTaan" name={renderStyledText(translations.home.health.goldenTaan)?.toString()} fill="#E5B84B" />
                     <Bar dataKey="sugarcane" name={translations.home.impact.conventionalSugarcane} fill="#EAE0D5" />
                 </BarChart>
             </ResponsiveContainer>
@@ -163,7 +178,7 @@ const ResourceEfficiencyRadarChart = () => {
                     <PolarRadiusAxis angle={30} domain={[0, 10]} stroke="#3D2B1F" />
                     <Tooltip contentStyle={{ backgroundColor: '#3D2B1F', border: 'none', color: '#FBF8F1' }} />
                     <Legend wrapperStyle={{ color: '#3D2B1F' }} />
-                    <Radar name="Golden Taan" dataKey="Golden Taan" stroke="#E5B84B" fill="#E5B84B" fillOpacity={0.6} />
+                    <Radar name="Golden TAAN" dataKey="Golden TAAN" stroke="#E5B84B" fill="#E5B84B" fillOpacity={0.6} />
                     <Radar name="Cane Sugar" dataKey="Cane Sugar" stroke="#EAE0D5" fill="#EAE0D5" fillOpacity={0.6} />
                 </RadarChart>
             </ResponsiveContainer>
@@ -182,7 +197,7 @@ const FaqItem = ({ faq, isOpen, onClick, index }: { faq: FAQ, isOpen: boolean, o
             aria-controls={`faq-answer-${index}`}
             id={`faq-question-${index}`}
         >
-            <span className="font-semibold text-lg text-primary-text">{faq.q}</span>
+            <span className="font-semibold text-lg text-primary-text">{renderStyledText(faq.q)}</span>
             <span className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}>
                 <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-5 h-5"/>
             </span>
@@ -191,7 +206,7 @@ const FaqItem = ({ faq, isOpen, onClick, index }: { faq: FAQ, isOpen: boolean, o
             id={`faq-answer-${index}`}
             className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-96' : 'max-h-0'}`}
         >
-            <p className="pb-4 text-primary-text/80">{faq.a}</p>
+            <p className="pb-4 text-primary-text/80">{renderStyledText(faq.a)}</p>
         </div>
     </div>
 );
@@ -200,13 +215,13 @@ const FaqItem = ({ faq, isOpen, onClick, index }: { faq: FAQ, isOpen: boolean, o
 const DetailSection = ({ title, content, isList = false, isLightBg = false }: { title: string, content: string | string[], isList?: boolean, isLightBg?: boolean }) => {
     return (
         <div className={`p-6 rounded-lg ${isLightBg ? 'bg-medium-bg/20' : 'bg-transparent'}`}>
-            <h4 className="font-display text-2xl text-dark-golden mb-3">{title}</h4>
+            <h4 className="font-display text-2xl text-dark-golden mb-3">{renderStyledText(title)}</h4>
             {isList && Array.isArray(content) ? (
                 <ul className="list-disc list-inside space-y-1 text-primary-text/90">
-                    {content.map((item, index) => <li key={index}>{item}</li>)}
+                    {content.map((item, index) => <li key={index}>{renderStyledText(item)}</li>)}
                 </ul>
             ) : (
-                <p className="text-primary-text/90 whitespace-pre-wrap">{typeof content === 'string' ? content : ''}</p>
+                <p className="text-primary-text/90 whitespace-pre-wrap">{typeof content === 'string' ? renderStyledText(content) : ''}</p>
             )}
         </div>
     );
@@ -221,10 +236,10 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, setPage, setSelecte
 
     const galleryImages = [
         product.img,
-        'https://via.placeholder.com/600x600.png?text=Product+in+Use',
-        'https://via.placeholder.com/600x600.png?text=Lifestyle',
-        'https://via.placeholder.com/600x600.png?text=Packaging',
-        'https://via.placeholder.com/600x600.png?text=Texture',
+        `${ASSET_BASE_URL}golden-taan-caramel-latte.webp`,
+        `${ASSET_BASE_URL}gluten-free-palmyra-blondies.webp`,
+        `${ASSET_BASE_URL}golden-taan-gift-set.webp`,
+        `${ASSET_BASE_URL}palmyra-leaf-texture-macro.webp`,
     ];
     const [mainImage, setMainImage] = useState(galleryImages[0]);
 
@@ -286,12 +301,12 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, setPage, setSelecte
                             </div>
                         </div>
                         <div className="flex flex-col">
-                            <h2 id="product-modal-title" className="text-4xl font-display text-dark-golden">{product.title}</h2>
+                            <h2 id="product-modal-title" className="text-4xl font-display text-dark-golden">{renderStyledText(product.title)}</h2>
                             <p className="text-lg text-primary-text/70 mt-1">{product.size}</p>
                             
                             <div className="mt-4">
                                 <h4 className="font-bold text-primary-text">Ingredients:</h4>
-                                <p className="text-primary-text/80">{product.ingredients}</p>
+                                <p className="text-primary-text/80">{renderStyledText(product.ingredients)}</p>
                             </div>
                             
                             <div className="flex-grow"></div>
@@ -336,7 +351,7 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, setPage, setSelecte
                                     <div key={recipe.id} onClick={() => handleRecipeClick(recipe)} className="bg-white/50 rounded-lg shadow-lg overflow-hidden group cursor-pointer transition-transform hover:scale-105">
                                         <img src={recipe.coverImage} alt={recipe.title} className="w-full h-40 object-cover" />
                                         <div className="p-4">
-                                            <h4 className="font-semibold text-primary-text group-hover:text-dark-golden">{recipe.title}</h4>
+                                            <h4 className="font-semibold text-primary-text group-hover:text-dark-golden">{renderStyledText(recipe.title)}</h4>
                                         </div>
                                     </div>
                                 ))}
@@ -398,9 +413,9 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
                 ></div>
                 {/* Content */}
                 <div className="relative z-10 text-center p-4">
-                    <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden Taan Logo" className="h-24 md:h-32 mx-auto mb-8" />
-                    <h1 className="text-5xl md:text-7xl font-display mb-4">{t.hero.headline}</h1>
-                    <p className="text-xl md:text-2xl mb-8 font-sans">{t.hero.subheadline}</p>
+                    <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden TAAN Logo" className="h-24 md:h-32 mx-auto mb-8" />
+                    <h1 className="text-5xl md:text-7xl font-display mb-4">{renderStyledText(t.hero.headline)}</h1>
+                    <p className="text-xl md:text-2xl mb-8 font-sans">{renderStyledText(t.hero.subheadline)}</p>
                     <a href="#our-story" onClick={() => trackPageView('/#our-story')} className="bg-golden-accent text-primary-text font-bold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">{t.hero.cta}</a>
                 </div>
             </section>
@@ -408,18 +423,18 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
             {/* Global Trends Section */}
             <ParallaxSection index={0} id="our-story" className="py-20 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{t.trends.headline}</h2>
-                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.trends.description}</p>
+                    <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{renderStyledText(t.trends.headline)}</h2>
+                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{renderStyledText(t.trends.description)}</p>
                     <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <img src="https://via.placeholder.com/600x700.png?text=Natural+Choices+(6:7)" alt="A display of natural, healthy food choices reflecting the global trend towards authenticity" className="rounded-lg shadow-xl" />
+                        <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt="A display of natural, healthy food choices reflecting the global trend towards authenticity" className="rounded-lg shadow-xl aspect-[4/3] object-cover" />
                         <div className="space-y-8">
                             <div className="border border-medium-bg/50 p-6 rounded-lg">
                                 <h3 className="text-5xl font-display text-dark-golden">$<AnimatedCounter to={55} />+ <span className="text-3xl">{t.trends.billion}</span></h3>
-                                <p className="mt-2">{t.trends.marketStat}</p>
+                                <p className="mt-2">{renderStyledText(t.trends.marketStat)}</p>
                             </div>
                             <div className="border border-medium-bg/50 p-6 rounded-lg">
                                 <h3 className="text-5xl font-display text-dark-golden"><AnimatedCounter to={70} /><span className="text-3xl">%</span></h3>
-                                <p className="mt-2">{t.trends.consumerStat}</p>
+                                <p className="mt-2">{renderStyledText(t.trends.consumerStat)}</p>
                             </div>
                         </div>
                     </div>
@@ -429,19 +444,19 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
             {/* Health Benefits Section */}
             <ParallaxSection index={1} id="health-benefits" className="py-20 px-4 md:px-8 text-primary-text">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h2 className="text-4xl md:text-5xl font-display text-center text-dark-golden mb-4">{t.health.headline}</h2>
-                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.health.description}</p>
+                    <h2 className="text-4xl md:text-5xl font-display text-center text-dark-golden mb-4">{renderStyledText(t.health.headline)}</h2>
+                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{renderStyledText(t.health.description)}</p>
                     
-                    <h3 className="text-2xl font-display text-center mb-4">{t.health.chartTitle}</h3>
+                    <h3 className="text-2xl font-display text-center mb-4">{renderStyledText(t.health.chartTitle)}</h3>
                     <div className="overflow-x-auto mt-8 rounded-lg shadow-lg border border-dark-accent/20">
                         <table className="min-w-full text-left border-collapse">
                             <thead className="bg-dark-golden/10">
                                 <tr>
                                     <th className="p-4 font-display text-lg text-primary-text border-b border-r border-dark-accent/20">Nutrient (per 100g)</th>
-                                    <th className="p-4 font-display text-lg text-dark-golden border-b border-dark-accent/20 text-center">{t.health.goldenTaan}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text border-b border-dark-accent/20 text-center">{t.health.unrefinedSugarcane}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text border-b border-dark-accent/20 text-center">{t.health.coconutSugar}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text border-b border-dark-accent/20 text-center">{t.health.refinedWhiteSugar}</th>
+                                    <th className="p-4 font-display text-lg text-dark-golden border-b border-dark-accent/20 text-center">{renderStyledText(t.health.goldenTaan)}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text border-b border-dark-accent/20 text-center">{renderStyledText(t.health.unrefinedSugarcane)}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text border-b border-dark-accent/20 text-center">{renderStyledText(t.health.coconutSugar)}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text border-b border-dark-accent/20 text-center">{renderStyledText(t.health.refinedWhiteSugar)}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -460,21 +475,21 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
                     
                     <div className="max-w-3xl mx-auto mt-12 bg-golden-accent/10 border border-golden-accent/30 rounded-lg p-6 flex items-start space-x-4">
                         <div>
-                            <h4 className="font-display text-xl text-dark-golden">{t.health.insight.title}</h4>
-                            <p className="mt-1 text-primary-text/90">{t.health.insight.text}</p>
+                            <h4 className="font-display text-xl text-dark-golden">{renderStyledText(t.health.insight.title)}</h4>
+                            <p className="mt-1 text-primary-text/90">{renderStyledText(t.health.insight.text)}</p>
                         </div>
                     </div>
 
                     <div className="mt-12">
-                        <h3 className="text-3xl font-display text-center text-primary-text mb-6">{t.health.glycemicIndexTitle}</h3>
+                        <h3 className="text-3xl font-display text-center text-primary-text mb-6">{renderStyledText(t.health.glycemicIndexTitle)}</h3>
                         <div className="grid md:grid-cols-2 gap-8">
                             <div className="bg-golden-accent/10 border border-golden-accent/30 rounded-lg p-6 text-center">
-                                <h4 className="font-display text-2xl mb-2">⚡ {t.health.goldenTaan}: GI ≈ 35</h4>
-                                <p className="text-primary-text/90">{t.health.goldenTaanEffect}</p>
+                                <h4 className="font-display text-2xl mb-2">⚡ {renderStyledText(t.health.goldenTaan)}: GI ≈ 35</h4>
+                                <p className="text-primary-text/90">{renderStyledText(t.health.goldenTaanEffect)}</p>
                             </div>
                             <div className="bg-medium-bg/40 border border-dark-accent/30 rounded-lg p-6 text-center">
-                                <h4 className="font-display text-2xl mb-2">📉 {t.health.refinedWhiteSugar}: GI ≈ 65</h4>
-                                <p className="text-primary-text/90">{t.health.whiteSugarEffect}</p>
+                                <h4 className="font-display text-2xl mb-2">📉 {renderStyledText(t.health.refinedWhiteSugar)}: GI ≈ 65</h4>
+                                <p className="text-primary-text/90">{renderStyledText(t.health.whiteSugarEffect)}</p>
                             </div>
                         </div>
                     </div>
@@ -484,21 +499,21 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
             {/* Process Section */}
             <ParallaxSection index={2} className="py-20 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{t.process.headline}</h2>
-                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.process.description}</p>
+                    <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{renderStyledText(t.process.headline)}</h2>
+                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{renderStyledText(t.process.description)}</p>
                     <div className="grid md:grid-cols-2 gap-12">
                         <div className="border border-medium-bg/50 p-8 rounded-lg">
-                            <h3 className="text-2xl font-display text-dark-golden mb-4">{t.process.artisanal.title}</h3>
-                            <img src="https://via.placeholder.com/600x400.png?text=Artisanal+Process+(3:2)" alt="The traditional, artisanal process of boiling palmyra palm nectar to create Golden Taan sugar" className="rounded-md mb-6"/>
+                            <h3 className="text-2xl font-display text-dark-golden mb-4">{renderStyledText(t.process.artisanal.title)}</h3>
+                            <img src={`${ASSET_BASE_URL}traditional-simmering-kettle-fire.webp`} alt="The traditional, artisanal process of boiling palmyra palm nectar" className="rounded-md mb-6 aspect-video object-cover"/>
                             <ul className="space-y-2 list-decimal list-inside">
-                                {t.process.artisanal.steps.map((step, i) => <li key={i}><strong>{step.title}:</strong> {step.description}</li>)}
+                                {t.process.artisanal.steps.map((step, i) => <li key={i}><strong>{step.title}:</strong> {renderStyledText(step.description)}</li>)}
                             </ul>
                         </div>
                         <div className="border border-medium-bg/50 p-8 rounded-lg">
-                            <h3 className="text-2xl font-display text-gray-600 mb-4">{t.process.industrial.title}</h3>
-                            <img src="https://via.placeholder.com/600x400.png?text=Industrial+Process+(3:2)" alt="The multi-stage industrial refining process of white cane sugar" className="rounded-md mb-6"/>
+                            <h3 className="text-2xl font-display text-gray-600 mb-4">{renderStyledText(t.process.industrial.title)}</h3>
+                            <img src={`${ASSET_BASE_URL}palmyra-leaf-texture-macro.webp`} alt="The multi-stage industrial refining process of white cane sugar" className="rounded-md mb-6 aspect-video object-cover"/>
                             <ul className="space-y-2 list-decimal list-inside">
-                                {t.process.industrial.steps.map((step, i) => <li key={i}><strong>{step.title}:</strong> {step.description}</li>)}
+                                {t.process.industrial.steps.map((step, i) => <li key={i}><strong>{step.title}:</strong> {renderStyledText(step.description)}</li>)}
                             </ul>
                         </div>
                     </div>
@@ -508,30 +523,30 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
             {/* Impact Section */}
             <ParallaxSection index={3} id="sustainability" className="py-20 px-4 md:px-8 text-primary-text">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h2 className="text-4xl md:text-5xl font-display text-center text-dark-golden mb-4">{t.impact.headline}</h2>
-                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.impact.description}</p>
-                    <h3 className="text-2xl font-display text-center mb-4">{t.impact.chartTitle}</h3>
+                    <h2 className="text-4xl md:text-5xl font-display text-center text-dark-golden mb-4">{renderStyledText(t.impact.headline)}</h2>
+                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{renderStyledText(t.impact.description)}</p>
+                    <h3 className="text-2xl font-display text-center mb-4">{renderStyledText(t.impact.chartTitle)}</h3>
                     <SustainabilityChart />
 
-                    <h2 className="text-4xl md:text-5xl font-display text-center text-dark-golden mt-20 mb-4">{t.impact.community.headline}</h2>
-                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.impact.community.description}</p>
+                    <h2 className="text-4xl md:text-5xl font-display text-center text-dark-golden mt-20 mb-4">{renderStyledText(t.impact.community.headline)}</h2>
+                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{renderStyledText(t.impact.community.description)}</p>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center mb-12">
                         {t.impact.community.stats.map((stat, i) => (
                              <div key={i} className="border border-medium-bg/50 p-6 rounded-lg">
                                 <p className="text-4xl font-bold text-dark-golden"><AnimatedCounter to={stat.value} />{stat.unit}</p>
-                                <p>{stat.label}</p>
+                                <p>{renderStyledText(stat.label)}</p>
                             </div>
                         ))}
                     </div>
-                    <img src="https://via.placeholder.com/1200x600.png?text=Our+Community+(2:1)" alt="A collage showing the vibrant community of farmers and artisans behind Golden Taan" className="rounded-lg shadow-xl"/>
+                    <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt="A collage showing the vibrant community of farmers and artisans" className="rounded-lg shadow-xl aspect-video object-cover w-full"/>
                 </div>
             </ParallaxSection>
             
             {/* Products Section */}
             <ParallaxSection index={4} id="products" className="py-20 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{t.productSection.headline}</h2>
-                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{t.productSection.description}</p>
+                    <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{renderStyledText(t.productSection.headline)}</h2>
+                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{renderStyledText(t.productSection.description)}</p>
                     <div className="grid md:grid-cols-3 gap-8">
                         {products.map(p => (
                              <div key={p.id} className="border border-medium-bg/50 rounded-lg overflow-hidden group transition-transform duration-300 hover:scale-105 flex flex-col">
@@ -539,9 +554,9 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
                                     <img src={p.img} alt={p.title} className="w-full h-64 object-cover" />
                                 </div>
                                 <div className="p-6 flex-grow flex flex-col">
-                                    <h3 className="text-2xl font-display text-dark-golden">{p.title}</h3>
+                                    <h3 className="text-2xl font-display text-dark-golden">{renderStyledText(p.title)}</h3>
                                     <p className="text-md font-sans text-primary-text/60">{p.size}</p>
-                                    <p className="mt-2 text-primary-text/80 flex-grow">{p.shortDescription}</p>
+                                    <p className="mt-2 text-primary-text/80 flex-grow">{renderStyledText(p.shortDescription)}</p>
                                     <p className="text-2xl font-display text-primary-text mt-4">${p.price.toFixed(2)}</p>
                                 </div>
                                 <div className="p-6 pt-0 mt-auto">
@@ -562,7 +577,7 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
             {/* FAQ Section */}
             <ParallaxSection index={5} className="py-20 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h2 className="text-4xl md:text-5xl font-display text-center mb-12">{t.faq.headline}</h2>
+                    <h2 className="text-4xl md:text-5xl font-display text-center mb-12">{renderStyledText(t.faq.headline)}</h2>
                     <div className="space-y-2">
                         {mainFaqs.map((faq, index) => (
                             <FaqItem key={index} faq={faq} isOpen={openFaqIndex === index} onClick={() => toggleFaq(index)} index={index} />
@@ -608,20 +623,20 @@ const AboutUsPage = () => {
     return (
     <div>
         <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-            <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{t.header.title}</h2>
-            <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
+            <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
+            <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
         </header>
 
         <ParallaxSection index={0} className="py-16 px-4 md:px-8">
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h3 className="text-4xl font-display text-dark-golden mb-4">{t.roots.title}</h3>
-                        <p className="text-lg text-primary-text/90">{t.roots.text}</p>
+                        <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.roots.title)}</h3>
+                        <p className="text-lg text-primary-text/90">{renderStyledText(t.roots.text)}</p>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <img src="https://via.placeholder.com/400x533.png?text=Family+Tradition+(3:4)" alt="A multi-generational photo of a family of palm sugar farmers." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
-                        <img src="https://via.placeholder.com/400x533.png?text=Ratchaburi+Palm+Grove+(3:4)" alt="A serene Palmyra palm grove in Ratchaburi, Thailand at sunset." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+                        <img src={`${ASSET_BASE_URL}farmer-climbing-palm-tree.webp`} alt="A multi-generational photo of a family of palm sugar farmers." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
+                        <img src={`${ASSET_BASE_URL}ratchaburi-palm-groves-landscape.webp`} alt="A serene Palmyra palm grove in Ratchaburi, Thailand at sunset." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
                     </div>
                 </div>
             </div>
@@ -631,12 +646,12 @@ const AboutUsPage = () => {
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                      <div className="grid grid-cols-2 gap-4 order-last md:order-first">
-                        <img src="https://via.placeholder.com/400x533.png?text=Pure+Palm+Sugar+Crystals+(3:4)" alt="Close-up of pure, unrefined Palmyra palm sugar crystals." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
-                        <img src="https://via.placeholder.com/400x533.png?text=Artisanal+Craft+(3:4)" alt="An artisan farmer carefully crafting a block of palm sugar." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+                        <img src={`${ASSET_BASE_URL}golden-taan-blocks.webp`} alt="Close-up of pure, unrefined Palmyra palm sugar crystals." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
+                        <img src={`${ASSET_BASE_URL}traditional-simmering-kettle-fire.webp`} alt="An artisan farmer carefully crafting a block of palm sugar." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
                     </div>
                     <div>
-                        <h3 className="text-4xl font-display text-dark-golden mb-4">{t.fadingGold.title}</h3>
-                        <p className="text-lg text-primary-text/90">{t.fadingGold.text}</p>
+                        <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.fadingGold.title)}</h3>
+                        <p className="text-lg text-primary-text/90">{renderStyledText(t.fadingGold.text)}</p>
                     </div>
                 </div>
             </div>
@@ -646,12 +661,12 @@ const AboutUsPage = () => {
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h3 className="text-4xl font-display text-dark-golden mb-4">{t.mission.title}</h3>
-                        <p className="text-lg text-primary-text/90">{t.mission.text}</p>
+                        <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.mission.title)}</h3>
+                        <p className="text-lg text-primary-text/90">{renderStyledText(t.mission.text)}</p>
                     </div>
                      <div className="grid grid-cols-2 gap-4">
-                        <img src="https://via.placeholder.com/400x533.png?text=Global+Kitchen+(3:4)" alt="Golden Taan palm sugar being used in a modern, global kitchen." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
-                        <img src="https://via.placeholder.com/400x533.png?text=Healthy+Lifestyle+(3:4)" alt="A person incorporating Golden Taan into a healthy, active lifestyle." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+                        <img src={`${ASSET_BASE_URL}golden-taan-caramel-latte.webp`} alt="Golden TAAN palm sugar being used in a modern, global kitchen." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
+                        <img src={`${ASSET_BASE_URL}gluten-free-palmyra-blondies.webp`} alt="A person incorporating Golden TAAN into a healthy, active lifestyle." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
                     </div>
                 </div>
             </div>
@@ -661,7 +676,7 @@ const AboutUsPage = () => {
         <ParallaxSection index={3} className="py-20 px-4 md:px-8">
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                 <div className="text-center">
-                     <h3 className="text-4xl font-display text-dark-golden mb-16">{t.timelineTitle}</h3>
+                     <h3 className="text-4xl font-display text-dark-golden mb-16">{renderStyledText(t.timelineTitle)}</h3>
                 </div>
                 <div className="max-w-xl md:max-w-3xl mx-auto relative">
                     <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-medium-bg transform -translate-x-1/2"></div>
@@ -672,8 +687,8 @@ const AboutUsPage = () => {
                             <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-dark-golden ring-4 ring-light-bg"></div>
                             <div className={`w-1/2 p-4 rounded-lg shadow-lg border border-medium-bg/50 ${index % 2 === 0 ? 'ml-auto text-left' : 'mr-auto text-right'}`}>
                                  <p className="text-sm font-semibold text-dark-golden">{item.era}</p>
-                                <h4 className="text-xl font-display text-primary-text mt-1">{item.title}</h4>
-                                <p className="text-primary-text/80 mt-2">{item.description}</p>
+                                <h4 className="text-xl font-display text-primary-text mt-1">{renderStyledText(item.title)}</h4>
+                                <p className="text-primary-text/80 mt-2">{renderStyledText(item.description)}</p>
                             </div>
                         </div>
                     ))}
@@ -684,17 +699,17 @@ const AboutUsPage = () => {
         {/* People Behind the Purity Section */}
         <ParallaxSection index={4} className="py-20 px-4 md:px-8 text-primary-text">
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                <h3 className="text-4xl font-display text-center text-dark-golden mb-12">{t.people.title}</h3>
+                <h3 className="text-4xl font-display text-center text-dark-golden mb-12">{renderStyledText(t.people.title)}</h3>
                  <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="text-center md:text-left">
-                        <img src="https://via.placeholder.com/400x533.png?text=Krisada+Laohasiri+(3:4)" alt="Portrait of Krisada Laohasiri, founder of Golden Taan" className="rounded-lg shadow-xl aspect-[3/4] object-cover mx-auto md:mx-0 w-64"/>
-                        <h4 className="text-2xl font-display text-primary-text mt-6">{t.people.founderName}</h4>
-                        <p className="mt-4 text-xl italic text-primary-text/80">"{t.people.founderQuote}"</p>
+                        <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt="Portrait of Krisada Laohasiri, founder of Golden TAAN" className="rounded-lg shadow-xl aspect-[3/4] object-cover mx-auto md:mx-0 w-64"/>
+                        <h4 className="text-2xl font-display text-primary-text mt-6">{renderStyledText(t.people.founderName)}</h4>
+                        <p className="mt-4 text-xl italic text-primary-text/80">"{renderStyledText(t.people.founderQuote)}"</p>
                     </div>
                     <div>
-                        <img src="https://via.placeholder.com/600x400.png?text=Community+of+Artisans+(3:2)" alt="A community of smiling, skilled palm sugar artisans in Thailand." className="rounded-lg shadow-xl aspect-video md:aspect-[4/3] object-cover w-full"/>
-                        <h4 className="text-2xl font-display text-primary-text mt-6">{t.people.communityTitle}</h4>
-                        <p className="mt-2 text-primary-text/90">{t.people.communityText}</p>
+                        <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt="A community of smiling, skilled palm sugar artisans in Thailand." className="rounded-lg shadow-xl aspect-video md:aspect-[4/3] object-cover w-full"/>
+                        <h4 className="text-2xl font-display text-primary-text mt-6">{renderStyledText(t.people.communityTitle)}</h4>
+                        <p className="mt-2 text-primary-text/90">{renderStyledText(t.people.communityText)}</p>
                     </div>
                 </div>
             </div>
@@ -703,9 +718,9 @@ const AboutUsPage = () => {
 
          <ParallaxSection index={5} className="py-16 px-4 md:px-8">
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl text-center">
-                <h3 className="text-4xl font-display text-dark-golden mb-4">{t.choice.title}</h3>
-                <p className="text-lg text-primary-text/90 mb-8">{t.choice.text}</p>
-                <img src="https://via.placeholder.com/1200x675.png?text=Natural+Sweeteners+(16:9)" alt="A beautiful flat-lay of various natural sweeteners, with Golden Taan palm sugar at the center." className="rounded-lg shadow-xl aspect-video object-cover"/>
+                <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.choice.title)}</h3>
+                <p className="text-lg text-primary-text/90 mb-8">{renderStyledText(t.choice.text)}</p>
+                <img src={`${ASSET_BASE_URL}golden-taan-gift-set.webp`} alt="A beautiful flat-lay of various natural sweeteners, with Golden TAAN palm sugar at the center." className="rounded-lg shadow-xl aspect-video object-cover"/>
             </div>
         </ParallaxSection>
     </div>
@@ -715,138 +730,118 @@ const AboutUsPage = () => {
 const HeritagePage = () => {
     const { translations } = useLocalization();
     const t = translations.heritage;
-    const [openKey, setOpenKey] = useState<string | null>('terroir'); // Default first item open
+    const [openSections, setOpenSections] = useState<number[]>([0]);
+
+    const toggleSection = (index: number) => {
+        setOpenSections(prev =>
+            prev.includes(index)
+                ? prev.filter(i => i !== index)
+                : [...prev, index]
+        );
+    };
 
     const ContentRenderer = ({ content }: { content: string }) => {
-        const parts = content.split('\n• ').map(part => part.trim());
-        const introParagraphs = parts[0].split('\n').filter(p => p);
-        const bulletPoints = parts.slice(1);
+        // Split by the [image:...] tag, but keep the delimiter
+        const parts = content.split(/(\[image:.*?\])/g).filter(part => part.trim());
 
         return (
-            <div className="text-primary-text/90 space-y-4 text-lg">
-                {introParagraphs.map((para, index) => <p key={`p-${index}`}>{para}</p>)}
-                {bulletPoints.length > 0 && (
-                    <ul className="list-disc list-inside space-y-2 pl-4">
-                        {bulletPoints.map((bullet, index) => <li key={`b-${index}`}>{bullet}</li>)}
-                    </ul>
-                )}
+            <div className="text-primary-text/90 text-lg">
+                {parts.map((part, index) => {
+                    const imageMatch = part.match(/\[image:(.*?)\]/);
+                    if (imageMatch) {
+                        const imageName = imageMatch[1];
+                        const altText = imageName.replace(/\.(webp|png)$/, '').replace(/-/g, ' ');
+                        return (
+                            <div key={index} className="my-8">
+                                <img
+                                    src={`${ASSET_BASE_URL}${imageName}`}
+                                    alt={altText}
+                                    className="rounded-lg shadow-xl aspect-[16/9] object-cover w-full"
+                                />
+                            </div>
+                        );
+                    } else {
+                        // This part is text. Process it for paragraphs and lists.
+                        const paragraphs = part.split('\n').filter(p => p.trim() !== '');
+                        const elements = [];
+                        let currentList: string[] = [];
+
+                        for (let i = 0; i < paragraphs.length; i++) {
+                            const p = paragraphs[i].trim();
+                            if (p.startsWith('•')) {
+                                currentList.push(p.substring(1).trim());
+                            } else {
+                                if (currentList.length > 0) {
+                                    elements.push(
+                                        <ul key={`ul-${i}`} className="list-disc list-outside space-y-2 pl-5">
+                                            {currentList.map((item, li) => <li key={li}>{renderStyledText(item)}</li>)}
+                                        </ul>
+                                    );
+                                    currentList = [];
+                                }
+                                elements.push(<p key={`p-${i}`}>{renderStyledText(p)}</p>);
+                            }
+                        }
+                        
+                        if (currentList.length > 0) {
+                            elements.push(
+                                <ul key="ul-end" className="list-disc list-outside space-y-2 pl-5">
+                                    {currentList.map((item, li) => <li key={li}>{renderStyledText(item)}</li>)}
+                                </ul>
+                            );
+                        }
+
+                        return <div className="space-y-6" key={index}>{elements}</div>;
+                    }
+                })}
             </div>
         );
     };
 
-    const AccordionItem = ({ title, content, imageUrl, newImageUrl, isOpen, onToggle }: {
-        title: string;
-        content: string;
-        imageUrl: string;
-        newImageUrl?: string | null;
-        isOpen: boolean;
-        onToggle: () => void;
-    }) => (
-        <div className="border-b border-dark-accent/20 last:border-b-0">
-            <button
-                onClick={onToggle}
-                className="w-full text-left py-5 px-6 flex justify-between items-center transition-colors hover:bg-dark-golden/5"
-                aria-expanded={isOpen}
-            >
-                <h3 className="text-2xl font-display text-dark-golden">{title}</h3>
-                <span className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-                    <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-6 h-6 text-dark-golden"/>
-                </span>
-            </button>
-            <div
-                className={`grid transition-all duration-700 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
-                style={{ transitionProperty: 'grid-template-rows, opacity' }}
-            >
-                <div className="overflow-hidden">
-                    <div className="p-6 space-y-6 bg-dark-golden/5">
-                        <ContentRenderer content={content} />
-                        <img src={imageUrl} alt={title} className="rounded-lg shadow-xl aspect-[16/9] object-cover w-full" />
-                        {newImageUrl && <img src={newImageUrl} alt={`${title} detail`} className="rounded-lg shadow-xl aspect-[16/9] object-cover w-full" />}
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-
-    const heritageSections = [
-        {
-            group: t.technical.title,
-            items: [
-                { 
-                    key: 'terroir', 
-                    title: t.technical.terroir.title, 
-                    content: t.technical.terroir.content,
-                    imageUrl: "https://via.placeholder.com/800x450.png?text=Phetchaburi+Terroir+(16:9)",
-                },
-                { 
-                    key: 'artisanal', 
-                    title: t.technical.artisanal.title, 
-                    content: t.technical.artisanal.content,
-                    imageUrl: "https://via.placeholder.com/800x450.png?text=Artisanal+Processing+(16:9)",
-                    newImageUrl: "https://via.placeholder.com/800x450.png?text=Slow-Simmering+Process+(16:9)"
-                }
-            ]
-        },
-        {
-            group: t.marketing.title,
-            items: [
-                { 
-                    key: 'story', 
-                    title: t.marketing.story.title, 
-                    content: t.marketing.story.content,
-                    imageUrl: "https://via.placeholder.com/800x450.png?text=Story+of+Heritage+(16:9)",
-                    newImageUrl: "https://via.placeholder.com/800x450.png?text=GI+Certified+Product+(16:9)"
-                },
-                { 
-                    key: 'appeal', 
-                    title: t.marketing.appeal.title, 
-                    content: t.marketing.appeal.content,
-                    imageUrl: "https://via.placeholder.com/800x450.png?text=Purity+and+Wellness+(16:9)",
-                }
-            ]
-        }
-    ];
-
-    const handleToggle = (key: string) => {
-        setOpenKey(prevKey => (prevKey === key ? null : key));
-    };
-    
     return (
         <div>
-             <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{t.header.title}</h1>
-                <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
+            <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
+                <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
+                <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
             </header>
 
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    {heritageSections.map((section, index) => (
-                        <div key={section.group} className={index > 0 ? 'mt-12' : ''}>
-                             <h2 className="text-4xl font-display text-center text-primary-text mb-8">{section.group}</h2>
-                             <div className="border border-dark-accent/20 rounded-lg overflow-hidden shadow-lg">
-                                {section.items.map(item => (
-                                    <AccordionItem
-                                        key={item.key}
-                                        title={item.title}
-                                        content={item.content}
-                                        imageUrl={item.imageUrl}
-                                        newImageUrl={item.newImageUrl}
-                                        isOpen={openKey === item.key}
-                                        onToggle={() => handleToggle(item.key)}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-
-                    <div className="mt-12 pt-8 border-t border-medium-bg">
-                        <p className="text-lg text-primary-text/90 italic">{t.conclusion}</p>
+                    <div className="space-y-4">
+                        {t.sections.map((section, index) => {
+                            const isOpen = openSections.includes(index);
+                            return (
+                                <div key={index} className="border-b border-medium-bg transition-all duration-500">
+                                    <button
+                                        onClick={() => toggleSection(index)}
+                                        className="w-full text-left py-6 flex flex-col"
+                                        aria-expanded={isOpen}
+                                        aria-controls={`heritage-content-${index}`}
+                                    >
+                                        <div className="flex justify-between items-center">
+                                            <h2 className="text-3xl md:text-4xl font-display text-dark-golden">{renderStyledText(section.title)}</h2>
+                                            <span className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}>
+                                                <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-6 h-6 text-primary-text"/>
+                                            </span>
+                                        </div>
+                                        <p className="mt-2 text-primary-text/70 text-lg">{renderStyledText(section.subtitle)}</p>
+                                    </button>
+                                    <div
+                                        id={`heritage-content-${index}`}
+                                        className={`overflow-hidden transition-all duration-700 ease-in-out ${isOpen ? 'max-h-[4000px] pb-8' : 'max-h-0'}`}
+                                    >
+                                        <ContentRenderer content={section.content} />
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </ParallaxSection>
         </div>
     );
-}
+};
+
 
 
 
@@ -857,18 +852,18 @@ const SustainabilityPage = () => {
     return (
         <div>
             <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{t.header.title}</h2>
-                <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
+                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
+                <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
             </header>
 
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <img src="https://via.placeholder.com/600x700.png?text=Lush+Palm+Grove+(6:7)" alt="A lush, green, and biodiverse Palmyra palm grove." className="rounded-lg shadow-xl object-cover w-full h-full" />
+                        <img src={`${ASSET_BASE_URL}ratchaburi-palm-groves-landscape.webp`} alt="A lush, green, and biodiverse Palmyra palm grove." className="rounded-lg shadow-xl object-cover w-full h-full" />
                         <div>
-                            <h3 className="text-4xl font-display text-dark-golden mb-4">{t.environmental.title}</h3>
+                            <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.environmental.title)}</h3>
                             <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
-                                {t.environmental.points.map((point, i) => <li key={i}><strong>{point.title}:</strong> {point.text}</li>)}
+                                {t.environmental.points.map((point, i) => <li key={i}><strong>{renderStyledText(point.title)}:</strong> {renderStyledText(point.text)}</li>)}
                             </ul>
                         </div>
                     </div>
@@ -879,12 +874,12 @@ const SustainabilityPage = () => {
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div className="order-last md:order-first">
-                            <h3 className="text-4xl font-display text-dark-golden mb-4">{t.social.title}</h3>
+                            <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.social.title)}</h3>
                             <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
-                                {t.social.points.map((point, i) => <li key={i}><strong>{point.title}:</strong> {point.text}</li>)}
+                                {t.social.points.map((point, i) => <li key={i}><strong>{renderStyledText(point.title)}:</strong> {renderStyledText(point.text)}</li>)}
                             </ul>
                         </div>
-                        <img src="https://via.placeholder.com/600x700.png?text=Community+Hands+(6:7)" alt="The hands of community farmers holding fresh palmyra palm sugar." className="rounded-lg shadow-xl object-cover w-full h-full" />
+                        <img src={`${ASSET_BASE_URL}hands-holding-rich-soil.webp`} alt="The hands of community farmers holding fresh palmyra palm sugar." className="rounded-lg shadow-xl object-cover w-full h-full" />
                     </div>
                 </div>
             </ParallaxSection>
@@ -892,11 +887,11 @@ const SustainabilityPage = () => {
             <ParallaxSection index={2} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <img src="https://via.placeholder.com/600x700.png?text=Quality+Seal+(6:7)" alt="A Golden Taan product with a seal of quality and transparency." className="rounded-lg shadow-xl object-cover w-full h-full" />
+                        <img src={`${ASSET_BASE_URL}golden-taan-gift-set.webp`} alt="A Golden TAAN product with a seal of quality and transparency." className="rounded-lg shadow-xl object-cover w-full h-full" />
                         <div>
-                            <h3 className="text-4xl font-display text-dark-golden mb-4">{t.governance.title}</h3>
+                            <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.governance.title)}</h3>
                             <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
-                                {t.governance.points.map((point, i) => <li key={i}><strong>{point.title}:</strong> {point.text}</li>)}
+                                {t.governance.points.map((point, i) => <li key={i}><strong>{renderStyledText(point.title)}:</strong> {renderStyledText(point.text)}</li>)}
                             </ul>
                         </div>
                     </div>
@@ -905,432 +900,475 @@ const SustainabilityPage = () => {
 
             <ParallaxSection index={3} className="py-20 px-4 md:px-8 text-primary-text">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h3 className="text-4xl font-display text-center text-dark-golden mb-12">{t.insights.title}</h3>
+                    <h3 className="text-4xl font-display text-center text-dark-golden mb-12">{renderStyledText(t.insights.title)}</h3>
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div>
-                            <h4 className="text-2xl font-display text-center mb-4">{t.insights.chartTitle}</h4>
+                            <h4 className="text-2xl font-display text-center mb-4">{renderStyledText(t.insights.chartTitle)}</h4>
                             <ResourceEfficiencyRadarChart />
                         </div>
                         <div className="text-center md:text-left">
-                            <img src="https://via.placeholder.com/400x533.png?text=Sustainability+Report+(3:4)" alt="Cover of the official Golden Taan Sustainability Report 2025" className="rounded-lg shadow-xl object-cover mx-auto md:mx-0 mb-6" />
-                            <h4 className="text-3xl font-display">{t.insights.report.title}</h4>
-                            <p className="my-4">{t.insights.report.text}</p>
-                            <a href="#" className="inline-block bg-golden-accent text-primary-text font-bold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
-                                {t.insights.report.cta}
-                            </a>
+                            <img src={`${ASSET_BASE_URL}palmyra-leaf-texture-macro.webp`} alt="A detailed macro shot of a Palmyra palm leaf, highlighting its natural texture." className="rounded-lg shadow-xl aspect-video md:aspect-[4/3] object-cover w-full"/>
+                            <div className="mt-8 bg-golden-accent/10 border border-golden-accent/30 rounded-lg p-6 text-center">
+                                <h4 className="font-display text-xl text-dark-golden">{renderStyledText(t.insights.report.title)}</h4>
+                                <p className="mt-1 text-primary-text/90">{renderStyledText(t.insights.report.text)}</p>
+                                <button className="mt-4 bg-dark-golden text-light-text font-bold py-2 px-6 rounded-full hover:bg-primary-text transition duration-300">
+                                    {renderStyledText(t.insights.report.cta)}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </ParallaxSection>
-        </div>
-    );
-}
-
-const WholesalePage = () => {
-    const { translations } = useLocalization();
-    const t = translations.wholesale;
-
-    return (
-        <div>
-            <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{t.header.title}</h2>
-                <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
-            </header>
-            
-            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <div className="text-center mb-12">
-                         <h1 className="text-4xl font-display text-dark-golden mb-4">{t.pricing.title}</h1>
-                        <p className="text-lg max-w-3xl mx-auto">{t.pricing.text}</p>
-                    </div>
-                    <div className="overflow-x-auto rounded-lg shadow-lg border border-medium-bg/50">
-                        <table className="w-full text-left border-collapse">
-                            <thead className="bg-dark-golden text-light-text">
-                                <tr>
-                                    <th className="p-4 font-semibold">{t.pricing.table.headers.productLine}</th>
-                                    <th className="p-4 font-semibold">{t.pricing.table.headers.sku}</th>
-                                    <th className="p-4 font-semibold text-center">{t.pricing.table.headers.tier1}</th>
-                                    <th className="p-4 font-semibold text-center">{t.pricing.table.headers.tier2}</th>
-                                    <th className="p-4 font-semibold text-center">{t.pricing.table.headers.tier3}</th>
-                                    <th className="p-4 font-semibold text-center">{t.pricing.table.headers.tier4}</th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-light-bg">
-                                {t.pricing.table.data.flatMap((productGroup) => 
-                                    productGroup.skus.map((sku, skuIndex) => (
-                                        <tr key={`${productGroup.productLine}-${sku.name}`} className="border-t border-medium-bg hover:bg-medium-bg/30 transition-colors">
-                                            {skuIndex === 0 ? (
-                                                <td rowSpan={productGroup.skus.length} className="p-4 align-top font-display text-lg text-dark-golden border-r border-medium-bg">
-                                                    {productGroup.productLine}
-                                                </td>
-                                            ) : null}
-                                            <td className="p-4 text-primary-text/90 border-r border-medium-bg">{sku.name}</td>
-                                            <td className="p-4 text-center font-mono">{sku.tier1}</td>
-                                            <td className="p-4 text-center font-mono">{sku.tier2}</td>
-                                            <td className="p-4 text-center font-mono">{sku.tier3}</td>
-                                            <td className="p-4 text-center font-mono">{sku.tier4}</td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                    <p className="text-sm mt-4 text-right text-primary-text/70">{t.pricing.table.note}</p>
                 </div>
             </ParallaxSection>
         </div>
     );
 };
 
-
-const ShopNowPage = ({ cartItems, onUpdateQuantity, setPage }: { cartItems: CartItem[], onUpdateQuantity: (id: string, amount: number) => void, setPage: (page: Page) => void }) => {
+const WholesalePage = () => {
     const { translations } = useLocalization();
-    const t = translations.shop;
-    const [paymentTab, setPaymentTab] = useState('qr');
+    const t = translations.wholesale;
+    const [formData, setFormData] = useState({
+        companyName: '',
+        contactPerson: '',
+        email: '',
+        country: '',
+        volume: '',
+        productType: '',
+        packaging: '',
+        message: '',
+    });
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = subtotal > 0 ? 5 : 0; // Assuming $5 flat shipping for international orders
-    const total = subtotal + shipping;
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log('Wholesale Inquiry:', formData);
+        setIsSubmitted(true);
+    };
 
     return (
-        <div className="min-h-screen">
+        <div>
             <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{t.header.title}</h2>
-                <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
+                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
+                <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
             </header>
 
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                {cartItems.length === 0 ? (
-                    <div className="max-w-4xl mx-auto text-center py-20 bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                        <h3 className="text-3xl font-display text-dark-golden">{t.emptyCart.title}</h3>
-                        <p className="mt-4 mb-8 text-lg">{t.emptyCart.text}</p>
-                        <button onClick={() => { setPage(Page.Home); trackPageView(`/#${Page.Home}`); }} className="bg-golden-accent text-primary-text font-bold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
-                            {t.emptyCart.cta}
-                        </button>
-                    </div>
-                ) : (
-                    <div className="max-w-4xl mx-auto grid lg:grid-cols-2 gap-12 bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                        {/* Cart Summary */}
-                        <div className="border border-medium-bg/50 p-8 rounded-lg">
-                            <h3 className="text-3xl font-display text-dark-golden mb-6">{t.summary.title}</h3>
-                            <div className="space-y-4">
-                                {cartItems.map(item => (
-                                    <div key={item.id} className="flex items-center gap-4 border-b pb-4">
-                                        <img src={item.img} alt={item.title} className="w-20 h-20 rounded-md object-cover" />
-                                        <div className="flex-grow">
-                                            <p className="font-semibold">{item.title}</p>
-                                            <p className="text-sm text-gray-500">${item.price.toFixed(2)}</p>
-                                        </div>
-                                        <div className="flex items-center gap-2 border rounded-full px-2">
-                                            <button onClick={() => onUpdateQuantity(item.id, -1)} className="text-lg font-bold p-1">-</button>
-                                            <span>{item.quantity}</span>
-                                            <button onClick={() => onUpdateQuantity(item.id, 1)} className="text-lg font-bold p-1">+</button>
-                                        </div>
-                                        <p className="font-semibold w-24 text-right">${(item.price * item.quantity).toFixed(2)}</p>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="mt-6 space-y-2 text-lg">
-                                <div className="flex justify-between"><span>{t.summary.subtotal}</span><span>${subtotal.toFixed(2)}</span></div>
-                                <div className="flex justify-between"><span>{t.summary.shipping}</span><span>${shipping.toFixed(2)}</span></div>
-                                <div className="flex justify-between font-bold text-2xl border-t pt-2 mt-2"><span>{t.summary.total}</span><span>${total.toFixed(2)}</span></div>
-                            </div>
-                        </div>
-                        {/* Payment Options */}
-                        <div className="border border-medium-bg/50 p-8 rounded-lg">
-                            <h3 className="text-3xl font-display text-dark-golden mb-6">{t.payment.title}</h3>
-                            <div className="flex border-b" role="tablist" aria-label="Payment methods">
-                                <button id="tab-qr" onClick={() => setPaymentTab('qr')} role="tab" aria-selected={paymentTab === 'qr'} aria-controls="panel-qr" className={`py-2 px-4 ${paymentTab === 'qr' ? 'border-b-2 border-dark-golden font-semibold' : 'text-gray-500'}`}>{t.payment.tabs.qr}</button>
-                                <button id="tab-crypto" onClick={() => setPaymentTab('crypto')} role="tab" aria-selected={paymentTab === 'crypto'} aria-controls="panel-crypto" className={`py-2 px-4 ${paymentTab === 'crypto' ? 'border-b-2 border-dark-golden font-semibold' : 'text-gray-500'}`}>{t.payment.tabs.crypto}</button>
-                                <button id="tab-card" onClick={() => setPaymentTab('card')} role="tab" aria-selected={paymentTab === 'card'} aria-controls="panel-card" className={`py-2 px-4 ${paymentTab === 'card' ? 'border-b-2 border-dark-golden font-semibold' : 'text-gray-500'}`}>{t.payment.tabs.card}</button>
-                            </div>
-                            <div className="mt-6">
-                                <div id="panel-qr" role="tabpanel" tabIndex={0} aria-labelledby="tab-qr" hidden={paymentTab !== 'qr'}>
-                                    <div className="text-center">
-                                        <p className="mb-4">{t.payment.qr.text}</p>
-                                        <img src="https://via.placeholder.com/300x300.png?text=Thai+QR+Payment+(1:1)" alt="Thai QR Payment Code" className="mx-auto rounded-lg"/>
-                                    </div>
-                                </div>
-                                <div id="panel-crypto" role="tabpanel" tabIndex={0} aria-labelledby="tab-crypto" hidden={paymentTab !== 'crypto'}>
-                                    <div>
-                                        <p className="mb-2">{t.payment.crypto.text}</p>
-                                        <div className="bg-gray-100 p-3 rounded-md text-sm break-all font-mono">0x1234...AbCd</div>
-                                        <div className="flex items-center justify-center gap-4 mt-4">
-                                            <p>{t.payment.crypto.accept}</p>
-                                            <img src="https://via.placeholder.com/40x40.png?text=BTC" alt="Bitcoin" className="w-10 h-10"/>
-                                            <img src="https://via.placeholder.com/40x40.png?text=ETH" alt="Ethereum" className="w-10 h-10"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                 <div id="panel-card" role="tabpanel" tabIndex={0} aria-labelledby="tab-card" hidden={paymentTab !== 'card'}>
-                                    <form className="space-y-4">
-                                        <div>
-                                            <label className="block text-sm font-medium">{t.payment.card.number}</label>
-                                            <input type="text" className="w-full mt-1 p-2 border rounded-md" placeholder="0000 0000 0000 0000" />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-sm font-medium">{t.payment.card.expiry}</label>
-                                                <input type="text" className="w-full mt-1 p-2 border rounded-md" placeholder="MM / YY" />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium">{t.payment.card.cvc}</label>
-                                                <input type="text" className="w-full mt-1 p-2 border rounded-md" placeholder="123" />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium">{t.payment.card.name}</label>
-                                            <input type="text" className="w-full mt-1 p-2 border rounded-md" placeholder="Full Name" />
-                                        </div>
-                                         <div className="flex items-center gap-4">
-                                            <img src="https://via.placeholder.com/50x32.png?text=Visa" alt="Visa" className="h-8"/>
-                                            <img src="https://via.placeholder.com/50x32.png?text=MasterCard" alt="MasterCard" className="h-8"/>
-                                            <img src="https://via.placeholder.com/50x32.png?text=PayPal" alt="PayPal" className="h-8"/>
-                                        </div>
-                                         <button type="submit" className="w-full mt-4 bg-dark-golden text-light-text font-bold py-3 px-8 rounded-full hover:bg-primary-text transition duration-300">
-                                            {t.payment.card.pay} ${total.toFixed(2)}
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </ParallaxSection>
-            
-            <ParallaxSection index={1} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h3 className="text-3xl font-display text-dark-golden mb-8 text-center">{t.shippingInfo.title}</h3>
-                    <div className="space-y-6 text-primary-text/90">
-                        <div>
-                            <h4 className="font-bold text-lg text-primary-text mb-2">{t.shippingInfo.policy.title}</h4>
-                            <p>{t.shippingInfo.policy.text}</p>
-                        </div>
-                        <div>
-                            <h4 className="font-bold text-lg text-primary-text mb-2">{t.shippingInfo.delivery.title}</h4>
-                            <p className="whitespace-pre-wrap">{t.shippingInfo.delivery.text}</p>
-                        </div>
-                        <div>
-                            <h4 className="font-bold text-lg text-primary-text mb-2">{t.shippingInfo.customs.title}</h4>
-                            <p>{t.shippingInfo.customs.text}</p>
-                        </div>
-                    </div>
+                    <h3 className="text-4xl font-display text-dark-golden mb-4 text-center">{renderStyledText(t.insights.title)}</h3>
+                    <p className="text-lg text-primary-text/90 text-center max-w-3xl mx-auto">{renderStyledText(t.insights.text)}</p>
                 </div>
+            </ParallaxSection>
+
+            <ParallaxSection index={1} className="py-16 px-4 md:px-8">
+                <div className="max-w-5xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    <h3 className="text-4xl font-display text-dark-golden mb-4 text-center">{renderStyledText(t.pricing.title)}</h3>
+                    <p className="text-lg text-primary-text/90 text-center max-w-3xl mx-auto mb-12">{renderStyledText(t.pricing.text)}</p>
+                    
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full text-left border-collapse">
+                             <thead className="bg-dark-golden/10">
+                                <tr>
+                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.productLine}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.sku}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.tier1}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.tier2}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.tier3}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.tier4}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {t.pricing.table.data.map((line, index) => (
+                                    <React.Fragment key={index}>
+                                        {line.skus.map((sku, skuIndex) => (
+                                            <tr key={`${index}-${skuIndex}`} className="border-t border-medium-bg">
+                                                {skuIndex === 0 && <td rowSpan={line.skus.length} className="p-4 font-semibold align-top">{renderStyledText(line.productLine)}</td>}
+                                                <td className="p-4">{renderStyledText(sku.name)}</td>
+                                                <td className="p-4">{sku.tier1}</td>
+                                                <td className="p-4">{sku.tier2}</td>
+                                                <td className="p-4">{sku.tier3}</td>
+                                                <td className="p-4">{sku.tier4}</td>
+                                            </tr>
+                                        ))}
+                                    </React.Fragment>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                     <p className="text-sm text-primary-text/70 mt-4 text-center">{renderStyledText(t.pricing.table.note)}</p>
+                </div>
+            </ParallaxSection>
+
+            <ParallaxSection index={2} className="py-16 px-4 md:px-8">
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                     <h3 className="text-4xl font-display text-dark-golden mb-12 text-center">{renderStyledText(t.logistics.title)}</h3>
+                     <div className="grid md:grid-cols-2 gap-12">
+                         <div>
+                             <h4 className="text-2xl font-display text-primary-text mb-4">{renderStyledText(t.logistics.packaging.title)}</h4>
+                             <ul className="list-disc list-inside space-y-2 text-primary-text/90">
+                                 {t.logistics.packaging.options.map((opt, i) => <li key={i}>{renderStyledText(opt)}</li>)}
+                             </ul>
+                         </div>
+                         <div>
+                             <h4 className="text-2xl font-display text-primary-text mb-4">{renderStyledText(t.logistics.export.title)}</h4>
+                             <ul className="list-disc list-inside space-y-2 text-primary-text/90">
+                                 {t.logistics.export.services.map((svc, i) => <li key={i}>{renderStyledText(svc)}</li>)}
+                             </ul>
+                         </div>
+                     </div>
+                </div>
+            </ParallaxSection>
+
+            <ParallaxSection index={3} className="py-16 px-4 md:px-8">
+                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    <h3 className="text-4xl font-display text-dark-golden mb-8 text-center">{renderStyledText(t.form.title)}</h3>
+                    {isSubmitted ? (
+                        <div className="text-center p-8 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                            <p className="text-xl">{renderStyledText(t.form.successMessage)}</p>
+                        </div>
+                    ) : (
+                        <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
+                             <div>
+                                <label className="block text-primary-text/80 mb-1">{t.form.companyName}</label>
+                                <input type="text" name="companyName" value={formData.companyName} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
+                            </div>
+                            <div>
+                                <label className="block text-primary-text/80 mb-1">{t.form.contactPerson}</label>
+                                <input type="text" name="contactPerson" value={formData.contactPerson} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
+                            </div>
+                            <div>
+                                <label className="block text-primary-text/80 mb-1">{t.form.email}</label>
+                                <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
+                            </div>
+                             <div>
+                                <label className="block text-primary-text/80 mb-1">{t.form.country}</label>
+                                <input type="text" name="country" value={formData.country} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
+                            </div>
+                             <div>
+                                <label className="block text-primary-text/80 mb-1">{t.form.volume}</label>
+                                <input type="text" name="volume" value={formData.volume} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
+                            </div>
+                             <div>
+                                <label className="block text-primary-text/80 mb-1">{t.form.productType.label}</label>
+                                <select name="productType" value={formData.productType} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg">
+                                    <option value="" disabled>Select a type</option>
+                                    {t.form.productType.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                </select>
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-primary-text/80 mb-1">{t.form.packaging.label}</label>
+                                <input type="text" name="packaging" value={formData.packaging} onChange={handleChange} placeholder={t.form.packaging.placeholder} className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
+                            </div>
+                             <div className="md:col-span-2">
+                                <label className="block text-primary-text/80 mb-1">{t.form.message}</label>
+                                <textarea name="message" value={formData.message} onChange={handleChange} rows={5} className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"></textarea>
+                            </div>
+                             <div className="md:col-span-2 text-center">
+                                <button type="submit" className="bg-dark-golden text-light-text font-bold py-3 px-12 rounded-full hover:bg-primary-text transition duration-300">
+                                    {t.form.submit}
+                                </button>
+                            </div>
+                        </form>
+                    )}
+                 </div>
             </ParallaxSection>
         </div>
     );
-}
+};
 
-const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | null, setSelectedPost: (post: BlogPost | null) => void }) => {
+const ShopNowPage = ({ cartItems, setCartItems, setPage }: { cartItems: CartItem[], setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>, setPage: (page: Page) => void }) => {
     const { translations } = useLocalization();
-    const t = translations.blog;
+    const t = translations.shop;
+    const [activePaymentTab, setActivePaymentTab] = useState<'qr' | 'crypto' | 'card'>('card');
 
-    const handleSelectPost = (post: BlogPost) => {
-        setSelectedPost(post);
-        window.scrollTo(0, 0);
-        trackPageView(`/#blog/${post.id}`);
+    const updateQuantity = (productId: string, newQuantity: number) => {
+        if (newQuantity <= 0) {
+            setCartItems(prev => prev.filter(item => item.id !== productId));
+        } else {
+            setCartItems(prev => prev.map(item => item.id === productId ? { ...item, quantity: newQuantity } : item));
+        }
     };
     
-    const handleBackToList = () => {
-        setSelectedPost(null);
-        window.scrollTo(0, 0);
-        trackPageView('/#blog');
-    };
+    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const shipping = subtotal > 0 ? 25.00 : 0; // Flat international shipping rate
+    const total = subtotal + shipping;
 
-    if (selectedPost) {
+    if (cartItems.length === 0) {
         return (
-            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <button onClick={handleBackToList} className="mb-8 text-dark-golden font-semibold hover:underline">
-                        &larr; {t.back}
-                    </button>
-                    <h1 className="text-4xl md:text-5xl font-display text-primary-text mb-4">{selectedPost.title}</h1>
-                    <img src={selectedPost.coverImage} alt={selectedPost.title} className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg mb-8" />
-                    <div className="prose lg:prose-xl max-w-none text-primary-text/90 space-y-6">
-                        {selectedPost.content.map((item, index) => {
-                            switch (item.type) {
-                                case 'heading':
-                                    return <h2 key={index} className="font-display text-dark-golden">{item.text}</h2>;
-                                case 'paragraph':
-                                    return <p key={index}>{item.text}</p>;
-                                case 'image':
-                                    return <img key={index} src={item.src} alt={item.alt} className="rounded-lg shadow-md" />;
-                                default:
-                                    return null;
-                            }
-                        })}
+             <div>
+                <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
+                    <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
+                    <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
+                </header>
+                <ParallaxSection index={0} className="py-32 px-4 md:px-8 text-center">
+                    <div className="max-w-xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                         <h3 className="text-4xl font-display text-dark-golden">{renderStyledText(t.emptyCart.title)}</h3>
+                         <p className="mt-4 text-lg">{renderStyledText(t.emptyCart.text)}</p>
+                         <button onClick={() => setPage(Page.Home)} className="mt-8 bg-dark-golden text-light-text font-bold py-3 px-8 rounded-full hover:bg-primary-text transition duration-300">
+                             {t.emptyCart.cta}
+                         </button>
                     </div>
-                </div>
-            </ParallaxSection>
+                </ParallaxSection>
+            </div>
         );
     }
     
     return (
         <div>
             <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{t.header.title}</h2>
-                <p className="mt-4 text-xl max-w-3xl mx-auto">{t.header.subtitle}</p>
+                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
+                <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
             </header>
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                <div className="max-w-5xl mx-auto">
-                    <div className="bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl space-y-8">
-                        {t.posts.map(post => (
-                            <div key={post.id} onClick={() => handleSelectPost(post)} className="border border-medium-bg/50 rounded-lg overflow-hidden group transition-shadow duration-300 hover:shadow-2xl cursor-pointer flex flex-col md:flex-row">
-                                <img src={post.coverImage} alt={post.title} className="w-full md:w-1/3 object-cover aspect-video md:aspect-[4/3] group-hover:opacity-90 transition-opacity" />
-                                <div className="p-6 flex flex-col w-full md:w-2/3">
-                                    <h3 className="text-xl font-display text-dark-golden group-hover:text-golden-accent transition-colors">{post.title}</h3>
-                                    <p className="mt-2 text-primary-text/80 flex-grow">
-                                        {post.introduction}
-                                    </p>
-                                    <span className="mt-4 self-start text-dark-golden font-semibold group-hover:underline">
-                                        {t.readMore} &rarr;
-                                    </span>
+                 <div className="max-w-6xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl grid lg:grid-cols-3 gap-12">
+                     <div className="lg:col-span-2 space-y-4">
+                        <h3 className="text-3xl font-display text-dark-golden mb-4">Your Cart</h3>
+                        {cartItems.map(item => (
+                            <div key={item.id} className="flex items-center gap-4 border-b border-medium-bg pb-4">
+                                <img src={item.img} alt={item.title} className="w-24 h-24 object-cover rounded-md"/>
+                                <div className="flex-grow">
+                                    <h4 className="font-bold text-lg">{renderStyledText(item.title)}</h4>
+                                    <p className="text-sm text-primary-text/70">{item.size}</p>
+                                    <p className="font-display text-xl">${item.price.toFixed(2)}</p>
                                 </div>
+                                <div className="flex items-center gap-2">
+                                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-8 h-8 border rounded-md hover:bg-medium-bg">-</button>
+                                    <span className="w-8 text-center">{item.quantity}</span>
+                                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-8 h-8 border rounded-md hover:bg-medium-bg">+</button>
+                                </div>
+                                <p className="font-bold text-lg w-24 text-right">${(item.price * item.quantity).toFixed(2)}</p>
                             </div>
                         ))}
-                    </div>
-                </div>
+                     </div>
+                     <div className="lg:col-span-1 space-y-8">
+                        <div className="bg-light-bg p-6 rounded-lg border border-medium-bg">
+                            <h3 className="text-2xl font-display text-dark-golden mb-4">{t.summary.title}</h3>
+                            <div className="space-y-2 text-lg">
+                                <div className="flex justify-between"><span>{t.summary.subtotal}</span><span>${subtotal.toFixed(2)}</span></div>
+                                <div className="flex justify-between"><span>{t.summary.shipping}</span><span>${shipping.toFixed(2)}</span></div>
+                                <div className="flex justify-between font-bold text-xl border-t pt-2 mt-2"><span>{t.summary.total}</span><span>${total.toFixed(2)}</span></div>
+                            </div>
+                        </div>
+                        <div className="bg-light-bg p-6 rounded-lg border border-medium-bg">
+                             <h3 className="text-2xl font-display text-dark-golden mb-4">{t.payment.title}</h3>
+                             <div className="border-b border-medium-bg mb-4">
+                                <nav className="flex space-x-4">
+                                    <button onClick={() => setActivePaymentTab('card')} className={`py-2 px-4 ${activePaymentTab === 'card' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.payment.tabs.card}</button>
+                                    <button onClick={() => setActivePaymentTab('qr')} className={`py-2 px-4 ${activePaymentTab === 'qr' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.payment.tabs.qr}</button>
+                                    <button onClick={() => setActivePaymentTab('crypto')} className={`py-2 px-4 ${activePaymentTab === 'crypto' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.payment.tabs.crypto}</button>
+                                </nav>
+                            </div>
+                            {activePaymentTab === 'card' && (
+                                <form className="space-y-4">
+                                    <div><input placeholder={t.payment.card.number} className="w-full p-2 border rounded bg-light-bg"/></div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <input placeholder={t.payment.card.expiry} className="w-full p-2 border rounded bg-light-bg"/>
+                                        <input placeholder={t.payment.card.cvc} className="w-full p-2 border rounded bg-light-bg"/>
+                                    </div>
+                                    <div><input placeholder={t.payment.card.name} className="w-full p-2 border rounded bg-light-bg"/></div>
+                                    <button className="w-full bg-dark-golden text-light-text font-bold py-3 rounded-full hover:bg-primary-text">{t.payment.card.pay} ${total.toFixed(2)}</button>
+                                </form>
+                            )}
+                            {activePaymentTab === 'qr' && (
+                                <div className="text-center">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=example" alt="Thai QR Payment" className="mx-auto"/>
+                                    <p className="mt-2 text-sm">{t.payment.qr.text}</p>
+                                </div>
+                            )}
+                            {activePaymentTab === 'crypto' && (
+                                <div className="text-sm">
+                                    <p>{t.payment.crypto.text}</p>
+                                    <p className="font-mono bg-medium-bg p-2 rounded text-xs my-2 break-all">0x1A2b3c4D5e6F7g8H9i0J1k2L3m4N5o6P7q8R9s0T</p>
+                                    <p>{t.payment.crypto.accept} BTC, ETH</p>
+                                </div>
+                            )}
+                        </div>
+                         <div className="bg-light-bg p-6 rounded-lg border border-medium-bg text-sm space-y-4">
+                            <h3 className="text-xl font-display text-dark-golden -mb-2">{t.shippingInfo.title}</h3>
+                            <div>
+                                <h4 className="font-bold">{t.shippingInfo.policy.title}</h4>
+                                <p className="text-primary-text/80">{t.shippingInfo.policy.text}</p>
+                            </div>
+                             <div>
+                                <h4 className="font-bold">{t.shippingInfo.delivery.title}</h4>
+                                <p className="text-primary-text/80 whitespace-pre-wrap">{t.shippingInfo.delivery.text}</p>
+                            </div>
+                             <div>
+                                <h4 className="font-bold">{t.shippingInfo.customs.title}</h4>
+                                <p className="text-primary-text/80">{t.shippingInfo.customs.text}</p>
+                            </div>
+                         </div>
+                     </div>
+                 </div>
             </ParallaxSection>
         </div>
     );
 };
 
-// --- Main Layout Components ---
+const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | null, setSelectedPost: (post: BlogPost | null) => void }) => {
+    const { translations } = useLocalization();
+    const t = translations.blog;
 
-const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, currentPage: Page }) => {
-    const { language, setLanguage, translations } = useLocalization();
+    const BlogContentRenderer = ({ content }: { content: BlogContent[] }) => {
+        return (
+            <div className="space-y-6 text-lg text-primary-text/90">
+                {content.map((item, index) => {
+                    switch (item.type) {
+                        case 'heading':
+                            return <h3 key={index} className="text-3xl font-display text-dark-golden mt-8">{renderStyledText(item.text)}</h3>;
+                        case 'paragraph': {
+                             const lines = item.text?.split('\n') || [];
+                             const isList = lines.every(line => line.trim().startsWith('•'));
+                             if (isList) {
+                                 return <ul key={index} className="list-disc list-outside space-y-2 pl-5">{lines.map((li, i) => <li key={i}>{renderStyledText(li.substring(1).trim())}</li>)}</ul>;
+                             }
+                             return lines.map((p, i) => <p key={`${index}-${i}`}>{renderStyledText(p)}</p>);
+                        }
+                        case 'image':
+                            const imageUrl = item.src?.startsWith('http') ? item.src : `${ASSET_BASE_URL}${item.src}`;
+                            return <img key={index} src={imageUrl} alt={item.alt} className="rounded-lg shadow-xl my-8 aspect-video object-cover w-full"/>;
+                        default:
+                            return null;
+                    }
+                })}
+            </div>
+        );
+    };
+
+    if (selectedPost) {
+        const coverImageUrl = selectedPost.coverImage.startsWith('http') ? selectedPost.coverImage : `${ASSET_BASE_URL}${selectedPost.coverImage}`;
+        return (
+            <div>
+                <header className="relative h-96">
+                    <img src={coverImageUrl} alt={selectedPost.title} className="w-full h-full object-cover"/>
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <h1 className="text-4xl md:text-6xl font-display text-light-text text-center max-w-4xl px-4">{renderStyledText(selectedPost.title)}</h1>
+                    </div>
+                </header>
+                <ParallaxSection index={0} className="py-16 px-4 md:px-8">
+                     <div className="max-w-3xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                        <button onClick={() => setSelectedPost(null)} className="mb-8 text-dark-golden hover:underline">&larr; {t.back}</button>
+                        <p className="text-xl italic text-primary-text/80 mb-8">{renderStyledText(selectedPost.introduction)}</p>
+                        <BlogContentRenderer content={selectedPost.content} />
+                     </div>
+                </ParallaxSection>
+            </div>
+        );
+    }
+    
+    return (
+        <div>
+            <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
+                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
+                <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
+            </header>
+            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
+                 <div className="max-w-5xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {t.posts.map(post => {
+                             const coverImageUrl = post.coverImage.startsWith('http') ? post.coverImage : `${ASSET_BASE_URL}${post.coverImage}`;
+                             return (
+                                <div key={post.id} onClick={() => setSelectedPost(post)} className="border border-medium-bg/50 rounded-lg overflow-hidden group transition-transform duration-300 hover:scale-105 cursor-pointer flex flex-col">
+                                    <img src={coverImageUrl} alt={post.title} className="w-full h-48 object-cover"/>
+                                    <div className="p-6 flex-grow flex flex-col">
+                                        <h3 className="text-2xl font-display text-dark-golden group-hover:underline">{renderStyledText(post.title)}</h3>
+                                        <p className="mt-2 text-primary-text/80 flex-grow">{renderStyledText(post.introduction)}</p>
+                                        <span className="mt-4 font-semibold text-dark-golden">{t.readMore} &rarr;</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                 </div>
+            </ParallaxSection>
+        </div>
+    );
+};
+
+const Header = ({ setPage, page, cartItems }: { setPage: (page: Page) => void, page: Page, cartItems: CartItem[] }) => {
+    const { translations, setLanguage, language } = useLocalization();
     const t = translations.nav;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
+    const [isStoryOpen, setIsStoryOpen] = useState(false);
+    const storyTimeoutRef = useRef<number | null>(null);
 
-    const languages: { code: Language, name: string, flag: string }[] = [
-        { code: 'en', name: 'English', flag: '🇬🇧' },
-        { code: 'th', name: 'ไทย', flag: '🇹🇭' },
-        { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-        { code: 'ja', name: '日本語', flag: '🇯🇵' },
-        { code: 'ko', name: '한국어', flag: '🇰🇷' },
-        { code: 'fr', name: 'Français', flag: '🇫🇷' },
-        { code: 'zh', name: '中文', flag: '🇨🇳' },
-    ];
-    const currentLang = languages.find(l => l.code === language);
-
-    const navigate = (page: Page) => {
-        setPage(page);
+    const handleSetPage = (newPage: Page) => {
+        setPage(newPage);
         setIsMenuOpen(false);
-        setIsDropdownOpen(false);
-        trackPageView(`/#${page}`);
+        setIsStoryOpen(false);
+    };
+    
+    const handleStoryEnter = () => {
+        if (storyTimeoutRef.current) clearTimeout(storyTimeoutRef.current);
+        setIsStoryOpen(true);
     };
 
-    const handleSetLanguage = (lang: Language) => {
-        setLanguage(lang);
-        setIsLangDropdownOpen(false);
+    const handleStoryLeave = () => {
+        storyTimeoutRef.current = window.setTimeout(() => {
+            setIsStoryOpen(false);
+        }, 300);
     };
+
+    const totalCartItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-light-bg/80 backdrop-blur-md border-b border-medium-bg">
-            <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header className="bg-primary-text text-light-text sticky top-0 z-50 shadow-lg">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
-                    {/* Logo */}
-                    <div className="flex-shrink-0">
-                        <a href="#" onClick={() => navigate(Page.Home)} className="flex items-center space-x-2">
-                            <img className="h-12 w-auto" src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden Taan Logo" />
-                             <span className="font-display text-2xl text-primary-text tracking-wider">Golden TAAN</span>
-                        </a>
+                    <div className="flex-shrink-0 cursor-pointer" onClick={() => handleSetPage(Page.Home)}>
+                        <img className="h-12" src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden Taan Logo"/>
                     </div>
-
-                    {/* Desktop Menu */}
-                    <div className="hidden md:block">
-                        <div className="ml-10 flex items-center space-x-4">
-                            <div className="relative">
-                                <button onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)} onClick={() => navigate(Page.Home)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Home ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>
-                                    {t.home}
-                                </button>
-                                {isDropdownOpen && (
-                                    <div onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)} className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                        <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                            {t.homeSubItems.map(item => (
-                                                <a href={item.id} key={item.id} onClick={(e) => { e.preventDefault(); document.querySelector(item.id)?.scrollIntoView({ behavior: 'smooth' }); setIsDropdownOpen(false); trackPageView(`/${item.id}`); }} className="block px-4 py-2 text-sm text-primary-text hover:bg-light-bg">{item.label}</a>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                            <button onClick={() => navigate(Page.About)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.About ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>{t.ourStory}</button>
-                            <button onClick={() => navigate(Page.Heritage)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Heritage ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>{t.heritage}</button>
-                            <button onClick={() => navigate(Page.Sustainability)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Sustainability ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>{t.sustainability}</button>
-                            <button onClick={() => navigate(Page.Wholesale)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Wholesale ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>{t.wholesale}</button>
-                            <button onClick={() => navigate(Page.Blog)} className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === Page.Blog ? 'text-dark-golden' : 'text-primary-text hover:text-dark-golden'}`}>{t.blog}</button>
-                            
-                             {/* Language Selector */}
-                            <div className="relative">
-                                <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="px-3 py-2 rounded-md text-sm font-medium text-primary-text hover:text-dark-golden flex items-center" aria-haspopup="true" aria-expanded={isLangDropdownOpen} aria-label="Select language">
-                                    <span>{currentLang?.flag}</span>
-                                    <span className="ml-2">{currentLang?.name}</span>
-                                </button>
-                                {isLangDropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                        <div className="py-1" role="menu" aria-orientation="vertical">
-                                            {languages.map(lang => (
-                                                <button key={lang.code} onClick={() => handleSetLanguage(lang.code)} className="w-full text-left block px-4 py-2 text-sm text-primary-text hover:bg-light-bg" role="menuitem">
-                                                    {lang.flag} {lang.name}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                             <button onClick={() => navigate(Page.ShopNow)} className="ml-4 bg-golden-accent text-primary-text font-bold py-2 px-4 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
-                                {t.shopNow}
+                    <nav className="hidden md:flex items-center space-x-6">
+                        <button onClick={() => handleSetPage(Page.Home)} className={`hover:text-golden-accent transition ${page === Page.Home ? 'text-golden-accent' : ''}`}>{t.home}</button>
+                        <div className="relative" onMouseEnter={handleStoryEnter} onMouseLeave={handleStoryLeave}>
+                             <button onClick={() => handleSetPage(Page.About)} className={`hover:text-golden-accent transition flex items-center ${[Page.About, Page.Heritage].includes(page) ? 'text-golden-accent' : ''}`}>
+                                 {t.ourStory} <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-4 h-4 ml-1" />
                             </button>
-                        </div>
-                    </div>
-                    
-                    {/* Mobile Menu Controls */}
-                    <div className="flex items-center md:hidden">
-                        {/* Language Selector for Mobile */}
-                        <div className="relative">
-                            <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="p-2 rounded-md text-sm font-medium text-primary-text hover:text-dark-golden flex items-center" aria-haspopup="true" aria-expanded={isLangDropdownOpen} aria-label="Select language">
-                                <span>{currentLang?.flag}</span>
-                            </button>
-                            {isLangDropdownOpen && (
-                                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-                                    <div className="py-1" role="menu" aria-orientation="vertical">
-                                        {languages.map(lang => (
-                                            <button key={lang.code} onClick={() => handleSetLanguage(lang.code)} className="w-full text-left block px-4 py-2 text-sm text-primary-text hover:bg-light-bg" role="menuitem">
-                                                {lang.flag} {lang.name}
-                                            </button>
-                                        ))}
-                                    </div>
+                             {isStoryOpen && (
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-primary-text rounded-md shadow-lg py-1 animate-fade-in">
+                                    <button onClick={() => handleSetPage(Page.About)} className="block w-full text-left px-4 py-2 text-sm hover:bg-dark-golden transition">{t.ourStory}</button>
+                                    <button onClick={() => handleSetPage(Page.Heritage)} className="block w-full text-left px-4 py-2 text-sm hover:bg-dark-golden transition">{t.heritage}</button>
                                 </div>
                             )}
                         </div>
-
-                        {/* Hamburger Menu Button */}
-                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="ml-2 inline-flex items-center justify-center p-2 rounded-md text-primary-text bg-medium-bg/50 hover:bg-medium-bg focus:outline-none focus:ring-2 focus:ring-inset focus:ring-dark-golden" aria-controls="mobile-menu" aria-expanded={isMenuOpen}>
-                            <span className="sr-only">Open main menu</span>
-                            <SvgIcon path={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"} />
+                        <button onClick={() => handleSetPage(Page.Sustainability)} className={`hover:text-golden-accent transition ${page === Page.Sustainability ? 'text-golden-accent' : ''}`}>{t.sustainability}</button>
+                        <button onClick={() => handleSetPage(Page.Blog)} className={`hover:text-golden-accent transition ${page === Page.Blog ? 'text-golden-accent' : ''}`}>{t.blog}</button>
+                        <button onClick={() => handleSetPage(Page.Wholesale)} className={`hover:text-golden-accent transition ${page === Page.Wholesale ? 'text-golden-accent' : ''}`}>{t.wholesale}</button>
+                    </nav>
+                    <div className="hidden md:flex items-center space-x-4">
+                         <select value={language} onChange={e => setLanguage(e.target.value as Language)} className="bg-primary-text border border-light-text/30 rounded-md p-1 text-sm">
+                            <option value="en">EN</option>
+                            <option value="th">TH</option>
+                            <option value="de">DE</option>
+                            <option value="ja">JA</option>
+                            <option value="ko">KO</option>
+                            <option value="fr">FR</option>
+                            <option value="zh">ZH</option>
+                        </select>
+                        <button onClick={() => handleSetPage(Page.ShopNow)} className="bg-golden-accent text-primary-text font-bold py-2 px-6 rounded-full hover:bg-yellow-500 transition relative">
+                            {t.shopNow}
+                            {totalCartItems > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">{totalCartItems}</span>}
+                        </button>
+                    </div>
+                    <div className="md:hidden">
+                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Open menu">
+                            <SvgIcon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" className="w-6 h-6" />
                         </button>
                     </div>
                 </div>
-            </nav>
-
-            {/* Mobile Menu */}
+            </div>
             {isMenuOpen && (
-                <div className="md:hidden" id="mobile-menu">
-                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                        <button onClick={() => navigate(Page.Home)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.home}</button>
-                        <button onClick={() => navigate(Page.About)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.ourStory}</button>
-                        <button onClick={() => navigate(Page.Heritage)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.heritage}</button>
-                        <button onClick={() => navigate(Page.Sustainability)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.sustainability}</button>
-                        <button onClick={() => navigate(Page.Wholesale)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.wholesale}</button>
-                        <button onClick={() => navigate(Page.Blog)} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-primary-text hover:text-dark-golden hover:bg-medium-bg">{t.blog}</button>
-                        
-                        <button onClick={() => navigate(Page.ShopNow)} className="block w-full text-center mt-4 bg-golden-accent text-primary-text font-bold py-2 px-4 rounded-full hover:bg-yellow-500">
-                            {t.shopNow}
-                        </button>
-                    </div>
+                <div className="md:hidden p-4 space-y-2 animate-fade-in">
+                     <button onClick={() => handleSetPage(Page.Home)} className="block w-full text-left py-2 hover:text-golden-accent">{t.home}</button>
+                     <button onClick={() => handleSetPage(Page.About)} className="block w-full text-left py-2 hover:text-golden-accent">{t.ourStory}</button>
+                     <button onClick={() => handleSetPage(Page.Heritage)} className="block w-full text-left py-2 hover:text-golden-accent">{t.heritage}</button>
+                     <button onClick={() => handleSetPage(Page.Sustainability)} className="block w-full text-left py-2 hover:text-golden-accent">{t.sustainability}</button>
+                     <button onClick={() => handleSetPage(Page.Blog)} className="block w-full text-left py-2 hover:text-golden-accent">{t.blog}</button>
+                     <button onClick={() => handleSetPage(Page.Wholesale)} className="block w-full text-left py-2 hover:text-golden-accent">{t.wholesale}</button>
+                     <button onClick={() => handleSetPage(Page.ShopNow)} className="mt-4 w-full bg-golden-accent text-primary-text font-bold py-2 px-4 rounded-full">{t.shopNow} ({totalCartItems})</button>
                 </div>
             )}
         </header>
@@ -1338,166 +1376,136 @@ const Header = ({ setPage, currentPage }: { setPage: (page: Page) => void, curre
 };
 
 const Footer = () => {
-    const { translations } = useLocalization();
+    const { translations, setLanguage } = useLocalization();
     const t = translations.footer;
-    const year = new Date().getFullYear();
-    const socialLinks = [
-        { name: 'Facebook', href: '#', path: 'M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.196h3.312z' },
-        { name: 'Instagram', href: '#', path: 'M12 2C8.134 2 5 5.134 5 9c0 1.388.423 2.68.969 3.693-.05.16-.09.324-.128.494-.038.17-.07.342-.1.516-.03.174-.05.35-.07.528-.02.178-.04.356-.05.537-.01.18-.02.36-.02.542V15c0 3.866 3.134 7 7 7s7-3.134 7-7v-.188c0-.182-.01-.362-.02-.542-.01-.18-.03-.36-.05-.537-.02-.178-.04-.354-.07-.528-.03-.174-.06-.346-.1-.516-.038-.17-.08-.334-.128-.494A6.945 6.945 0 0 0 19 9c0-3.866-3.134-7-7-7zm0 2c2.757 0 5 2.243 5 5s-2.243 5-5 5-5-2.243-5-5 2.243-5 5-5zm0 2c-1.654 0-3 1.346-3 3s1.346 3 3 3 3-1.346 3-3-1.346-3-3-3zm5.854-1.5a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0z' },
-        { name: 'TikTok', href: '#', path: 'M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-2.43.05-4.84-.95-6.43-2.8-1.59-1.87-2.13-4.38-1.73-6.73.34-1.94 1.46-3.64 2.96-4.85.94-.75 2.06-1.25 3.25-1.48.02-.48.01-.96.01-1.43.01-2.52 0-5.04 0-7.56C7.81 2.52 9.47.95 12.525.02z'},
-        { name: 'LinkedIn', href: '#', path: 'M16.338 16.338H13.67V12.16c0-.996-.017-2.277-1.387-2.277-1.388 0-1.601 1.086-1.601 2.206v4.248H8.014V8.338h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.651zM5.337 7.163a1.448 1.448 0 1 1 0-2.895 1.448 1.448 0 0 1 0 2.895zM6.617 16.338H4.06v-8h2.557v8zM17.638 2H6.362A4.362 4.362 0 0 0 2 6.362v11.276A4.362 4.362 0 0 0 6.362 22h11.276A4.362 4.362 0 0 0 22 17.638V6.362A4.362 4.362 0 0 0 17.638 2z' },
-        { name: 'X', href: '#', path: 'M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z' }
-    ];
+    const nav = translations.nav;
 
+    const quickLinks = [
+        { label: nav.home, page: Page.Home },
+        { label: nav.ourStory, page: Page.About },
+        { label: nav.heritage, page: Page.Heritage },
+        { label: nav.sustainability, page: Page.Sustainability },
+        { label: nav.blog, page: Page.Blog },
+        { label: nav.wholesale, page: Page.Wholesale },
+    ];
+    
     return (
-        <footer id="contact" className="bg-primary-text text-light-text/80 py-12 px-4 md:px-8">
-            <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-8">
+        <footer id="contact" className="bg-primary-text text-light-text/70 pt-16 pb-8 px-4 md:px-8">
+            <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
                 <div>
-                    <h3 className="font-display text-2xl text-light-text mb-4">Golden TAAN Co., Ltd.</h3>
-                    <p>{t.address}</p>
+                    <h3 className="font-display text-2xl text-golden-accent mb-4">{t.office.title}</h3>
+                    <p className="whitespace-pre-wrap">{t.office.address}</p>
                 </div>
                 <div>
-                    <h3 className="font-display text-2xl text-light-text mb-4">{t.contactPerson.label}</h3>
-                    <p>{t.contactPerson.name}</p>
-                    <p>{t.phone.label}: {t.phone.number}</p>
-                    <p>{t.email.label}: <a href={`mailto:${t.email.address}`} className="hover:text-golden-accent">{t.email.address}</a></p>
+                    <h3 className="font-display text-2xl text-golden-accent mb-4">{t.contact.title}</h3>
+                    <p>{t.contact.name}</p>
+                    <p>{t.contact.phone.label}: {t.contact.phone.number}</p>
+                    <p>{t.contact.email.label}: <a href={`mailto:${t.contact.email.address}`} className="hover:underline">{t.contact.email.address}</a></p>
+                    <p>{t.contact.cc.label}: <a href={`mailto:${t.contact.cc.address}`} className="hover:underline">{t.contact.cc.address}</a></p>
                 </div>
                 <div>
-                    <h3 className="font-display text-2xl text-light-text mb-4">{t.quickLinks}</h3>
-                     <ul className="space-y-2">
-                        <li><a href="#our-story" className="hover:text-golden-accent">{translations.nav.ourStory}</a></li>
-                        <li><a href="#health-benefits" className="hover:text-golden-accent">{translations.nav.homeSubItems[1].label}</a></li>
-                        <li><a href="#sustainability" className="hover:text-golden-accent">{translations.nav.sustainability}</a></li>
-                        <li><a href="#products" className="hover:text-golden-accent">{translations.nav.homeSubItems[2].label}</a></li>
-                    </ul>
-                </div>
-                 <div>
-                    <h3 className="font-display text-2xl text-light-text mb-4">Follow Us</h3>
-                    <div className="flex space-x-4">
-                        {socialLinks.map(link => (
-                            <a key={link.name} href={link.href} className="text-light-text/80 hover:text-golden-accent transition-colors" aria-label={link.name}>
-                                <SvgIcon path={link.path} className="w-6 h-6" />
-                            </a>
+                    <h3 className="font-display text-2xl text-golden-accent mb-4">{t.quickLinks}</h3>
+                    <div className="grid grid-cols-2 gap-2">
+                        {quickLinks.map(link => (
+                            <a key={link.page} href={`#${link.page}`} onClick={() => window.history.pushState(null, '', `#${link.page}`)} className="hover:text-golden-accent hover:underline">{link.label}</a>
                         ))}
+                         <a href={`#shop-now`} onClick={() => window.history.pushState(null, '', `#shop-now`)} className="hover:text-golden-accent hover:underline">{nav.shopNow}</a>
                     </div>
                 </div>
             </div>
-            <div className="mt-8 pt-8 border-t border-light-text/20 text-center text-sm">
-                <p>{t.copyright.replace('{year}', year.toString())}</p>
+            <div className="mt-12 text-center border-t border-light-text/20 pt-8">
+                <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Small Golden TAAN Logo" className="h-16 mx-auto mb-4" />
+                <p className="text-sm">{t.copyright.replace('{year}', new Date().getFullYear().toString())}</p>
             </div>
         </footer>
-    )
+    );
 };
 
 const SoftLaunchModal = ({ onClose }: { onClose: () => void }) => {
-    const translations = {
-      en: { title: "Welcome to the New Golden TAAN", body: "Our website is in a soft launch phase as we finalize our content. You are welcome to explore our authentic Palmyra Palm Sugar products. The complete, feature-rich website will officially launch on 15 September 2025.", note: "Last Updated: 27 August 2025", button: "Continue to Site" },
-      th: { title: "ยินดีต้อนรับสู่ โกลเด้น ตาล", body: "เว็บไซต์ของเราอยู่ในช่วง Soft Launch และกำลังปรับปรุงเนื้อหา ขอเชิญทุกท่านเข้าชมผลิตภัณฑ์น้ำตาลโตนดแท้ของเราได้ก่อนใคร เว็บไซต์ฉบับสมบูรณ์จะเปิดตัวอย่างเป็นทางการในวันที่ 15 กันยายน 2025", note: "อัปเดตล่าสุด: 27 สิงหาคม 2025", button: "เข้าชมเว็บไซต์" },
-      de: { title: "Willkommen bei Golden TAAN", body: "Unsere Website befindet sich in einer Soft-Launch-Phase. Entdecken Sie gerne unsere authentischen Palmyra-Palmzucker-Produkte. Die vollständige Website wird am 15. September 2025 offiziell gestartet.", note: "Letzte Aktualisierung: 27. August 2025", button: "Weiter zur Seite" },
-      ja: { title: "ゴールデン・ターンへようこそ", body: "当社のウェブサイトは現在ソフトローンチ段階です。本物のパルミラヤシ糖製品をぜひご覧ください。完全版のウェブサイトは2025年9月15日に正式に公開されます。", note: "最終更新日：2025年8月27日", button: "サイトに進む" },
-      ko: { title: "골든 탄에 오신 것을 환영합니다", body: "저희 웹사이트는 현재 소프트 론칭 단계에 있습니다。 저희의 정통 팔미라 야자 설탕 제품을 둘러보세요。 전체 웹사이트는 2025년 9월 15일에 공식적으로 출시됩니다。", note: "마지막 업데이트: 2025년 8월 27일", button: "사이트 계속 보기" },
-      fr: { title: "Bienvenue chez Golden TAAN", body: "Notre site web est en phase de pré-lancement. N'hésitez pas à découvrir nos produits authentiques de sucre de palme Palmyra. Le site complet sera officiellement lancé le 15 septembre 2025.", note: "Dernière mise à jour : 27 août 2025", button: "Continuer vers le site" },
-      zh: { title: "欢迎来到 Golden TAAN", body: "我们的网站目前处于试运行阶段。欢迎您探索我们正宗的巴尔米拉棕榈糖产品。功能齐全的完整网站将于2025年9月15日正式上线。", note: "最后更新：2025年8月27日", button: "继续浏览" }
-    };
-
-    type ModalLang = keyof typeof translations;
-    const [lang, setLang] = useState<ModalLang>('en');
-    const content = translations[lang];
-
-    const languages: { code: ModalLang, flag: string, name: string }[] = [
-        { code: 'en', flag: '🇬🇧', name: 'English' },
-        { code: 'th', flag: '🇹🇭', name: 'Thai' },
-        { code: 'de', flag: '🇩🇪', name: 'German' },
-        { code: 'ja', flag: '🇯🇵', name: 'Japanese' },
-        { code: 'ko', flag: '🇰🇷', name: 'Korean' },
-        { code: 'fr', flag: '🇫🇷', name: 'French' },
-        { code: 'zh', flag: '🇨🇳', name: 'Chinese' },
-    ];
+    const { translations, setLanguage, language } = useLocalization();
+    const t = translations.softLaunchModal;
 
     return (
-        <div className="fixed inset-0 bg-black/75 z-[200] flex items-center justify-center p-4 animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="softlaunch-title">
-            <div className="bg-[#FAF9F6] text-[#3D2B1F] rounded-lg shadow-2xl max-w-lg w-full p-8 relative font-sans">
-                <div className="absolute top-4 right-4">
-                    <div className="flex space-x-2">
-                        {languages.map(({ code, flag, name }) => (
-                            <button
-                                key={code}
-                                onClick={() => setLang(code)}
-                                className={`px-2 py-1 rounded-md text-xl transition-transform transform hover:scale-110 ${lang === code ? 'bg-black/10' : ''}`}
-                                aria-label={`Switch to ${name}`}
-                            >
-                                {flag}
-                            </button>
-                        ))}
-                    </div>
+        <div className="fixed inset-0 bg-black/70 z-[200] flex items-center justify-center p-4 animate-fade-in" role="dialog" aria-modal="true">
+            <div className="bg-light-bg rounded-lg shadow-2xl max-w-lg w-full p-8 text-center text-primary-text">
+                <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden TAAN Logo" className="h-20 mx-auto mb-6" />
+                <h2 className="text-3xl font-display text-dark-golden mb-4">{renderStyledText(t.title)}</h2>
+                <p className="mb-4">{renderStyledText(t.mainText)}</p>
+                <div className="bg-golden-accent/10 border border-golden-accent/30 rounded-lg p-4 text-sm mb-6">
+                    <p>{renderStyledText(t.statusText)}</p>
+                    <p className="mt-2 text-xs text-primary-text/60">{t.lastUpdated}</p>
                 </div>
 
-                <div className="text-center pt-8">
-                    <h2 id="softlaunch-title" className="text-3xl font-display mb-4">{content.title}</h2>
-                    <p className="mb-6">{content.body}</p>
-                    <p className="text-sm text-[#3D2B1F]/60 mb-8">{content.note}</p>
-                    <button
-                        onClick={onClose}
-                        className="bg-[#3D2B1F] text-[#FAF9F6] font-bold py-3 px-12 rounded-full hover:bg-opacity-80 transition duration-300 transform hover:scale-105"
-                    >
-                        {content.button}
-                    </button>
+                <div className="mb-6">
+                     <label htmlFor="lang-select" className="block mb-2 text-sm font-medium text-gray-900">{t.selectLanguage}</label>
+                     <select id="lang-select" value={language} onChange={e => setLanguage(e.target.value as Language)} className="bg-medium-bg border border-dark-accent text-primary-text text-sm rounded-lg focus:ring-dark-golden focus:border-dark-golden block w-full p-2.5">
+                        <option value="en">English (EN)</option>
+                        <option value="th">ภาษาไทย (TH)</option>
+                        <option value="de">Deutsch (DE)</option>
+                        <option value="ja">日本語 (JA)</option>
+                        <option value="ko">한국어 (KO)</option>
+                        <option value="fr">Français (FR)</option>
+                        <option value="zh">中文 (ZH)</option>
+                    </select>
                 </div>
+                
+                <button onClick={onClose} className="w-full bg-dark-golden text-light-text font-bold py-3 px-8 rounded-full hover:bg-primary-text transition duration-300">
+                    {t.enterSite}
+                </button>
             </div>
         </div>
     );
 };
 
 
-const App = () => {
-    const [currentPage, setCurrentPage] = useState<Page>(() => {
-        const hash = window.location.hash.replace('#', '');
-        return Object.values(Page).includes(hash as Page) ? hash as Page : Page.Home;
-    });
+const LocalizationProvider = ({ children }: { children: React.ReactNode }) => {
+    const [language, setLanguage] = useState<Language>('en');
+    const translations = siteContent[language] || siteContent.en;
 
+    const handleSetLanguage = (lang: Language) => {
+        setLanguage(lang);
+    };
+
+    return (
+        <LocalizationContext.Provider value={{ language, setLanguage: handleSetLanguage, translations }}>
+            {children}
+        </LocalizationContext.Provider>
+    );
+};
+
+const App = () => {
+    const [page, setPage] = useState<Page>(Page.Home);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    
-    // --- Localization State ---
-    const [language, setLanguage] = useState<Language>('en');
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
+        const hasSeenModal = sessionStorage.getItem('hasSeenSoftLaunchModal');
+        if (!hasSeenModal) {
+            setShowModal(true);
+        }
+
         const handleHashChange = () => {
             const hash = window.location.hash.replace('#', '');
-            if (Object.values(Page).includes(hash as Page)) {
-                setCurrentPage(hash as Page);
-                if(hash !== Page.Blog) setSelectedPost(null); // Clear selected post when navigating away from blog
-                trackPageView(`/#${hash}`);
-            } else {
-                setCurrentPage(Page.Home);
-                trackPageView('/#home');
+            const pageValue = Object.values(Page).find(p => p === hash);
+            if (pageValue) {
+                setPage(pageValue);
+                setSelectedPost(null); // Clear post selection on page change
+                trackPageView(`/${hash}`);
+                window.scrollTo(0, 0);
             }
         };
 
         window.addEventListener('hashchange', handleHashChange);
         handleHashChange(); // Initial check
 
-        return () => {
-            window.removeEventListener('hashchange', handleHashChange);
-        };
+        return () => window.removeEventListener('hashchange', handleHashChange);
     }, []);
 
-    useEffect(() => {
-        if (sessionStorage.getItem('softLaunchModalClosed') !== 'true') {
-            setIsModalVisible(true);
-        }
-    }, []);
-
-    const handleCloseModal = () => {
-        setIsModalVisible(false);
-        sessionStorage.setItem('softLaunchModalClosed', 'true');
+    const handleSetPage = (newPage: Page) => {
+        window.location.hash = newPage;
     };
 
-    const setPage = (page: Page) => {
-        window.location.hash = page;
-    };
-    
     const handleAddToCart = (product: Product) => {
         setCartItems(prevItems => {
             const itemInCart = prevItems.find(item => item.id === product.id);
@@ -1510,56 +1518,99 @@ const App = () => {
         });
     };
     
-    const handleUpdateQuantity = (id: string, amount: number) => {
-        setCartItems(prevItems => {
-            return prevItems
-                .map(item => item.id === id ? { ...item, quantity: item.quantity + amount } : item)
-                .filter(item => item.quantity > 0);
-        });
-    };
-
-    const localizationContextValue: LocalizationContextType = {
-        language,
-        setLanguage: (lang: Language) => {
-            setLanguage(lang);
-            document.documentElement.lang = lang;
-        },
-        translations: siteContent[language] || siteContent.en
+     const handleCloseModal = () => {
+        setShowModal(false);
+        sessionStorage.setItem('hasSeenSoftLaunchModal', 'true');
     };
 
     const renderPage = () => {
-        switch (currentPage) {
-            case Page.Home: return <HomePage onAddToCart={handleAddToCart} setPage={setPage} setSelectedPost={setSelectedPost} />;
-            case Page.About: return <AboutUsPage />;
-            case Page.Heritage: return <HeritagePage />;
-            case Page.Sustainability: return <SustainabilityPage />;
-            case Page.Wholesale: return <WholesalePage />;
-            case Page.Blog: return <BlogPage selectedPost={selectedPost} setSelectedPost={setSelectedPost} />;
-            case Page.ShopNow: return <ShopNowPage cartItems={cartItems} onUpdateQuantity={handleUpdateQuantity} setPage={setPage} />;
-            default: return <HomePage onAddToCart={handleAddToCart} setPage={setPage} setSelectedPost={setSelectedPost} />;
+        switch (page) {
+            case Page.Home:
+                return <HomePage onAddToCart={handleAddToCart} setPage={handleSetPage} setSelectedPost={setSelectedPost} />;
+            case Page.About:
+                return <AboutUsPage />;
+            case Page.Heritage:
+                return <HeritagePage />;
+            case Page.Sustainability:
+                return <SustainabilityPage />;
+             case Page.Wholesale:
+                return <WholesalePage />;
+            case Page.ShopNow:
+                return <ShopNowPage cartItems={cartItems} setCartItems={setCartItems} setPage={handleSetPage} />;
+            case Page.Blog:
+                return <BlogPage selectedPost={selectedPost} setSelectedPost={setSelectedPost} />;
+            default:
+                return <HomePage onAddToCart={handleAddToCart} setPage={handleSetPage} setSelectedPost={setSelectedPost}/>;
         }
     };
-    
-    useEffect(() => {
-        const t = localizationContextValue.translations;
-        document.title = t.metaTitle;
-        const metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc) {
-            metaDesc.setAttribute('content', t.metaDescription);
-        }
-    }, [localizationContextValue.translations]);
 
     return (
-        <LocalizationContext.Provider value={localizationContextValue}>
-             {isModalVisible && <SoftLaunchModal onClose={handleCloseModal} />}
-            <div className="pt-20">
-                <Header setPage={setPage} currentPage={currentPage} />
-                <main>
-                    {renderPage()}
-                </main>
-                <Footer />
-            </div>
-        </LocalizationContext.Provider>
+        <LocalizationProvider>
+            <AppContent
+                page={page}
+                setPage={handleSetPage}
+                cartItems={cartItems}
+                onAddToCart={handleAddToCart}
+                selectedPost={selectedPost}
+                setSelectedPost={setSelectedPost}
+                showModal={showModal}
+                onCloseModal={handleCloseModal}
+            />
+        </LocalizationProvider>
+    );
+};
+
+// Sub-component to access localization context
+const AppContent = ({ page, setPage, cartItems, onAddToCart, selectedPost, setSelectedPost, showModal, onCloseModal }: {
+    page: Page;
+    setPage: (page: Page) => void;
+    cartItems: CartItem[];
+    onAddToCart: (product: Product) => void;
+    selectedPost: BlogPost | null;
+    setSelectedPost: (post: BlogPost | null) => void;
+    showModal: boolean;
+    onCloseModal: () => void;
+}) => {
+    const { translations } = useLocalization();
+
+    useEffect(() => {
+        document.title = translations.metaTitle;
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+            metaDesc.setAttribute('content', translations.metaDescription);
+        }
+    }, [translations]);
+    
+    const renderPage = () => {
+        switch (page) {
+            case Page.Home:
+                return <HomePage onAddToCart={onAddToCart} setPage={setPage} setSelectedPost={setSelectedPost} />;
+            case Page.About:
+                return <AboutUsPage />;
+            case Page.Heritage:
+                return <HeritagePage />;
+            case Page.Sustainability:
+                return <SustainabilityPage />;
+             case Page.Wholesale:
+                return <WholesalePage />;
+            case Page.ShopNow:
+                return <ShopNowPage cartItems={cartItems} setCartItems={() => {}} setPage={setPage} />;
+            case Page.Blog:
+                return <BlogPage selectedPost={selectedPost} setSelectedPost={setSelectedPost} />;
+            default:
+                return <HomePage onAddToCart={onAddToCart} setPage={setPage} setSelectedPost={setSelectedPost}/>;
+        }
+    };
+
+    return (
+        <>
+            {showModal && <SoftLaunchModal onClose={onCloseModal} />}
+            <Header setPage={setPage} page={page} cartItems={cartItems} />
+            <main>
+                {renderPage()}
+            </main>
+            <Footer />
+        </>
     );
 };
 

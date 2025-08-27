@@ -86,29 +86,28 @@ export interface WholesaleTierPricing {
     }[];
 }
 
-interface HeritageSectionContent {
+export interface AccordionSection {
     title: string;
+    subtitle: string;
     content: string;
 }
 
 interface HeritagePageContent {
     header: { title: string; subtitle: string; };
-    technical: {
-        title: string;
-        terroir: HeritageSectionContent;
-        artisanal: HeritageSectionContent;
-    };
-    marketing: {
-        title: string;
-        story: HeritageSectionContent;
-        appeal: HeritageSectionContent;
-    };
-    conclusion: string;
+    sections: AccordionSection[];
 }
 
 export interface Translations {
     metaTitle: string;
     metaDescription: string;
+    softLaunchModal: {
+        title: string;
+        mainText: string;
+        statusText: string;
+        selectLanguage: string;
+        enterSite: string;
+        lastUpdated: string;
+    };
     nav: {
         home: string;
         ourStory: string;
@@ -217,6 +216,7 @@ export interface Translations {
     };
     wholesale: {
         header: { title: string; subtitle: string; };
+        insights: { title: string; text: string; };
         pricing: {
             title: string;
             text: string;
@@ -232,6 +232,24 @@ export interface Translations {
                 data: WholesaleTierPricing[];
                 note: string;
             }
+        };
+        logistics: {
+            title: string;
+            packaging: { title: string; options: string[]; };
+            export: { title: string; services: string[]; };
+        };
+        form: {
+            title: string;
+            companyName: string;
+            contactPerson: string;
+            email: string;
+            country: string;
+            volume: string;
+            productType: { label: string; options: string[]; };
+            packaging: { label: string; placeholder: string; };
+            message: string;
+            submit: string;
+            successMessage: string;
         };
     };
     shop: {
@@ -259,10 +277,26 @@ export interface Translations {
         posts: BlogPost[];
     };
     footer: {
-        address: string;
-        contactPerson: { label: string; name: string; };
-        phone: { label: string; number: string; };
-        email: { label: string; address: string; };
+        office: {
+            title: string;
+            address: string;
+        };
+        contact: {
+            title: string;
+            name: string;
+            phone: {
+                label: string;
+                number: string;
+            };
+            email: {
+                label: string;
+                address: string;
+            };
+            cc: {
+                label: string;
+                address: string;
+            };
+        };
         quickLinks: string;
         copyright: string;
     };

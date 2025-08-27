@@ -1,6 +1,6 @@
 
 
-import { Translations, Language, BlogPost } from "./types";
+import { Translations, Language } from "./types";
 
 const nutrientData = {
     en: [
@@ -19,68 +19,20 @@ const nutrientData = {
         { name: 'สังกะสี (มก.)', goldenTaan: 0.3, unrefinedSugarcane: 0.4, coconutSugar: 2, refinedWhiteSugar: 0 },
         { name: 'ทองแดง (มก.)', goldenTaan: 0.2, unrefinedSugarcane: 0.5, coconutSugar: 0.2, refinedWhiteSugar: 0 },
     ]
-};
+}
 
-const blogPosts: BlogPost[] = [
-    {
-        id: 1,
-        title: "The Art of Palmyra: From Blossom to Block",
-        coverImage: "https://via.placeholder.com/800x600.png?text=Palmyra+Harvest+(4:3)",
-        introduction: "Journey with us into the heart of Thailand's palm groves to discover the ancient, artisanal process behind every crystal of Golden Taan.",
-        content: [
-            { type: 'heading', text: "A Dawn Harvest" },
-            { type: 'paragraph', text: "The day begins before sunrise, as skilled farmers ascend the towering Palmyra palms. This is a craft passed down through generations, requiring immense skill and respect for the tree. They gently slice the flower's spathe to coax out the sweet, translucent nectar, which drips into bamboo containers placed overnight." },
-            { type: 'image', src: "https://via.placeholder.com/1200x800.png?text=Collecting+Nectar+(3:2)", alt: "A farmer collecting palm nectar at dawn." },
-            { type: 'paragraph', text: "The collected nectar, known as 'Neera', is fresh and delicate. It must be transported and processed quickly to prevent fermentation. This sense of urgency is what preserves the purity of the final product." },
-            { type: 'heading', text: "The Slow Simmer" },
-            { type: 'paragraph', text: "The magic happens over a slow, wood-fired flame. The nectar is poured into large woks and gently simmered for hours. This isn't a process that can be rushed. The artisan constantly stirs and skims the liquid, carefully monitoring its transformation as water evaporates and the sugars concentrate. The air fills with a rich, caramel aroma—the very essence of Golden Taan." },
-            { type: 'paragraph', text: "Unlike industrial sugar which uses chemicals for clarification, our process relies on skill and patience. The result is a thick, golden syrup, rich in the natural minerals from the nectar." },
-            { type: 'heading', text: "Crystallization: The Final Touch" },
-            { type: 'paragraph', text: "The final step is allowing the concentrated syrup to cool and crystallize naturally. It's poured into molds or stirred to create different textures—from our coarse crystals to our fine powder. This natural crystallization is what gives Golden Taan its unique texture and locks in its complex flavor profile." }
-        ]
-    },
-    {
-        id: 2,
-        title: "Recipe: Golden Taan Glazed Salmon",
-        coverImage: "https://via.placeholder.com/800x600.png?text=Glazed+Salmon+(4:3)",
-        introduction: "Elevate a simple weeknight dinner into a gourmet experience with this sweet and savory salmon glaze, featuring the deep, caramel notes of Golden Taan.",
-        content: [
-            { type: 'heading', text: "Ingredients" },
-            { type: 'paragraph', text: "• 2 salmon fillets (6 oz each)\n• 2 tbsp Golden Taan Syrup\n• 1 tbsp soy sauce\n• 1 tsp grated ginger\n• 1 clove garlic, minced\n• Salt and pepper to taste\n• 1 tsp sesame oil\n• Toasted sesame seeds and sliced green onions for garnish" },
-            { type: 'heading', text: "Instructions" },
-            { type: 'paragraph', text: "1. Preheat your oven to 400°F (200°C).\n2. In a small bowl, whisk together the Golden Taan Syrup, soy sauce, ginger, garlic, and sesame oil. This will be your glaze.\n3. Pat the salmon fillets dry and season with salt and pepper. Place them skin-down on a baking sheet lined with parchment paper.\n4. Brush half of the glaze mixture evenly over the salmon fillets.\n5. Bake for 12-15 minutes, or until the salmon is cooked through. In the last 2 minutes of cooking, brush the remaining glaze over the salmon.\n6. Garnish with toasted sesame seeds and green onions before serving. Pairs beautifully with steamed rice and vegetables." },
-            { type: 'image', src: "https://via.placeholder.com/1200x800.png?text=Finished+Salmon+Dish+(3:2)", alt: "A plated dish of Golden Taan glazed salmon." },
-        ]
-    },
-    {
-        id: 3,
-        title: "Beyond Sweetness: The Health Benefits of Palmyra Palm Sugar",
-        coverImage: "https://via.placeholder.com/800x600.png?text=Healthy+Ingredients+(4:3)",
-        introduction: "We often think of sugar as an indulgence, but what if a sweetener could offer more? Discover the nutritional powerhouse that is Golden Taan.",
-        content: [
-            { type: 'heading', text: "Low Glycemic Index" },
-            { type: 'paragraph', text: "One of the most significant benefits of Golden Taan is its low glycemic index (GI), which is around 35. This is much lower than refined white sugar (GI ≈ 65). A low GI means it's absorbed more slowly into the bloodstream, preventing the sharp spikes and crashes in blood sugar and energy levels. This makes it a smarter choice for sustained energy." },
-            { type: 'heading', text: "A Treasure Trove of Minerals" },
-            { type: 'paragraph', text: "Because it's unrefined, Golden Taan retains the minerals naturally present in the palm nectar. It is exceptionally rich in potassium, an essential electrolyte for regulating blood pressure and muscle function. It also contains significant amounts of iron, magnesium, zinc, and B vitamins—nutrients that are completely stripped away during the industrial refining of white sugar." },
-        ]
-    },
-    {
-        id: 4,
-        title: "Cocktail Hour: The Golden Taan Old Fashioned",
-        coverImage: "https://via.placeholder.com/800x600.png?text=Old+Fashioned+Cocktail+(4:3)",
-        introduction: "Reimagine a classic cocktail with the complex, smoky-caramel notes of our signature Golden Taan Syrup.",
-        content: [
-            { type: 'heading', text: "Ingredients" },
-            { type: 'paragraph', text: "• 2 oz Bourbon or Rye Whiskey\n• 1/4 oz Golden Taan Syrup\n• 2 dashes Angostura bitters\n• Orange peel for garnish" },
-            { type: 'heading', text: "Instructions" },
-            { type: 'paragraph', text: "1. In a mixing glass, combine the whiskey, Golden Taan Syrup, and bitters.\n2. Add a large ice cube and stir until well-chilled (about 30 seconds).\n3. Strain into a rocks glass over a fresh, large ice cube.\n4. Express the orange peel over the drink by squeezing it to release its oils, then rub the peel around the rim of the glass and drop it in as a garnish." },
-        ]
-    },
-];
 
 const en: Translations = {
     metaTitle: "Golden Taan | Authentic Palmyra Palm Sugar - Sustainably Sourced",
     metaDescription: "Discover Golden Taan, the premium, low-GI Palmyra Palm Sugar. 100% pure, unrefined, and sustainably sourced from our family farms in Ratchaburi, Thailand.",
+    softLaunchModal: {
+        title: "Welcome to Our Soft Launch!",
+        mainText: "Discover Golden TAAN, your premium source for authentic, low-GI Palmyra Palm Sugar. We are thrilled to share our 100% pure, unrefined, and sustainably sourced healthy sugar alternative with you.",
+        statusText: "We are currently in our soft launch phase, with a full global launch planned for 15 Sep 2025. Some features are still being polished. We appreciate your understanding and support!",
+        selectLanguage: "Select Language",
+        enterSite: "Enter Site",
+        lastUpdated: `Last Updated: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`
+    },
     nav: {
         home: "Home",
         ourStory: "Our Story",
@@ -334,32 +286,31 @@ const en: Translations = {
     },
     heritage: {
         header: {
-            title: "The Uniqueness of Phetchaburi Palm Sugar",
-            subtitle: "A Technical and Marketing Deep Dive"
+            title: "Our Heritage: The Story of Golden Taan",
+            subtitle: "Explore the legacy, the craft, and the commitment behind every golden crystal."
         },
-        technical: {
-            title: "1. The Technical Edge: \"Why It's Actually Different\"",
-            terroir: {
-                title: "A. Terroir and Raw Material: The Gift of the Land",
-                content: "The foundation of its quality is the raw sap, or nam tan sod (น้ำตาลสด), which is significantly influenced by Phetchaburi's unique environment.\n• Soil Composition: The region's soil is characterized by high salinity and rich mineral content due to its proximity to the coast of the Gulf of Thailand. This specific soil profile is believed to directly impact the sap, imparting a subtle, complex minerality and a less intensely sweet flavor compared to palm sap from other regions. It creates a taste that is often described as nuan (นวล), meaning mellow, rounded, and gentle.\n• Palm Variety: Phetchaburi is dominated by a specific variety of the Palmyra palm (Borassus flabellifer), known locally as Tan Tanot (ต้นตาลโตนด). Generations of farmers have cultivated these trees, which are perfectly adapted to the local climate and soil, yielding a sap with a consistently high-quality flavor profile.\n• Harvesting Technique: The collection process is a meticulous craft. Harvesters, known as khon khuen tan (คนขึ้นตาล), climb the tall palms daily, typically twice a day (early morning and late afternoon). They carefully slice the palm inflorescence and attach bamboo containers (krabok) to collect the dripping sap. Crucially, small pieces of wood from the kayam tree (พะยอม) are often placed in the bamboo tubes. The kayam wood contains natural tannins and antibacterial agents that act as a preservative, preventing the sap from fermenting and souring in the tropical heat. This traditional method maintains the sap's freshness and purity without the need for chemical additives."
+        sections: [
+            {
+                title: "The Golden Taan Legacy",
+                subtitle: "From a Fading Tradition to a Global Choice",
+                content: "Our story begins in the fertile plains of Ratchaburi, Thailand, where generations of our family have lived in harmony with the majestic Palmyra palm. For centuries, this 'tree of life' has gifted our ancestors with its sweet, life-giving nectar—a pure, unrefined sugar known as 'Nam Taan Tanod'.\n\nIn recent decades, the rise of industrial white sugar and the demanding labor of traditional farming led to a decline in this ancient craft. The 'Golden Gold' of Thailand was fading. We saw a legacy at risk of being forgotten, a pure taste being replaced by an empty sweetness.\n\nGolden Taan was born from a mission: to revive this fading tradition and share its wholesome goodness with the world. We combine time-honored, artisanal methods with modern quality standards to bring you a sweetener that is not only delicious but also deeply nourishing and ethically sourced."
             },
-            artisanal: {
-                title: "B. Artisanal Processing: The Human Touch",
-                content: "The transformation of sap into sugar is a race against time and a testament to generations of skill. This is where Phetchaburi's methods create a distinctly superior product.\n• The \"Tao Tan\" Wok System: The sap is simmered in large, open woks over a traditional clay stove fueled by palm wood, known as a tao tan (เตาตาล). This setup is not accidental; the wide surface area allows for rapid evaporation, and the artisan's ability to control the fire is paramount. Unlike industrial methods that use high, direct heat, the slow simmering process gently caramelizes the sugars without burning them.\n• Meticulous Simmering and Clarification: As the sap heats, the artisan continuously skims off impurities that rise to the surface. This crucial step results in a cleaner, more refined final product. The goal is to reduce the sap until it reaches a specific viscosity and color—a deep, golden amber. This process can take several hours, and the artisan relies on sensory cues—sight, smell, and the sound of the bubbling liquid—to know precisely when it's ready.\n• No Additives or Refinement: True Phetchaburi palm sugar is 100% pure palm sap. There is no addition of white cane sugar (a common adulterant in cheaper versions), molasses, or artificial coloring. The final product is unrefined, meaning it retains the natural vitamins and minerals present in the sap, contributing to its complex flavor and nutritional profile. The result is a soft, paste-like sugar (nam tan puek) that melts easily and has a fragrant, smoky aroma from the slow cooking process."
-            }
-        },
-        marketing: {
-            title: "2. The Marketing Power: \"Why We Believe It's Better\"",
-            story: {
-                title: "A. The Story of Heritage and Authenticity",
-                content: "In a market flooded with generic sweeteners, Phetchaburi palm sugar is sold not just as a product, but as an experience and a piece of Thai heritage.\n• Geographical Indication (GI): Phetchaburi Palm Sugar is a registered Geographical Indication product in Thailand. This certification is a powerful marketing tool, legally protecting its origin and guaranteeing that products bearing the name adhere to the traditional production standards of the region. For consumers, the GI label is a mark of authenticity and superior quality, similar to Champagne from France or Parmesan from Italy.\n• Artisanal and Handcrafted Narrative: The story of the khon khuen tan scaling towering palms and artisans patiently stirring woks over wood fires is incredibly compelling. It taps directly into the consumer trends of valuing handcrafted, small-batch products over mass-produced industrial goods. This narrative of \"slow food\" and human skill justifies its premium price point.\n• Cultural Significance: Phetchaburi is often called Mueang Sam Wang (เมืองสามวัง), the \"City of Three Palaces,\" and has a rich history connected to the royal court. Its culinary traditions, including its palm sugar, are seen as part of this elevated royal heritage, adding a layer of prestige and cultural capital to the product."
+            {
+                title: "The Palmyra Palm: The Tree of Life",
+                subtitle: "Understanding the Source of Our 'Golden Gold'",
+                content: "The foundation of our sugar's quality is the raw sap, or nam tan sod (น้ำตาลสด), which is significantly influenced by Phetchaburi's unique environment, its 'terroir'.\n\n• Soil Composition: The region's soil is characterized by high salinity and rich mineral content due to its proximity to the coast of the Gulf of Thailand. This specific soil profile directly impacts the sap, imparting a subtle, complex minerality and a less intensely sweet flavor compared to palm sap from other regions. It creates a taste that is often described as nuan (นวล), meaning mellow and rounded.\n\n[image: map-of-ratchaburi-terroir.png]\n\n• Palm Variety & Harvesting: Phetchaburi is dominated by a specific variety of the Palmyra palm (Borassus flabellifer) perfectly adapted to the local climate. The collection process is a meticulous craft performed by harvesters known as khon khuen tan (คนขึ้นตาล), who climb the tall palms daily. Crucially, small pieces of wood from the kayam tree (พะยอม) are placed in the bamboo collection tubes. The kayam wood contains natural tannins that act as a preservative, preventing the sap from fermenting and maintaining its freshness without chemical additives."
             },
-            appeal: {
-                title: "B. The Appeal of Purity and Wellness",
-                content: "As consumers become more health-conscious, the natural and unrefined qualities of Phetchaburi palm sugar become a key selling point.\n• \"Clean Label\" Product: With only one ingredient—pure palm sap—it appeals to the clean-label movement. It is marketed as a natural, wholesome alternative to highly processed white sugar and artificial sweeteners.\n• Lower Glycemic Index and Nutritional Value: While still a sugar, palm sugar has a lower glycemic index than table sugar and contains trace minerals like potassium, magnesium, and iron. This \"better-for-you\" angle is a significant part of its marketing to health-aware consumers, both domestically and internationally.\n• Unique Flavor for a Discerning Palate: Marketers and chefs position Phetchaburi palm sugar as a \"finishing sugar\" or a gourmet ingredient. Its unique smoky, caramel, and slightly savory notes are highlighted as a way to add depth and complexity to both sweet and savory dishes, from traditional Thai curries (kaeng) to modern desserts. It is sold not just for its sweetness, but for its flavor."
+            {
+                title: "The Art of the Harvest",
+                subtitle: "Generations of Skill in Every Crystal",
+                content: "The transformation of sap into sugar is a race against time and a testament to generations of skill. This is where traditional methods create a distinctly superior product.\n\n• The 'Tao Tan' Wok System: The sap is simmered in large, open woks over a traditional clay stove fueled by palm wood. The wide surface area allows for rapid evaporation, and the artisan's ability to control the fire is paramount. Unlike industrial methods that use high, direct heat, the slow simmering process gently caramelizes the sugars without burning them, developing a deep, complex flavor.\n\n[image: caramelization-diagram.png]\n\n• Meticulous Craft: As the sap heats, the artisan continuously skims off impurities. This crucial step results in a cleaner, more refined final product. The goal is to reduce the sap until it reaches a specific viscosity and color—a deep, golden amber. This process can take several hours, and the artisan relies on sensory cues—sight, smell, and sound—to know precisely when it's ready.\n\n• No Additives or Refinement: True Phetchaburi palm sugar is 100% pure palm sap. There is no addition of white cane sugar, molasses, or artificial coloring. The final product is unrefined, meaning it retains the natural vitamins and minerals present in the sap, contributing to its complex flavor and nutritional profile."
+            },
+            {
+                title: "Our Commitment",
+                subtitle: "Sweetness That Nurtures People and Planet",
+                content: "Choosing Golden Taan means investing in a cycle of prosperity that starts with the tree and flows to farming families. We are built on a foundation of environmental, social, and ethical governance.\n\n• Ecological Sustainability: Palmyra palm farming is inherently regenerative. The trees are powerful carbon sinks, are incredibly drought-resistant, and thrive in biodiverse groves without chemical pesticides or fertilizers. They are a stark contrast to water-intensive, soil-degrading sugarcane monocultures.\n\n[image: palm-vs-cane-sustainability-graphic.png]\n\n• Social Empowerment: We guarantee fair, above-market prices to our farmers, ensuring a stable and dignified income. We actively work to preserve their traditional knowledge and reinvest a portion of our profits into community development, funding education and local infrastructure.\n\n• Ethical Governance: We offer complete transparency and traceability from palm to pantry. We have a zero-tolerance policy for forced or child labor and are committed to inclusive growth where our farming partners have a voice in our business decisions."
             }
-        },
-        conclusion: "In conclusion, the uniqueness of Phetchaburi palm sugar is a perfect synergy of place, process, and perception. The mineral-rich soil and traditional harvesting create a superior raw material. The artisanal, slow-simmering process transforms that sap into a product with unparalleled aroma and flavor. Finally, a powerful marketing narrative, anchored by GI certification and the story of heritage, communicates this exceptional quality to the world, cementing its status as the gold standard of palm sugar."
+        ]
     },
     sustainability: {
         header: { title: "Sustainability: Sweetness That Nurtures", subtitle: "Our commitment runs deeper than our roots. We believe in a model of business that nurtures the planet and its people." },
@@ -408,85 +359,377 @@ const en: Translations = {
     },
     wholesale: {
         header: { title: "Wholesale & B2B Partnerships", subtitle: "Power your products with the pure, authentic taste of Golden Taan Palmyra Palm Sugar. Join us as a distribution partner." },
+        insights: { title: "Market Insights & Opportunities", text: "The global demand for natural, low-GI, and ethically sourced sweeteners is growing exponentially. Golden Taan is perfectly positioned to meet this demand, offering a unique product with a compelling story that resonates with health-conscious consumers and premium brands." },
         pricing: {
             title: "Tiered Wholesale Pricing (FOB Bangkok)",
             text: "We offer competitive tiered pricing based on volume to support businesses of all sizes, from small artisanal bakeries to large-scale food manufacturers. Prices are listed in USD per kg.",
             table: {
                 headers: { productLine: "Product Line", sku: "SKU / Packaging", tier1: "Tier 1 (100-499kg)", tier2: "Tier 2 (500-999kg)", tier3: "Tier 3 (1-5 MT)", tier4: "Tier 4 (5+ MT)" },
                 data: [
-                    { 
-                        productLine: "Coarse Crystals", 
-                        skus: [
-                            { name: "150g Jar", tier1: "$15.12", tier2: "$13.61", tier3: "$12.25", tier4: "Quote" },
-                            { name: "200g Jar", tier1: "$14.38", tier2: "$12.94", tier3: "$11.65", tier4: "Quote" }
-                        ]
-                    },
-                    { 
-                        productLine: "Fine Powder", 
-                        skus: [
-                            { name: "150g Jar", tier1: "$16.90", tier2: "$15.21", tier3: "$13.69", tier4: "Quote" },
-                            { name: "200g Jar", tier1: "$16.30", tier2: "$14.67", tier3: "$13.20", tier4: "Quote" }
-                        ]
-                    },
-                    { 
-                        productLine: "Syrup", 
-                        skus: [
-                            { name: "150ml Bottle", tier1: "$17.86", tier2: "$16.07", tier3: "$14.46", tier4: "Quote" },
-                            { name: "200ml Bottle", tier1: "$17.29", tier2: "$15.56", tier3: "$14.00", tier4: "Quote" }
-                        ]
-                    }
+                    { productLine: "Coarse Crystals", skus: [{ name: "150g Jar", tier1: "$15.12", tier2: "$13.50", tier3: "$11.80", tier4: "Quote" }, { name: "10kg Bulk Bag", tier1: "$14.38", tier2: "$12.90", tier3: "$11.20", tier4: "Quote" }] },
+                    { productLine: "Fine Powder", skus: [{ name: "150g Jar", tier1: "$16.90", tier2: "$15.10", tier3: "$13.20", tier4: "Quote" }, { name: "10kg Bulk Bag", tier1: "$16.30", tier2: "$14.60", tier3: "$12.80", tier4: "Quote" }] },
+                    { productLine: "Syrup", skus: [{ name: "150ml Bottle", tier1: "$17.86", tier2: "$15.90", tier3: "$13.90", tier4: "Quote" }, { name: "20L Jerry Can", tier1: "$17.29", tier2: "$15.40", tier3: "$13.50", tier4: "Quote" }] }
                 ],
                 note: "Prices are indicative and subject to change. Please request a formal quote for the latest pricing."
             }
         },
+        logistics: {
+            title: "Logistics & Export",
+            packaging: { title: "Custom & White-Label Packaging", options: ["Retail-ready packaging with your branding.", "Bulk packaging for industrial use (e.g., 10kg, 20kg bags).", "Custom packaging solutions to meet your specific needs."] },
+            export: { title: "Global Export Services", services: ["Full logistical support from our factory to your port.", "Assistance with all necessary export documentation (e.g., Certificate of Origin, Health Certificate).", "Partnerships with reliable global freight forwarders."] }
+        },
+        form: {
+            title: "Request a Wholesale Quote",
+            companyName: "Company Name",
+            contactPerson: "Contact Person",
+            email: "Email Address",
+            country: "Country",
+            volume: "Estimated Annual Volume (kg)",
+            productType: { label: "Product Type Interest", options: ["Solid (Crystals/Powder)", "Liquid (Syrup)", "Both"] },
+            packaging: { label: "Packaging Needs", placeholder: "e.g., Retail Jars, 10kg Bulk Bags" },
+            message: "Your Message",
+            submit: "Submit RFQ",
+            successMessage: "Thank you for your inquiry! We will get back to you within 2 business days."
+        },
     },
     shop: {
-        header: { title: "Shop Our Collection", subtitle: "Bring the authentic taste of Thailand's finest Palmyra Palm Sugar into your home." },
-        emptyCart: { title: "Your Cart is Empty", text: "Explore our collection and find the perfect sweetener for your pantry.", cta: "Continue Shopping" },
-        summary: { title: "Order Summary", subtotal: "Subtotal", shipping: "International Shipping", total: "Total" },
+        header: { title: "Shop Now", subtitle: "Bring the authentic taste of Golden Taan into your home. Currently shipping worldwide from Thailand." },
+        emptyCart: { title: "Your Cart is Empty", text: "Explore our products and add something sweet to your life.", cta: "Browse Products" },
+        summary: { title: "Order Summary", subtotal: "Subtotal", shipping: "Int'l Shipping", total: "Total" },
         payment: {
             title: "Payment",
             tabs: { qr: "Thai QR", crypto: "Crypto", card: "Credit Card" },
-            qr: { text: "Scan the QR code with your Thai banking app to complete payment." },
+            qr: { text: "Scan to pay with any Thai banking app." },
             crypto: { text: "Send payment to the following wallet address:", accept: "We accept:" },
             card: { number: "Card Number", expiry: "Expiry Date", cvc: "CVC", name: "Name on Card", pay: "Pay" },
         },
         shippingInfo: {
             title: "International Shipping Information",
-            policy: { title: "Shipping Policy", text: "We proudly ship worldwide from our facility in Bangkok, Thailand. All orders are processed within 2-3 business days. Please ensure your shipping address is correct as we cannot change it once the order is dispatched." },
-            delivery: { title: "Estimated Delivery Times", text: "• Asia Pacific: 5-10 business days\n• North America & Europe: 10-20 business days\n• Rest of the World: 15-25 business days" },
-            customs: { title: "Customs, Duties, and Taxes", text: "Golden TAAN is not responsible for any customs and taxes applied to your order. All fees imposed during or after shipping are the responsibility of the customer (tariffs, taxes, etc.)." },
-        },
+            policy: {
+                title: "Shipping Policy",
+                text: "We ship worldwide from our facility in Thailand via DHL Express or Thai Post. All orders are processed and dispatched within 2-3 business days. Please ensure your shipping address is complete and correct as we cannot reroute packages once they are in transit."
+            },
+            delivery: {
+                title: "Estimated Delivery Times",
+                text: "• Standard International (Thai Post): 10-21 business days.\n• Express International (DHL): 5-10 business days.\nPlease note these are estimates and can be affected by customs clearance in your country."
+            },
+            customs: {
+                title: "Customs, Duties, and Taxes",
+                text: "Please be aware that your order may be subject to import duties, customs taxes, and/or fees levied by your country's customs department. These charges are not included in the total at checkout and are the responsibility of the recipient. We recommend contacting your local customs office for more information regarding your country's policies."
+            }
+        }
     },
     blog: {
-        header: { title: "The Golden Blog", subtitle: "Recipes, stories, and insights from the world of Palmyra Palm Sugar." },
+        header: { title: "The Golden Blog", subtitle: "Recipes, stories, and insights from the world of Palmyra palm sugar." },
         readMore: "Read More",
         back: "Back to Blog List",
-        posts: blogPosts
+        posts: [
+             {
+                id: 2,
+                title: "The Ultimate Gluten-Free Brownies with Golden Taan",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Gluten-Free+Brownies",
+                introduction: "Discover a brownie recipe so rich, fudgy, and decadent, you'd never guess it's gluten-free. The secret? The deep, caramel notes of Golden Taan palm sugar.",
+                content: [
+                    { type: 'paragraph', text: 'For years, the quest for the perfect gluten-free brownie has haunted bakers. Many recipes end up dry, crumbly, or lacking that deep chocolatey flavor. This recipe changes everything. By using a blend of almond flour and the unique properties of Golden Taan Coarse Crystals, we achieve a texture and taste that rivals any traditional brownie.' },
+                    { type: 'heading', text: 'Why Golden Taan Makes a Difference' },
+                    { type: 'paragraph', text: 'Unlike refined white sugar, Golden Taan adds more than just sweetness. Its natural molasses content contributes to a moister, chewier texture. The smoky, butterscotch flavor profile elevates the chocolate, creating a complex and sophisticated dessert. The Coarse Crystals also create delightful little pockets of caramelization as they bake.' },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Ingredients+for+Brownies', alt: 'Ingredients laid out for gluten-free brownies, featuring Golden Taan sugar.' },
+                    { type: 'heading', text: 'Ingredients' },
+                    { type: 'paragraph', text: '• 1 cup (200g) Golden Taan Coarse Crystals\n• 1/2 cup (113g) unsalted butter, melted\n• 2 large eggs\n• 1 teaspoon vanilla extract\n• 3/4 cup (85g) unsweetened cocoa powder\n• 1/2 cup (60g) almond flour\n• 1/4 teaspoon baking soda\n• 1/2 cup chocolate chips' },
+                    { type: 'heading', text: 'Instructions' },
+                    { type: 'paragraph', text: '1. Preheat your oven to 350°F (175°C) and grease an 8x8 inch baking pan.\n2. In a large bowl, whisk together the melted butter and Golden Taan sugar until well combined.\n3. Add the eggs and vanilla extract, beating until the mixture is smooth.\n4. Sift in the cocoa powder, almond flour, and baking soda. Fold gently until just combined.\n5. Stir in the chocolate chips.\n6. Pour the batter into the prepared pan and bake for 20-25 minutes, or until a toothpick inserted into the center comes out with moist crumbs.\n7. Let cool completely before slicing. Enjoy the richness!' }
+                ]
+            },
+            {
+                id: 4,
+                title: "Savory & Sweet: Golden Taan Glazed Salmon",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Glazed+Salmon",
+                introduction: "Elevate a simple salmon dinner into a gourmet experience with this incredible sweet and savory glaze, featuring the versatile Golden Taan Syrup.",
+                content: [
+                    { type: 'paragraph', text: 'This recipe is a perfect weeknight meal that tastes like it came from a high-end restaurant. The glaze is incredibly simple but packs a huge flavor punch. The Golden Taan Syrup caramelizes beautifully on the salmon, creating a slightly crispy, sweet crust that pairs perfectly with the rich, flaky fish.' },
+                    { type: 'heading', text: 'The Magic of the Glaze' },
+                    { type: 'paragraph', text: 'The glaze combines four simple ingredients: Golden Taan Syrup, soy sauce, fresh ginger, and garlic. The syrup provides a complex, toffee-like sweetness that is much more interesting than honey or maple syrup. It balances the saltiness of the soy sauce and the spiciness of the ginger and garlic, creating a perfectly harmonious flavor profile.' },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Salmon+Glaze+Ingredients', alt: 'Ingredients for the salmon glaze, including Golden Taan Syrup.' },
+                    { type: 'heading', text: 'Ingredients' },
+                    { type: 'paragraph', text: '• 2 salmon fillets (6oz each)\n• 2 tbsp Golden Taan Syrup\n• 2 tbsp soy sauce\n• 1 tsp grated fresh ginger\n• 1 clove garlic, minced\n• Salt and pepper to taste\n• 1 tbsp olive oil' },
+                    { type: 'heading', text: 'Instructions' },
+                    { type: 'paragraph', text: '1. Preheat your oven to 400°F (200°C).\n2. In a small bowl, whisk together the Golden Taan Syrup, soy sauce, ginger, and garlic.\n3. Pat the salmon fillets dry and season with salt and pepper.\n4. Heat the olive oil in an oven-safe skillet over medium-high heat. Place the salmon skin-side up and sear for 2-3 minutes until golden.\n5. Flip the salmon. Pour the glaze over the fillets.\n6. Transfer the skillet to the oven and bake for 5-7 minutes, or until the salmon is cooked through and the glaze is bubbly and caramelized.\n7. Serve immediately with a side of steamed rice and vegetables.' }
+                ]
+            },
+            {
+                id: 5,
+                title: "A Healthier Thai Iced Tea with Golden Taan Syrup",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Thai+Iced+Tea",
+                introduction: "Recreate the classic Thai street-food favorite with a wholesome twist. Our Golden Taan Syrup adds a complex, caramel depth that refined sugar just can't match.",
+                content: [
+                    { type: 'paragraph', text: "Thai Iced Tea, or 'Cha Yen', is a beloved beverage known for its creamy texture and sweet, aromatic flavor. Traditionally, it's made with a potent brew of black tea, sweetened condensed milk, and a hefty amount of white sugar. Our version captures all the authentic flavor while upgrading the sweetener for a richer, more nuanced taste." },
+                    { type: 'heading', text: "The Golden Taan Difference" },
+                    { type: 'paragraph', text: "Swapping out refined sugar for Golden Taan Syrup isn't just a healthier choice; it's a flavor enhancer. The syrup's natural toffee and smoke notes complement the spices in the tea (like star anise and cardamom), creating a beverage that's both refreshing and complex." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Making+Thai+Tea', alt: 'Pouring milk into a glass of Thai tea.' },
+                    { type: 'heading', text: 'Ingredients (for 2 servings)' },
+                    { type: 'paragraph', text: "• 2 cups strong-brewed Thai black tea, cooled\n• 4 tbsp Golden Taan Syrup (or to taste)\n• 4 tbsp evaporated milk (or coconut milk for a vegan version)\n• Ice" },
+                    { type: 'heading', text: 'Instructions' },
+                    { type: 'paragraph', text: "1. Brew your Thai tea according to package directions and let it cool completely.\n2. Fill two tall glasses with ice.\n3. Pour 1 cup of the cooled tea into each glass.\n4. Add 2 tablespoons of Golden Taan Syrup to each glass and stir well until it dissolves.\n5. Gently pour 2 tablespoons of evaporated milk over the top of each tea. It will create a beautiful swirling effect.\n6. Serve immediately with a straw and enjoy the authentic taste of Thailand." }
+                ]
+            },
+            {
+                id: 6,
+                title: "The Palmyra Palm: Southeast Asia's 'Tree of Life'",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Palmyra+Palm+Tree",
+                introduction: "Explore the incredible story of the Palmyra palm, a tree that has sustained communities for centuries with its versatile gifts, earning it the name 'Tree of Life'.",
+                content: [
+                    { type: 'paragraph', text: "The Palmyra palm (Borassus flabellifer) is more than just the source of our delicious sugar; it's a cornerstone of rural life in Thailand and across Southeast Asia. For millennia, every single part of this remarkable tree has been used, embodying a true zero-waste philosophy." },
+                    { type: 'heading', text: 'A Cornucopia of Uses' },
+                    { type: 'paragraph', text: "• The Sap: Harvested to create our Golden Taan sugar, fresh sap (Nam Taan Sod) is also enjoyed as a refreshing drink, and can be fermented into a toddy or vinegar.\n• The Fruit: The tender, jelly-like seeds of the young fruit are a delicacy, while the fibrous outer layer of the ripe fruit can be cooked into sweets.\n• The Leaves: Strong and fan-like, the leaves are used for thatching roofs, weaving baskets, mats, hats, and even as traditional writing material (manuscripts).\n• The Trunk: The sturdy, fibrous wood from the trunk is a valuable, termite-resistant building material for homes and furniture." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Woven+Palm+Leaves', alt: 'Hand-woven baskets made from Palmyra palm leaves.' },
+                    { type: 'heading', text: 'Cultural & Ecological Significance' },
+                    { type: 'paragraph', text: "The Palmyra palm is deeply woven into the cultural fabric of the region, symbolizing resilience and self-sufficiency. Ecologically, these trees are vital. They prevent soil erosion, require very little water, and thrive without pesticides, making them a pillar of sustainable agriculture. By supporting products from the Palmyra palm, you help preserve this incredible natural and cultural resource." }
+                ]
+            },
+            {
+                id: 7,
+                title: "Baking for Blood Sugar Balance: A Guide to Low-GI Sweeteners",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Low-GI+Baking",
+                introduction: "Managing blood sugar doesn't mean giving up delicious baked goods. Learn how Golden Taan Powder can be your secret weapon for healthier treats that don't compromise on taste.",
+                content: [
+                    { type: 'paragraph', text: "For those mindful of their blood sugar, baking can seem like a minefield of high-glycemic ingredients. But with the right sweetener, you can create treats that are both delicious and gentler on your body's energy levels. This is where low-glycemic index (GI) sweeteners like Golden Taan come in." },
+                    { type: 'heading', text: 'What is the Glycemic Index?' },
+                    { type: 'paragraph', text: "The GI is a scale from 0 to 100 that ranks carbohydrate-containing foods by how much they raise blood sugar levels. Pure glucose is 100. Refined white sugar has a GI of around 65, causing a rapid spike and crash. Golden Taan, with a GI of only ~35, is considered a low-GI food, meaning it's digested more slowly, leading to a gradual rise in blood sugar and sustained energy." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Healthy+Muffins', alt: 'A batch of freshly baked healthy muffins made with Golden Taan.' },
+                    { type: 'heading', text: 'Simple Low-GI Oat Muffin Recipe' },
+                    { type: 'paragraph', text: "This recipe uses Golden Taan Powder and whole grains for a delicious, satisfying, and blood-sugar-friendly snack.\n• 1.5 cups rolled oats\n• 1/2 cup Golden Taan Powder\n• 1 tsp baking powder\n• 1/2 tsp cinnamon\n• 1 cup milk (or dairy-free alternative)\n• 1 egg\n• 1/4 cup melted coconut oil\n• 1 tsp vanilla extract" },
+                    { type: 'heading', text: 'Instructions' },
+                    { type: 'paragraph', text: "1. Preheat oven to 375°F (190°C) and line a muffin tin.\n2. In a bowl, mix oats, Golden Taan Powder, baking powder, and cinnamon.\n3. In another bowl, whisk together milk, egg, coconut oil, and vanilla.\n4. Pour the wet ingredients into the dry ingredients and stir until just combined.\n5. Spoon batter into the muffin tin and bake for 18-20 minutes.\n6. Enjoy a guilt-free treat that will keep you feeling full and energized." }
+                ]
+            },
+            {
+                id: 8,
+                title: "Craft Cocktails: The Mixologist's Guide to Golden Taan",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Craft+Cocktails",
+                introduction: "Move beyond simple syrup. The smoky, caramel notes of Golden Taan Syrup can add incredible complexity and sophistication to your favorite cocktails.",
+                content: [
+                    { type: 'paragraph', text: "A great cocktail is all about balance. The sweetener you choose plays a crucial role, and Golden Taan Syrup offers a flavor profile that plain sugar syrup can't replicate. Its rich, butterscotch notes and hint of smoke can elevate classic drinks and inspire new creations." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Palmyra+Old+Fashioned', alt: 'A sophisticated Old Fashioned cocktail made with Golden Taan.' },
+                    { type: 'heading', text: 'Recipe: The Palmyra Old Fashioned' },
+                    { type: 'paragraph', text: "A smoky, sophisticated twist on a timeless classic.\n• 2 oz Bourbon or Rye Whiskey\n• 1/4 oz Golden Taan Syrup\n• 2 dashes Angostura bitters\n• Orange peel for garnish" },
+                    { type: 'heading', text: 'Instructions' },
+                    { type: 'paragraph', text: "1. Combine the Golden Taan Syrup and bitters in a mixing glass.\n2. Add the whiskey and fill the glass with ice.\n3. Stir until well-chilled (about 30 seconds).\n4. Strain into a rocks glass over a large ice cube.\n5. Express the oils from an orange peel over the drink and drop it in as garnish." }
+                ]
+            },
+            {
+                id: 9,
+                title: "A Day in the Life of a Palm Sugar Farmer",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Palm+Sugar+Farmer",
+                introduction: "Meet the artisans behind our sugar. A journey into the daily craft, rhythm, and dedication required to create Golden Taan.",
+                content: [
+                    { type: 'paragraph', text: "The creation of authentic palm sugar is not a factory process; it's a daily ritual guided by nature and tradition. It requires strength, patience, and an intimate knowledge of the Palmyra palms." },
+                    { type: 'heading', text: 'The Morning Harvest (5 AM)' },
+                    { type: 'paragraph', text: "The day begins before dawn. Farmers, known as 'khon khuen tan', expertly scale the towering palms, some over 80 feet tall. They collect the bamboo cylinders filled with sweet sap that has been dripping overnight and carefully slice the palm blossom to encourage the flow for the day." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Climbing+the+Palm', alt: 'A farmer climbing a Palmyra palm tree at sunrise.' },
+                    { type: 'heading', text: 'The Slow Simmer (7 AM - 12 PM)' },
+                    { type: 'paragraph', text: "The collected sap is immediately brought to a wok over a wood fire. For the next several hours, it is simmered slowly, never boiled. The farmer gently stirs, skimming impurities and watching as the watery sap thickens into a golden, fragrant syrup. This step is crucial for developing the deep caramel flavor." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Simmering+the+Sap', alt: 'Sap being slow-cooked in a large wok over a wood fire.' },
+                    { type: 'heading', text: 'The Afternoon Harvest & Cooling (4 PM)' },
+                    { type: 'paragraph', text: "In the late afternoon, the farmers climb the trees again to collect the day's sap. Meanwhile, the thickened syrup from the morning is poured into molds or containers to cool and crystallize naturally. It is this dedication, day in and day out, that ensures the quality and authenticity of every batch of Golden Taan." }
+                ]
+            },
+            {
+                id: 10,
+                title: "Sweet Sustainability: How Palmyra Farming Nurtures the Planet",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Sustainable+Farming",
+                introduction: "Discover how choosing Golden Taan is a vote for a healthier planet. We explore the eco-friendly benefits of traditional Palmyra palm farming compared to industrial agriculture.",
+                content: [
+                    { type: 'paragraph', text: "In a world searching for sustainable solutions, the ancient practice of Palmyra palm farming offers a powerful model. It's a form of agriculture that works in harmony with nature, rather than against it." },
+                    { type: 'heading', text: 'Water-Wise and Drought-Resistant' },
+                    { type: 'paragraph', text: "Unlike thirsty crops like sugarcane that require massive amounts of irrigation, Palmyra palms are incredibly drought-resistant. They thrive in arid conditions and rely almost entirely on natural rainfall, conserving precious water resources." },
+                    { type: 'heading', text: 'No Monoculture, No Pesticides' },
+                    { type: 'paragraph', text: "Golden Taan comes from palms that grow in biodiverse groves, not in destructive monoculture plantations. These trees are naturally hardy and require no chemical fertilizers or pesticides, protecting the soil and surrounding ecosystem." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Biodiverse+Palm+Grove', alt: 'A natural, biodiverse grove of Palmyra palm trees.' },
+                    { type: 'heading', text: 'A Carbon Sink' },
+                    { type: 'paragraph', text: "The trees themselves are not cut down for harvest. A single Palmyra palm can be productive for over 40 years, acting as a 'carbon sink' by absorbing CO2 from the atmosphere throughout its long life. Choosing Golden Taan supports an agricultural system that is inherently regenerative and good for the Earth." }
+                ]
+            },
+            {
+                id: 11,
+                title: "The Ultimate Cheese Board Companion: Golden Taan Pairings",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Cheese+Board",
+                introduction: "Unlock a new level of flavor on your next cheese and charcuterie board. The rich, complex notes of Golden Taan create surprising and delicious pairings.",
+                content: [
+                    { type: 'paragraph', text: "While honey and fruit preserves are common on cheese boards, Golden Taan offers a unique alternative that can elevate your pairings from ordinary to extraordinary." },
+                    { type: 'heading', text: 'How to Pair' },
+                    { type: 'paragraph', text: "The key is to match the intensity. The smoky, caramel flavor of Golden Taan stands up beautifully to strong, aged, and salty cheeses." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Cheese+and+Syrup', alt: 'Golden Taan syrup being drizzled over a piece of cheese.' },
+                    { type: 'heading', text: 'Perfect Pairings' },
+                    { type: 'paragraph', text: "• Sharp Aged Cheddar: Drizzle a little Golden Taan Syrup over a slice of sharp cheddar. The sweetness cuts through the saltiness and complements the cheese's nutty notes.\n• Creamy Brie or Camembert: Sprinkle Golden Taan Coarse Crystals over a wheel of baked brie. The crystals add a delightful crunch and caramel flavor to the gooey cheese.\n• Salty Blue Cheese: A classic pairing for sweet things, blue cheese like Stilton or Gorgonzola is magnificent with a drizzle of our syrup. The sweetness balances the cheese's pungent funk perfectly.\n• Hard Cheeses like Parmesan or Manchego: The crystals offer a textural contrast and a sweet counterpoint to the saltiness of these hard, aged cheeses." }
+                ]
+            },
+            {
+                id: 12,
+                title: "DIY Beauty: A Rejuvenating Face Scrub with Golden Taan",
+                coverImage: "https://via.placeholder.com/800x600.png?text=DIY+Face+Scrub",
+                introduction: "Feed your skin with the natural goodness of Golden Taan. This simple, 3-ingredient face scrub gently exfoliates, brightens, and nourishes.",
+                content: [
+                    { type: 'paragraph', text: "Why use harsh chemical exfoliants when you can create a gentle, effective, and delicious-smelling scrub right in your own kitchen? The natural texture of Golden Taan Coarse Crystals makes for a perfect, skin-softening exfoliant." },
+                    { type: 'heading', text: 'The Power of Natural Ingredients' },
+                    { type: 'paragraph', text: "• Golden Taan Coarse Crystals: The fine, irregular crystals gently buff away dead skin cells without being too abrasive. Palm sugar also contains natural glycolic acid, which helps to promote cell turnover for brighter skin.\n• Coconut Oil: A fantastic natural moisturizer that leaves skin feeling soft and hydrated.\n• Raw Honey: Naturally antibacterial and anti-inflammatory, honey is great for soothing skin and locking in moisture." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Scrub+Ingredients', alt: 'Ingredients for the DIY face scrub in small bowls.' },
+                    { type: 'heading', text: 'Simple Recipe' },
+                    { type: 'paragraph', text: "• 2 tablespoons Golden Taan Coarse Crystals\n• 1 tablespoon melted coconut oil\n• 1 teaspoon raw honey" },
+                    { type: 'heading', text: 'Instructions' },
+                    { type: 'paragraph', text: "1. In a small bowl, combine all ingredients and mix well.\n2. To use, take a small amount and gently massage onto damp skin in circular motions, avoiding the eye area.\n3. Rinse thoroughly with warm water and pat your face dry.\n4. Enjoy your smooth, glowing skin! (Note: As with any new skincare product, do a patch test first.)" }
+                ]
+            },
+            {
+                id: 13,
+                title: "The Easiest Vegan Caramel Sauce You'll Ever Make",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Vegan+Caramel",
+                introduction: "Creamy, decadent, and completely dairy-free. Golden Taan Syrup and full-fat coconut milk are all you need for a luscious vegan caramel sauce.",
+                content: [
+                    { type: 'paragraph', text: "Craving a rich caramel sauce for your ice cream, apples, or coffee, but want to keep it plant-based? This two-ingredient recipe is a game-changer. The inherent caramel flavor of Golden Taan Syrup makes it incredibly easy to achieve a deep, authentic taste without any dairy." },
+                    { type: 'heading', text: 'Why This Recipe Works' },
+                    { type: 'paragraph', text: "Traditional caramel requires carefully cooking sugar until it amberizes, then adding cream and butter. It can be tricky to get right. By using Golden Taan Syrup, which already has those complex caramel notes, and full-fat coconut milk for creaminess, you skip the difficult steps and get a foolproof, delicious result every time." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Sauce+in+a+Jar', alt: 'A jar of creamy vegan caramel sauce with a spoon.' },
+                    { type: 'heading', text: 'The 2-Ingredient Recipe' },
+                    { type: 'paragraph', text: "• 1 cup full-fat coconut milk (from a can)\n• 1/2 cup Golden Taan Syrup\n• (Optional: a pinch of sea salt and 1/2 tsp vanilla extract)" },
+                    { type: 'heading', text: 'Instructions' },
+                    { type: 'paragraph', text: "1. In a small saucepan, combine the coconut milk and Golden Taan Syrup.\n2. Bring to a gentle simmer over medium heat, whisking to combine.\n3. Reduce the heat to low and let it simmer gently for 20-25 minutes, stirring occasionally, until the sauce has thickened and coats the back of a spoon.\n4. Remove from heat and stir in the optional salt and vanilla.\n5. Let the sauce cool. It will thicken further as it cools. Store in an airtight container in the refrigerator for up to two weeks." }
+                ]
+            },
+            {
+                id: 14,
+                title: "Game-Changing BBQ Sauce with a Golden Taan Kick",
+                coverImage: "https://via.placeholder.com/800x600.png?text=BBQ+Sauce",
+                introduction: "Get ready for your new favorite BBQ sauce. The smoky depth of Golden Taan Syrup creates a sauce that's perfectly balanced between sweet, tangy, and savory.",
+                content: [
+                    { type: 'paragraph', text: "A great homemade BBQ sauce is a point of pride for any home cook. This recipe swaps out the usual brown sugar or molasses for Golden Taan Syrup, and the result is a sauce with incredible depth and a sophisticated, smoky sweetness." },
+                    { type: 'heading', text: 'The Secret Ingredient' },
+                    { type: 'paragraph', text: "Golden Taan Syrup's natural smoky and toffee-like notes are a perfect match for the tangy, savory flavors of a classic BBQ sauce. It caramelizes beautifully, creating a fantastic glaze on grilled meats or vegetables." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Grilling+with+Sauce', alt: 'Brushing BBQ sauce onto chicken on a grill.' },
+                    { type: 'heading', text: 'Ingredients' },
+                    { type: 'paragraph', text: "• 1 cup ketchup\n• 1/2 cup Golden Taan Syrup\n• 1/4 cup apple cider vinegar\n• 2 tbsp soy sauce or tamari\n• 1 tbsp dijon mustard\n• 1 tsp smoked paprika\n• 1/2 tsp garlic powder\n• 1/4 tsp black pepper" },
+                    { type: 'heading', text: 'Instructions' },
+                    { type: 'paragraph', text: "1. In a medium saucepan, combine all ingredients.\n2. Whisk together until smooth.\n3. Bring the mixture to a simmer over medium heat.\n4. Reduce the heat to low and let it cook for at least 20 minutes, stirring occasionally, to allow the flavors to meld and the sauce to thicken.\n5. Use immediately on ribs, chicken, or burgers, or let it cool and store in an airtight container in the refrigerator for up to a month." }
+                ]
+            },
+            {
+                id: 15,
+                title: "The Best Sticky Toffee Pudding You've Ever Had",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Sticky+Toffee+Pudding",
+                introduction: "A British classic gets a Thai upgrade. The rich, butterscotch flavor of Golden Taan takes this beloved, decadent dessert to a whole new level of deliciousness.",
+                content: [
+                    { type: 'paragraph', text: "Sticky toffee pudding is the ultimate comfort dessert: a moist, date-sweetened sponge cake drenched in a warm toffee sauce. By using Golden Taan in both the cake and the sauce, we amplify the deep, caramel flavors that make this pudding so irresistible." },
+                    { type: 'heading', text: 'For the Pudding' },
+                    { type: 'paragraph', text: "• 1 cup chopped dates\n• 1 tsp baking soda\n• 1 cup boiling water\n• 1/4 cup unsalted butter, softened\n• 3/4 cup Golden Taan Powder\n• 2 large eggs\n• 1 1/2 cups all-purpose flour\n• 1 tsp baking powder" },
+                    { type: 'heading', text: 'For the Toffee Sauce' },
+                    { type: 'paragraph', text: "• 1/2 cup unsalted butter\n• 1 cup Golden Taan Syrup\n• 1/2 cup heavy cream\n• 1 tsp vanilla extract" },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Pudding+with+Sauce', alt: 'A slice of sticky toffee pudding with sauce poured over it.' },
+                    { type: 'heading', text: 'Instructions' },
+                    { type: 'paragraph', text: "1. Preheat oven to 350°F (175°C). Grease a baking dish.\n2. In a bowl, combine dates and baking soda. Pour boiling water over them and let sit for 15 minutes.\n3. In a separate bowl, cream together the butter and Golden Taan Powder. Beat in the eggs one at a time.\n4. Stir in the flour and baking powder, then fold in the date mixture (including the water).\n5. Pour into the prepared dish and bake for 30-35 minutes.\n6. While the cake bakes, make the sauce: Melt butter in a saucepan, stir in Golden Taan Syrup and bring to a simmer. Cook for 3 minutes, then remove from heat and whisk in the cream and vanilla.\n7. To serve, poke holes in the warm cake and pour over half the sauce. Serve each slice with an extra drizzle of warm sauce." }
+                ]
+            },
+             {
+                id: 16,
+                title: "From Sap to Syrup: The Alchemical Journey of Golden Taan",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Syrup+Making",
+                introduction: "Ever wondered how the clear, watery sap from a palm tree transforms into a thick, luxurious syrup? We break down the traditional, time-honored process.",
+                content: [
+                    { type: 'paragraph', text: 'The creation of Golden Taan Syrup is a beautiful example of slow food alchemy. It is a process of concentration and transformation, relying on patience and the gentle application of heat to turn a simple natural resource into liquid gold.' },
+                    { type: 'heading', text: 'Step 1: The Harvest' },
+                    { type: 'paragraph', text: "It all begins with the fresh sap, or 'Nam Taan Sod'. This watery liquid is nearly clear and only mildly sweet. It's crucial to begin the simmering process within a few hours of harvesting to prevent natural fermentation." },
+                    { type: 'heading', text: 'Step 2: The Slow Simmer' },
+                    { type: 'paragraph', text: "The sap is poured into large woks over a carefully controlled wood fire. The key here is 'simmer', not 'boil'. A rolling boil would scorch the sugars, creating a bitter taste. A gentle simmer allows the water to evaporate slowly, concentrating the sugars and minerals." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Simmering+in+Woks', alt: 'A close-up of palm sap simmering in a large wok.' },
+                    { type: 'heading', text: 'Step 3: Transformation and Flavor Development' },
+                    { type: 'paragraph', text: "As the water content reduces, the magic happens. The sugars begin to caramelize, and the liquid transforms from a pale yellow to a deep, rich amber. The flavor develops from simply sweet to a complex profile of caramel, butterscotch, and a hint of smoke from the wood fire. The artisan knows it's ready not by a timer, but by its viscosity, color, and aroma—a skill passed down through generations." }
+                ]
+            },
+            {
+                id: 17,
+                title: "The Ancient Sweetener: Palm Sugar in Traditional Thai Medicine",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Thai+Medicine",
+                introduction: "Beyond the kitchen, Palmyra palm sugar has a long and respected history in Thai traditional medicine for its unique, balancing properties.",
+                content: [
+                    { type: 'paragraph', text: "In Thai Traditional Medicine, foods are often classified by their inherent properties—hot, cool, neutral. Pure, unrefined Palmyra palm sugar is considered to have a 'cooling' or 'calming' effect on the body." },
+                    { type: 'heading', text: 'A Source of Gentle Energy' },
+                    { type: 'paragraph', text: "Unlike the 'hot' and sharp energy spike from white sugar, palm sugar was traditionally used as a source of gentle, sustained energy. It was often given to children or those recovering from illness as a way to replenish vitality without overwhelming the system. Its mineral content, especially potassium, was intuitively understood to be restorative." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Herbal+Remedies', alt: 'A collection of traditional Thai herbs and ingredients.' },
+                    { type: 'heading', text: 'Role in Herbal Remedies' },
+                    { type: 'paragraph', text: "Palm sugar was also a key ingredient in many herbal preparations. Its pleasant taste helped to make bitter medicinal herbs more palatable. More importantly, it was believed to act as a 'carrier' (or 'anupana' in Ayurvedic terms), helping to deliver the therapeutic properties of the herbs more effectively throughout the body. It was often dissolved in herbal teas or mixed into medicinal pastes to balance flavors and enhance efficacy." }
+                ]
+            },
+            {
+                id: 18,
+                title: "What is 'Terroir'? Exploring the Taste of Place in Palm Sugar",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Terroir+Map",
+                introduction: "Just like fine wine or single-origin coffee, the flavor of palm sugar is deeply shaped by its environment. Dive into the concept of 'terroir' and discover what makes our Phetchaburi sugar so unique.",
+                content: [
+                    { type: 'paragraph', text: "'Terroir' is a French term that describes the complete natural environment in which a particular product is produced, including factors such as the soil, topography, and climate. It's the reason why a Chardonnay from Burgundy tastes different from one from California. The same principle applies to our palm sugar." },
+                    { type: 'heading', text: 'The Phetchaburi Difference' },
+                    { type: 'paragraph', text: "Our Golden Taan is sourced from Phetchaburi province in Thailand, a region renowned for producing the country's highest quality palm sugar. This is due to its unique terroir:\n• Coastal Soil: Phetchaburi's proximity to the Gulf of Thailand gives its soil a higher salinity and mineral content. This translates directly into the sap, imparting a subtle minerality and a more rounded, less cloyingly sweet flavor.\n• Climate: The specific balance of sun and humidity in the region affects the sugar concentration in the sap.\n• Local Palm Variety: The variety of Palmyra palm that thrives in this region is perfectly adapted to the local conditions, yielding a sap with a consistently superior flavor profile." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Phetchaburi+Landscape', alt: 'The landscape of Phetchaburi with Palmyra palm trees.' },
+                    { type: 'paragraph', text: "When you taste Golden Taan, you're not just tasting a sweetener; you're experiencing the unique 'taste of place' of Phetchaburi." }
+                ]
+            },
+            {
+                id: 19,
+                title: "Create Your Own Infused Vinegar with Golden Taan",
+                coverImage: "https://via.placeholder.com/800x600.png?text=Infused+Vinegar",
+                introduction: "A simple kitchen project for a gourmet result. Learn how to make a sweet and tangy infused vinegar using Golden Taan, perfect for salad dressings and marinades.",
+                content: [
+                    { type: 'paragraph', text: "Infused vinegars are a fantastic way to add a layer of flavor to your cooking. By combining the acidity of vinegar with the complex sweetness of Golden Taan, you can create a versatile pantry staple." },
+                    { type: 'heading', text: 'The Basic Recipe' },
+                    { type: 'paragraph', text: "This is a base recipe that you can customize with your favorite herbs and spices.\n• 2 cups Apple Cider Vinegar (or white wine vinegar)\n• 1/4 cup Golden Taan Coarse Crystals\n• Flavorings: a sprig of rosemary, a few black peppercorns, a chili flake, or a strip of lemon peel are all great options." },
+                    { type: 'image', src: 'https://via.placeholder.com/600x400.png?text=Vinegar+Infusion+Jar', alt: 'A glass jar with vinegar, Golden Taan, and rosemary infusing.' },
+                    { type: 'heading', text: 'The Infusion Process' },
+                    { type: 'paragraph', text: "1. In a clean glass jar, combine the vinegar, Golden Taan Coarse Crystals, and your chosen flavorings.\n2. Seal the jar and shake well to help dissolve the sugar crystals.\n3. Store the jar in a cool, dark place for about one week, giving it a shake every day or so.\n4. After a week, taste the vinegar. If you're happy with the flavor, strain out the solids using a fine-mesh sieve.\n5. Pour the infused vinegar into a clean bottle for storage. It will keep for several months." },
+                    { type: 'heading', text: 'How to Use It' },
+                    { type: 'paragraph', text: "Use your Golden Taan infused vinegar to make a vibrant vinaigrette for salads, as a marinade for chicken or pork, or to deglaze a pan after searing meat." }
+                ]
+            }
+        ]
     },
     footer: {
-        address: "123 Sukhumvit Road, Klongtoei, Bangkok 10110, Thailand",
-        contactPerson: { label: "Contact Person", name: "Ms. Araya S." },
-        phone: { label: "Phone", number: "+66 2 123 4567" },
-        email: { label: "Email", address: "wholesale@goldentaan.com" },
+        office: {
+            title: "Office Address",
+            address: "919/1 JTC Building, Silom Road, Silom, Bangrak\nBangkok 10500 THAILAND"
+        },
+        contact: {
+            title: "Contact",
+            name: "Mr. Krisada Laohasiri",
+            phone: {
+                label: "Telephone/WeChat",
+                number: "+66(0)81 851 9922"
+            },
+            email: {
+                label: "Email",
+                address: "info@goldentaan.com"
+            },
+            cc: {
+                label: "cc",
+                address: "info.vkamber@gmail.com"
+            }
+        },
         quickLinks: "Quick Links",
         copyright: "© {year} Golden TAAN Co., Ltd. All Rights Reserved."
-    },
+    }
 };
 
-const th: Translations = { ...en, metaTitle: "[TH] Golden Taan | Authentic Palmyra Palm Sugar", nav: { ...en.nav, home: "[TH] Home" } };
-const de: Translations = { ...en, metaTitle: "[DE] Golden Taan | Authentic Palmyra Palm Sugar", nav: { ...en.nav, home: "[DE] Home" } };
-const ja: Translations = { ...en, metaTitle: "[JA] Golden Taan | Authentic Palmyra Palm Sugar", nav: { ...en.nav, home: "[JA] Home" } };
-const ko: Translations = { ...en, metaTitle: "[KO] Golden Taan | Authentic Palmyra Palm Sugar", nav: { ...en.nav, home: "[KO] Home" } };
-const fr: Translations = { ...en, metaTitle: "[FR] Golden Taan | Authentic Palmyra Palm Sugar", nav: { ...en.nav, home: "[FR] Home" } };
-const zh: Translations = { ...en, metaTitle: "[ZH] Golden Taan | Authentic Palmyra Palm Sugar", nav: { ...en.nav, home: "[ZH] Home" } };
+const th: Translations = JSON.parse(JSON.stringify(en));
+th.home.health.nutrientData = nutrientData.th;
+
+const de: Translations = JSON.parse(JSON.stringify(en));
+const ja: Translations = JSON.parse(JSON.stringify(en));
+const ko: Translations = JSON.parse(JSON.stringify(en));
+const fr: Translations = JSON.parse(JSON.stringify(en));
+const zh: Translations = JSON.parse(JSON.stringify(en));
+
 
 export const siteContent: Record<Language, Translations> = {
-    en,
-    th,
-    de,
-    ja,
-    ko,
-    fr,
-    zh,
+  en,
+  th,
+  de,
+  ja,
+  ko,
+  fr,
+  zh,
 };
