@@ -423,6 +423,58 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, setPage, setSelecte
 
 // --- Page Components ---
 
+const ProductSchemas = ({ products }: { products: Product[] }) => {
+    const productSchemas = useMemo(() => products.map(product => ({
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": product.title,
+        "image": product.img,
+        "description": product.shortDescription,
+        "sku": product.id,
+        "brand": {
+            "@type": "Brand",
+            "name": "Golden TAAN"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": `https://www.goldentaan.com/#products`,
+            "priceCurrency": "USD",
+            "price": product.price.toFixed(2),
+            "availability": "https://schema.org/InStock",
+            "itemCondition": "https://schema.org/NewCondition"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "187"
+        }
+    })), [products]);
+
+    useEffect(() => {
+        const injectedScripts: HTMLScriptElement[] = [];
+        document.querySelectorAll('script[data-schema-type="homepage-product"]').forEach(node => node.remove());
+
+        productSchemas.forEach(schema => {
+            const script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.setAttribute('data-schema-type', 'homepage-product');
+            script.innerHTML = JSON.stringify(schema);
+            document.head.appendChild(script);
+            injectedScripts.push(script);
+        });
+
+        return () => {
+            injectedScripts.forEach(script => {
+                if (document.head.contains(script)) {
+                    document.head.removeChild(script);
+                }
+            });
+        };
+    }, [productSchemas]);
+
+    return null;
+};
+
 const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (product: Product) => void, setPage: (page: Page) => void, setSelectedPost: (post: BlogPost) => void }) => {
     const { translations } = useLocalization();
     const t = translations.home;
@@ -464,6 +516,7 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
     return (
         <div>
             <SchemaInjector schema={faqSchema} />
+            <ProductSchemas products={products} />
             {/* Hero Section */}
             <section className="relative h-screen flex items-center justify-center text-light-text overflow-hidden">
                 {/* Background Image */}
@@ -482,7 +535,7 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
                     }}
                 ></div>
                 {/* Content */}
-                <div className="relative z-10 text-center p-4">
+                <div className="relative z-10 text-center p-4 w-full lg:w-3/5 max-w-[1200px] mx-auto">
                     <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt={t.seo.altTags.logo} className="h-24 md:h-32 mx-auto mb-8" />
                     <h1 className="text-5xl md:text-7xl font-display mb-4">{renderStyledText(t.hero.headline)}</h1>
                     <p className="text-xl md:text-2xl mb-8 font-sans">{renderStyledText(t.hero.subheadline)}</p>
@@ -1254,6 +1307,7 @@ const ShopNowPage = ({ cartItems, setCartItems, setPage }: { cartItems: CartItem
 const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | null, setSelectedPost: (post: BlogPost | null) => void }) => {
     const { translations } = useLocalization();
     const t = translations.blog;
+    const [activeCategory, setActiveCategory] = useState<string>('all');
 
     const BlogContentRenderer = ({ content }: { content: BlogContent[] }) => {
         return (
@@ -1327,6 +1381,15 @@ const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | 
             </div>
         );
     }
+
+    const allPosts = t.posts;
+    const categoryMap = {
+        'all': t.allCategories,
+        ...t.categories
+    };
+    const filteredPosts = activeCategory === 'all'
+        ? allPosts
+        : allPosts.filter(post => post.category === activeCategory);
     
     return (
         <div>
@@ -1336,8 +1399,27 @@ const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | 
             </header>
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                  <div className="max-w-5xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-display text-primary-text mb-4">{t.filterTitle}</h2>
+                        <div className="flex flex-wrap justify-center gap-2">
+                            {Object.entries(categoryMap).map(([key, name]) => (
+                                <button
+                                    key={key}
+                                    onClick={() => setActiveCategory(key)}
+                                    className={`py-2 px-5 rounded-full font-semibold transition ${
+                                        activeCategory === key
+                                            ? 'bg-dark-golden text-light-text'
+                                            : 'bg-medium-bg/50 text-primary-text hover:bg-dark-accent/50'
+                                    }`}
+                                >
+                                    {name}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {t.posts.map(post => {
+                        {filteredPosts.map(post => {
                              const coverImageUrl = post.coverImage.startsWith('http') ? post.coverImage : `${ASSET_BASE_URL}${post.coverImage}`;
                              return (
                                 <div key={post.id} onClick={() => setSelectedPost(post)} className="border border-medium-bg/50 rounded-lg overflow-hidden group transition-transform duration-300 hover:scale-105 cursor-pointer flex flex-col">

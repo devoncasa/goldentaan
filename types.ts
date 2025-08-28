@@ -67,6 +67,7 @@ export interface BlogPost {
     title: string;
     coverImage: string;
     introduction: string;
+    category: string;
     content: BlogContent[];
 }
 
@@ -341,6 +342,13 @@ export interface Translations {
         header: { title: string; subtitle: string; };
         readMore: string;
         back: string;
+        filterTitle: string;
+        allCategories: string;
+        categories: {
+            recipes: string;
+            health: string;
+            sustainability: string;
+        };
         posts: BlogPost[];
     };
     contact: {

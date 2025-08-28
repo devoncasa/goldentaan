@@ -639,12 +639,20 @@ const en: Translations = {
         header: { title: "The Golden Blog", subtitle: "Recipes, stories, and insights from the world of Palmyra palm sugar." },
         readMore: "Read More",
         back: "Back to Blog List",
+        filterTitle: "Filter by Category",
+        allCategories: "All Posts",
+        categories: {
+            recipes: "Recipes",
+            health: "Health & Wellness",
+            sustainability: "Culture & Sustainability"
+        },
         posts: [
              {
                 id: 2,
                 title: "Gluten-Free Brownies with a Healthy Sugar Alternative",
                 coverImage: "gluten-free-palmyra-blondies.webp",
                 introduction: "Discover a brownie recipe so rich and fudgy, you'd never guess it's gluten-free. The secret? The deep, natural caramel flavor of Golden Taan palm sugar.",
+                category: "recipes",
                 content: [
                     { type: 'paragraph', text: 'For years, the quest for the perfect gluten-free brownie has haunted bakers. Many recipes end up dry, crumbly, or lacking that deep chocolatey flavor. This recipe changes everything. By using a blend of almond flour and the unique properties of Golden Taan Coarse Crystals, we achieve a texture and taste that rivals any traditional brownie.' },
                     { type: 'heading', text: 'Why Baking with Palm Sugar Makes a Difference' },
@@ -661,6 +669,7 @@ const en: Translations = {
                 title: "Gourmet Glaze for Salmon with Palm Sugar Syrup",
                 coverImage: "pan-seared-salmon-glaze.webp",
                 introduction: "Elevate a simple salmon dinner into a gourmet experience with this incredible sweet and savory glaze, featuring the versatile Golden Taan Syrup.",
+                category: "recipes",
                 content: [
                     { type: 'paragraph', text: 'This recipe is a perfect weeknight meal that tastes like it came from a high-end restaurant. The glaze is incredibly simple but packs a huge flavor punch. The Golden Taan Syrup caramelizes beautifully on the salmon, creating a slightly crispy, sweet crust that pairs perfectly with the rich, flaky fish.' },
                     { type: 'heading', text: 'The Magic of the Glaze' },
@@ -677,6 +686,7 @@ const en: Translations = {
                 title: "How to Make Thai Iced Tea with a Natural Sweetener",
                 coverImage: "golden-taan-caramel-latte.webp",
                 introduction: "Recreate the classic Thai street-food favorite with a wholesome twist. Our Golden Taan Syrup adds a complex, caramel depth that refined sugar just can't match.",
+                category: "recipes",
                 content: [
                     { type: 'paragraph', text: "Thai Iced Tea, or 'Cha Yen', is a beloved beverage known for its creamy texture and sweet, aromatic flavor. Traditionally, it's made with a potent brew of black tea, sweetened condensed milk, and a hefty amount of white sugar. Our version captures all the authentic flavor while upgrading the sweetener for a richer, more nuanced taste." },
                     { type: 'heading', text: "The Golden Taan Difference" },
@@ -693,6 +703,7 @@ const en: Translations = {
                 title: "Benefits of Palmyra Palm: Southeast Asia's 'Tree of Life'",
                 coverImage: "ratchaburi-palm-groves-landscape.webp",
                 introduction: "Explore the incredible story of the Palmyra palm, a tree that has sustained communities for centuries with its versatile gifts, earning it the name 'Tree of Life'.",
+                category: "sustainability",
                 content: [
                     { type: 'paragraph', text: "The Palmyra palm (Borassus flabellifer) is more than just the source of our delicious sugar; it's a cornerstone of rural life in Thailand and across Southeast Asia. For millennia, every single part of this remarkable tree has been used, embodying a true zero-waste philosophy." },
                     { type: 'heading', text: 'A Cornucopia of Uses' },
@@ -707,6 +718,7 @@ const en: Translations = {
                 title: "Baking for Blood Sugar Balance with Low-GI Sweeteners",
                 coverImage: "gluten-free-palmyra-blondies.webp",
                 introduction: "Managing blood sugar doesn't mean giving up delicious baked goods. Learn how Golden Taan Powder can be your secret weapon for healthier treats that don't compromise on taste.",
+                category: "health",
                 content: [
                     { type: 'paragraph', text: "For those mindful of their blood sugar, baking can seem like a minefield of high-glycemic ingredients. But with the right sweetener, you can create treats that are both delicious and gentler on your body's energy levels. This is where low-glycemic index (GI) sweeteners like Golden Taan come in." },
                     { type: 'heading', text: 'What is the Glycemic Index?' },
@@ -723,6 +735,7 @@ const en: Translations = {
                 title: "Smoky Old Fashioned Cocktail Recipe with Palm Sugar",
                 coverImage: "smoky-old-fashioned-cocktail.webp",
                 introduction: "Move beyond simple syrup. The smoky, caramel notes of Golden Taan Syrup can add incredible complexity and sophistication to your favorite cocktails.",
+                category: "recipes",
                 content: [
                     { type: 'paragraph', text: "A great cocktail is all about balance. The sweetener you choose plays a crucial role, and Golden Taan Syrup offers a flavor profile that plain sugar syrup can't replicate. Its rich, butterscotch notes and hint of smoke can elevate classic drinks and inspire new creations." },
                     { type: 'image', src: "smoky-old-fashioned-cocktail.webp", alt: 'A sophisticated Smoky Old Fashioned cocktail recipe made with Golden Taan.' },
@@ -869,6 +882,13 @@ th.productsPage.wholesale.pricingTable.headers = {
     tier2: "100 - 499 หน่วย (กลาง)",
     tier3: "500+ หน่วย (ตัวแทนจำหน่าย)"
 };
+th.blog.filterTitle = "กรองตามหมวดหมู่";
+th.blog.allCategories = "บทความทั้งหมด";
+th.blog.categories = {
+    recipes: "สูตรอาหาร",
+    health: "สุขภาพและสุขภาวะ",
+    sustainability: "วัฒนธรรมและความยั่งยืน"
+};
 
 const ja: Translations = JSON.parse(JSON.stringify(en));
 ja.home.health.nutrientData = nutrientData.ja;
@@ -937,6 +957,13 @@ ja.productsPage.wholesale.pricingTable.headers = {
     tier1: "24～99個 (小口)",
     tier2: "100～499個 (中口)",
     tier3: "500個以上 (代理店)"
+};
+ja.blog.filterTitle = "カテゴリーで絞り込む";
+ja.blog.allCategories = "すべての投稿";
+ja.blog.categories = {
+    recipes: "レシピ",
+    health: "健康とウェルネス",
+    sustainability: "文化と持続可能性"
 };
 
 const zh: Translations = JSON.parse(JSON.stringify(en));
@@ -1007,6 +1034,13 @@ zh.productsPage.wholesale.pricingTable.headers = {
     tier2: "100 - 499 件 (中批量)",
     tier3: "500+ 件 (经销商)"
 };
+zh.blog.filterTitle = "按类别筛选";
+zh.blog.allCategories = "所有文章";
+zh.blog.categories = {
+    recipes: "食谱",
+    health: "健康与保健",
+    sustainability: "文化与可持续性"
+};
 
 const ar: Translations = JSON.parse(JSON.stringify(en));
 ar.home.health.nutrientData = nutrientData.ar;
@@ -1076,6 +1110,13 @@ ar.productsPage.wholesale.pricingTable.headers = {
     tier2: "100 - 499 وحدة (متوسط)",
     tier3: "500+ وحدة (موزع)"
 };
+ar.blog.filterTitle = "تصفية حسب الفئة";
+ar.blog.allCategories = "كل المنشورات";
+ar.blog.categories = {
+    recipes: "وصفات",
+    health: "الصحة والعافية",
+    sustainability: "الثقافة والاستدامة"
+};
 
 const fr: Translations = JSON.parse(JSON.stringify(en));
 fr.home.health.nutrientData = nutrientData.fr;
@@ -1130,6 +1171,13 @@ fr.home.faq.items[3].q = "Comment puis-je utiliser ce sucre végétal ?";
 fr.home.faq.items[3].a = "Utilisez-le en remplacement 1:1 du sucre conventionnel. Notre poudre de sucre de palme est idéale pour la pâtisserie, les cristaux grossiers sont une touche finale parfaite et le sirop de sucre de palme est excellent pour arroser et faire des glaçages.";
 fr.home.faq.items[4].q = "Votre sucre écologique est-il un produit alimentaire durable ?";
 fr.home.faq.items[4].a = "Absolument. Notre sucre provient de bosquets biodiversifiés, et non de plantations de monoculture. Les arbres sont résistants à la sécheresse, ne nécessitent aucun engrais chimique, et nous soutenons un modèle agricole de commerce équitable.";
+fr.blog.filterTitle = "Filtrer par catégorie";
+fr.blog.allCategories = "Tous les articles";
+fr.blog.categories = {
+    recipes: "Recettes",
+    health: "Santé et bien-être",
+    sustainability: "Culture et durabilité"
+};
 
 const ko: Translations = JSON.parse(JSON.stringify(en));
 ko.home.health.nutrientData = nutrientData.ko;
@@ -1145,6 +1193,13 @@ ko.nav.sustainability = "지속가능성";
 ko.nav.wholesale = "도매 및 B2B";
 ko.nav.shopNow = "지금 쇼핑하기";
 ko.nav.contact = "문의하기";
+ko.blog.filterTitle = "카테고리별 필터링";
+ko.blog.allCategories = "모든 게시물";
+ko.blog.categories = {
+    recipes: "레시피",
+    health: "건강 및 웰빙",
+    sustainability: "문화 및 지속가능성"
+};
 
 
 const nl: Translations = JSON.parse(JSON.stringify(en));
@@ -1161,6 +1216,13 @@ nl.nav.sustainability = "Duurzaamheid";
 nl.nav.wholesale = "Groothandel & B2B";
 nl.nav.shopNow = "Nu Kopen";
 nl.nav.contact = "Contact";
+nl.blog.filterTitle = "Filteren op categorie";
+nl.blog.allCategories = "Alle berichten";
+nl.blog.categories = {
+    recipes: "Recepten",
+    health: "Gezondheid & Welzijn",
+    sustainability: "Cultuur & Duurzaamheid"
+};
 
 export const siteContent: Record<Language, Translations> = {
     en,
