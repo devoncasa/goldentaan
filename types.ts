@@ -1,6 +1,3 @@
-
-
-
 export enum Page {
     Home = 'home',
     About = 'about-us',
@@ -9,6 +6,7 @@ export enum Page {
     Sustainability = 'sustainability',
     Wholesale = 'wholesale',
     ShopNow = 'shop-now',
+    Contact = 'contact',
 }
 
 export interface NutrientData {
@@ -73,7 +71,7 @@ export interface BlogPost {
 }
 
 // --- New Types for Localization ---
-export type Language = 'en' | 'th' | 'de' | 'ja' | 'ko' | 'fr' | 'zh';
+export type Language = 'en' | 'th' | 'ja' | 'zh' | 'ar' | 'fr' | 'ko' | 'nl';
 
 export interface WholesaleTierPricing {
     productLine: string;
@@ -97,9 +95,17 @@ interface HeritagePageContent {
     sections: AccordionSection[];
 }
 
+interface PageSEO {
+    title: string;
+    description: string;
+    altTags: { [key: string]: string };
+}
+
 export interface Translations {
-    metaTitle: string;
-    metaDescription: string;
+    meta: {
+        globalTitle: string;
+        globalDescription: string;
+    };
     softLaunchModal: {
         title: string;
         mainText: string;
@@ -112,13 +118,16 @@ export interface Translations {
         home: string;
         ourStory: string;
         heritage: string;
+        products: string;
         blog: string;
         sustainability: string;
         wholesale: string;
         shopNow: string;
+        contact: string;
         homeSubItems: { id: string; label: string; }[];
     };
     home: {
+        seo: PageSEO;
         hero: {
             headline: string;
             subheadline: string;
@@ -185,7 +194,57 @@ export interface Translations {
             items: FAQ[];
         };
     };
+    productsPage: {
+        seo: PageSEO;
+        retail: {
+            headline: string;
+            subtitle: string;
+            products: Product[];
+        };
+        wholesale: {
+            headline: string;
+            subtitle: string;
+            pricingTable: {
+                headers: {
+                    sku: string;
+                    product: string;
+                    size: string;
+                    retailPrice: string;
+                    tier1: string;
+                    tier2: string;
+                    tier3: string;
+                };
+                rows: {
+                    sku: string;
+                    product: string;
+                    size: string;
+                    retailPrice: string;
+                    tier1_price: string;
+                    tier2_price: string;
+                    tier3_price: string;
+                }[];
+                exportCta: string;
+            };
+            compliance: {
+                headline: string;
+                tabs: {
+                    usa: string;
+                    eu: string;
+                    japan: string;
+                    uae: string;
+                };
+                content: {
+                    usa: string;
+                    eu: string;
+                    japan: string;
+                    uae: string;
+                };
+                disclaimer: string;
+            }
+        }
+    };
     about: {
+        seo: PageSEO;
         header: { title: string; subtitle: string; };
         roots: { title: string; text: string; };
         fadingGold: { title: string; text: string; };
@@ -201,8 +260,13 @@ export interface Translations {
         };
         choice: { title: string; text: string; };
     };
-    heritage: HeritagePageContent;
+    heritage: {
+        seo: PageSEO;
+        header: { title: string; subtitle: string; };
+        sections: AccordionSection[];
+    };
     sustainability: {
+        seo: PageSEO;
         header: { title: string; subtitle: string; };
         environmental: { title: string; points: { title: string, text: string }[] };
         social: { title: string; points: { title: string, text: string }[] };
@@ -215,6 +279,7 @@ export interface Translations {
         resourceChartData: { subject: string; 'Golden Taan': number; 'Cane Sugar': number; fullMark: number; }[];
     };
     wholesale: {
+        seo: PageSEO;
         header: { title: string; subtitle: string; };
         insights: { title: string; text: string; };
         pricing: {
@@ -253,6 +318,7 @@ export interface Translations {
         };
     };
     shop: {
+        seo: PageSEO;
         header: { title: string; subtitle: string; };
         emptyCart: { title: string; text: string; cta: string; };
         summary: { title: string; subtotal: string; shipping: string; total: string; };
@@ -271,10 +337,46 @@ export interface Translations {
         };
     };
     blog: {
+        seo: PageSEO;
         header: { title: string; subtitle: string; };
         readMore: string;
         back: string;
         posts: BlogPost[];
+    };
+    contact: {
+        seo: PageSEO;
+        header: {
+            title: string;
+            subtitle: string;
+        };
+        leftColumn: {
+            hq: string;
+            phone: string;
+            hours: string;
+            email: string;
+            sales: string;
+            cc: string;
+        };
+        form: {
+            title: string;
+            fullName: string;
+            companyName: string;
+            country: string;
+            email: string;
+            inquiryType: {
+                label: string;
+                options: {
+                    wholesale: string;
+                    oem: string;
+                    sample: string;
+                    productInfo: string;
+                    general: string;
+                }
+            };
+            message: string;
+            submit: string;
+            successMessage: string;
+        }
     };
     footer: {
         office: {

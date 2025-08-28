@@ -1,5 +1,5 @@
-
-import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
+// Fix: Add useMemo for optimization in LocalizationProvider
+import React, { useState, useEffect, useRef, useCallback, createContext, useContext, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { Page, NutrientData, SustainabilityData, FAQ, Product, CartItem, BlogPost, BlogContent, Language, Translations } from './types';
 import { useIntersectionObserver } from './hooks/useIntersectionObserver';
@@ -52,6 +52,35 @@ const useLocalization = () => {
     if (!context) throw new Error('useLocalization must be used within a LocalizationProvider');
     return context;
 };
+
+// --- SEO & Schema Components ---
+const SchemaInjector = ({ schema }: { schema: object }) => {
+    useEffect(() => {
+        const scriptId = 'dynamic-schema-script';
+        // Remove existing schema script if it exists
+        const existingScript = document.getElementById(scriptId);
+        if (existingScript) {
+            existingScript.remove();
+        }
+
+        // Add new schema script
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.type = 'application/ld+json';
+        script.innerHTML = JSON.stringify(schema);
+        document.head.appendChild(script);
+
+        return () => {
+            const scriptInHead = document.getElementById(scriptId);
+            if (scriptInHead) {
+                scriptInHead.remove();
+            }
+        };
+    }, [schema]);
+
+    return null;
+};
+
 
 // --- UI Helper Components ---
 
@@ -178,7 +207,7 @@ const ResourceEfficiencyRadarChart = () => {
                     <PolarRadiusAxis angle={30} domain={[0, 10]} stroke="#3D2B1F" />
                     <Tooltip contentStyle={{ backgroundColor: '#3D2B1F', border: 'none', color: '#FBF8F1' }} />
                     <Legend wrapperStyle={{ color: '#3D2B1F' }} />
-                    <Radar name="Golden TAAN" dataKey="Golden TAAN" stroke="#E5B84B" fill="#E5B84B" fillOpacity={0.6} />
+                    <Radar name="Golden TAAN" dataKey="Golden Taan" stroke="#E5B84B" fill="#E5B84B" fillOpacity={0.6} />
                     <Radar name="Cane Sugar" dataKey="Cane Sugar" stroke="#EAE0D5" fill="#EAE0D5" fillOpacity={0.6} />
                 </RadarChart>
             </ResponsiveContainer>
@@ -243,6 +272,32 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, setPage, setSelecte
     ];
     const [mainImage, setMainImage] = useState(galleryImages[0]);
 
+    const productSchema = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": product.title,
+        "image": product.img,
+        "description": product.description,
+        "sku": product.id,
+        "brand": {
+            "@type": "Brand",
+            "name": "Golden TAAN"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": `https://www.goldentaan.com/#${Page.ShopNow}`,
+            "priceCurrency": "USD",
+            "price": product.price.toFixed(2),
+            "availability": "https://schema.org/InStock",
+            "itemCondition": "https://schema.org/NewCondition"
+        },
+         "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "187"
+        }
+    };
+
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -276,6 +331,7 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, setPage, setSelecte
             aria-modal="true"
             aria-labelledby="product-modal-title"
         >
+            <SchemaInjector schema={productSchema} />
             <div 
                 className="bg-light-bg rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
                 onClick={e => e.stopPropagation()}
@@ -392,8 +448,22 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
         setTimeout(() => setAddedProductId(null), 2000);
     };
 
+     const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faqs.map(faq => ({
+            "@type": "Question",
+            "name": faq.q,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.a
+            }
+        }))
+    };
+
     return (
         <div>
+            <SchemaInjector schema={faqSchema} />
             {/* Hero Section */}
             <section className="relative h-screen flex items-center justify-center text-light-text overflow-hidden">
                 {/* Background Image */}
@@ -413,7 +483,7 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
                 ></div>
                 {/* Content */}
                 <div className="relative z-10 text-center p-4">
-                    <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden TAAN Logo" className="h-24 md:h-32 mx-auto mb-8" />
+                    <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt={t.seo.altTags.logo} className="h-24 md:h-32 mx-auto mb-8" />
                     <h1 className="text-5xl md:text-7xl font-display mb-4">{renderStyledText(t.hero.headline)}</h1>
                     <p className="text-xl md:text-2xl mb-8 font-sans">{renderStyledText(t.hero.subheadline)}</p>
                     <a href="#our-story" onClick={() => trackPageView('/#our-story')} className="bg-golden-accent text-primary-text font-bold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">{t.hero.cta}</a>
@@ -426,7 +496,7 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
                     <h2 className="text-4xl md:text-5xl font-display text-center mb-4">{renderStyledText(t.trends.headline)}</h2>
                     <p className="text-center text-lg max-w-3xl mx-auto mb-12">{renderStyledText(t.trends.description)}</p>
                     <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt="A display of natural, healthy food choices reflecting the global trend towards authenticity" className="rounded-lg shadow-xl aspect-[4/3] object-cover" />
+                        <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt={t.seo.altTags.farmingCommunity} className="rounded-lg shadow-xl aspect-[4/3] object-cover" />
                         <div className="space-y-8">
                             <div className="border border-medium-bg/50 p-6 rounded-lg">
                                 <h3 className="text-5xl font-display text-dark-golden">$<AnimatedCounter to={55} />+ <span className="text-3xl">{t.trends.billion}</span></h3>
@@ -504,14 +574,14 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
                     <div className="grid md:grid-cols-2 gap-12">
                         <div className="border border-medium-bg/50 p-8 rounded-lg">
                             <h3 className="text-2xl font-display text-dark-golden mb-4">{renderStyledText(t.process.artisanal.title)}</h3>
-                            <img src={`${ASSET_BASE_URL}traditional-simmering-kettle-fire.webp`} alt="The traditional, artisanal process of boiling palmyra palm nectar" className="rounded-md mb-6 aspect-video object-cover"/>
+                            <img src={`${ASSET_BASE_URL}traditional-simmering-kettle-fire.webp`} alt={t.seo.altTags.artisanalProcess} className="rounded-md mb-6 aspect-video object-cover"/>
                             <ul className="space-y-2 list-decimal list-inside">
                                 {t.process.artisanal.steps.map((step, i) => <li key={i}><strong>{step.title}:</strong> {renderStyledText(step.description)}</li>)}
                             </ul>
                         </div>
                         <div className="border border-medium-bg/50 p-8 rounded-lg">
                             <h3 className="text-2xl font-display text-gray-600 mb-4">{renderStyledText(t.process.industrial.title)}</h3>
-                            <img src={`${ASSET_BASE_URL}palmyra-leaf-texture-macro.webp`} alt="The multi-stage industrial refining process of white cane sugar" className="rounded-md mb-6 aspect-video object-cover"/>
+                            <img src={`${ASSET_BASE_URL}palmyra-leaf-texture-macro.webp`} alt={t.seo.altTags.industrialProcess} className="rounded-md mb-6 aspect-video object-cover"/>
                             <ul className="space-y-2 list-decimal list-inside">
                                 {t.process.industrial.steps.map((step, i) => <li key={i}><strong>{step.title}:</strong> {renderStyledText(step.description)}</li>)}
                             </ul>
@@ -538,7 +608,7 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
                             </div>
                         ))}
                     </div>
-                    <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt="A collage showing the vibrant community of farmers and artisans" className="rounded-lg shadow-xl aspect-video object-cover w-full"/>
+                    <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt={t.seo.altTags.communityCollage} className="rounded-lg shadow-xl aspect-video object-cover w-full"/>
                 </div>
             </ParallaxSection>
             
@@ -618,12 +688,10 @@ const AboutUsPage = () => {
     const { translations } = useLocalization();
     const t = translations.about;
 
-    const timelineData = t.timeline;
-
     return (
     <div>
         <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-            <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
+            <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
             <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
         </header>
 
@@ -631,12 +699,12 @@ const AboutUsPage = () => {
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.roots.title)}</h3>
+                        <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.roots.title)}</h2>
                         <p className="text-lg text-primary-text/90">{renderStyledText(t.roots.text)}</p>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <img src={`${ASSET_BASE_URL}farmer-climbing-palm-tree.webp`} alt="A multi-generational photo of a family of palm sugar farmers." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
-                        <img src={`${ASSET_BASE_URL}ratchaburi-palm-groves-landscape.webp`} alt="A serene Palmyra palm grove in Ratchaburi, Thailand at sunset." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+                        <img src={`${ASSET_BASE_URL}farmer-climbing-palm-tree.webp`} alt={t.seo.altTags.farmerClimbing} className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
+                        <img src={`${ASSET_BASE_URL}ratchaburi-palm-groves-landscape.webp`} alt={t.seo.altTags.ratchaburiGroves} className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
                     </div>
                 </div>
             </div>
@@ -646,11 +714,11 @@ const AboutUsPage = () => {
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                      <div className="grid grid-cols-2 gap-4 order-last md:order-first">
-                        <img src={`${ASSET_BASE_URL}golden-taan-blocks.webp`} alt="Close-up of pure, unrefined Palmyra palm sugar crystals." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
-                        <img src={`${ASSET_BASE_URL}traditional-simmering-kettle-fire.webp`} alt="An artisan farmer carefully crafting a block of palm sugar." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+                        <img src={`${ASSET_BASE_URL}golden-taan-blocks.webp`} alt={t.seo.altTags.sugarCrystals} className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
+                        <img src={`${ASSET_BASE_URL}traditional-simmering-kettle-fire.webp`} alt={t.seo.altTags.artisanCrafting} className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
                     </div>
                     <div>
-                        <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.fadingGold.title)}</h3>
+                        <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.fadingGold.title)}</h2>
                         <p className="text-lg text-primary-text/90">{renderStyledText(t.fadingGold.text)}</p>
                     </div>
                 </div>
@@ -661,12 +729,12 @@ const AboutUsPage = () => {
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.mission.title)}</h3>
+                        <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.mission.title)}</h2>
                         <p className="text-lg text-primary-text/90">{renderStyledText(t.mission.text)}</p>
                     </div>
                      <div className="grid grid-cols-2 gap-4">
-                        <img src={`${ASSET_BASE_URL}golden-taan-caramel-latte.webp`} alt="Golden TAAN palm sugar being used in a modern, global kitchen." className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
-                        <img src={`${ASSET_BASE_URL}gluten-free-palmyra-blondies.webp`} alt="A person incorporating Golden TAAN into a healthy, active lifestyle." className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+                        <img src={`${ASSET_BASE_URL}golden-taan-caramel-latte.webp`} alt={t.seo.altTags.modernKitchen} className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
+                        <img src={`${ASSET_BASE_URL}gluten-free-palmyra-blondies.webp`} alt={t.seo.altTags.healthyLifestyle} className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
                     </div>
                 </div>
             </div>
@@ -676,18 +744,18 @@ const AboutUsPage = () => {
         <ParallaxSection index={3} className="py-20 px-4 md:px-8">
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                 <div className="text-center">
-                     <h3 className="text-4xl font-display text-dark-golden mb-16">{renderStyledText(t.timelineTitle)}</h3>
+                     <h2 className="text-4xl font-display text-dark-golden mb-16">{renderStyledText(t.timelineTitle)}</h2>
                 </div>
                 <div className="max-w-xl md:max-w-3xl mx-auto relative">
                     <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-medium-bg transform -translate-x-1/2"></div>
-                    {timelineData.map((item, index) => (
+                    {t.timeline.map((item, index) => (
                         <div key={index} className="mb-12 flex items-center w-full">
                             <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
                             </div>
                             <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-dark-golden ring-4 ring-light-bg"></div>
                             <div className={`w-1/2 p-4 rounded-lg shadow-lg border border-medium-bg/50 ${index % 2 === 0 ? 'ml-auto text-left' : 'mr-auto text-right'}`}>
                                  <p className="text-sm font-semibold text-dark-golden">{item.era}</p>
-                                <h4 className="text-xl font-display text-primary-text mt-1">{renderStyledText(item.title)}</h4>
+                                <h3 className="text-xl font-display text-primary-text mt-1">{renderStyledText(item.title)}</h3>
                                 <p className="text-primary-text/80 mt-2">{renderStyledText(item.description)}</p>
                             </div>
                         </div>
@@ -699,16 +767,16 @@ const AboutUsPage = () => {
         {/* People Behind the Purity Section */}
         <ParallaxSection index={4} className="py-20 px-4 md:px-8 text-primary-text">
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                <h3 className="text-4xl font-display text-center text-dark-golden mb-12">{renderStyledText(t.people.title)}</h3>
+                <h2 className="text-4xl font-display text-center text-dark-golden mb-12">{renderStyledText(t.people.title)}</h2>
                  <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="text-center md:text-left">
-                        <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt="Portrait of Krisada Laohasiri, founder of Golden TAAN" className="rounded-lg shadow-xl aspect-[3/4] object-cover mx-auto md:mx-0 w-64"/>
-                        <h4 className="text-2xl font-display text-primary-text mt-6">{renderStyledText(t.people.founderName)}</h4>
+                        <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt={t.seo.altTags.founderPortrait} className="rounded-lg shadow-xl aspect-[3/4] object-cover mx-auto md:mx-0 w-64"/>
+                        <h3 className="text-2xl font-display text-primary-text mt-6">{renderStyledText(t.people.founderName)}</h3>
                         <p className="mt-4 text-xl italic text-primary-text/80">"{renderStyledText(t.people.founderQuote)}"</p>
                     </div>
                     <div>
-                        <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt="A community of smiling, skilled palm sugar artisans in Thailand." className="rounded-lg shadow-xl aspect-video md:aspect-[4/3] object-cover w-full"/>
-                        <h4 className="text-2xl font-display text-primary-text mt-6">{renderStyledText(t.people.communityTitle)}</h4>
+                        <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt={t.seo.altTags.communityArtisans} className="rounded-lg shadow-xl aspect-video md:aspect-[4/3] object-cover w-full"/>
+                        <h3 className="text-2xl font-display text-primary-text mt-6">{renderStyledText(t.people.communityTitle)}</h3>
                         <p className="mt-2 text-primary-text/90">{renderStyledText(t.people.communityText)}</p>
                     </div>
                 </div>
@@ -718,9 +786,9 @@ const AboutUsPage = () => {
 
          <ParallaxSection index={5} className="py-16 px-4 md:px-8">
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl text-center">
-                <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.choice.title)}</h3>
+                <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.choice.title)}</h2>
                 <p className="text-lg text-primary-text/90 mb-8">{renderStyledText(t.choice.text)}</p>
-                <img src={`${ASSET_BASE_URL}golden-taan-gift-set.webp`} alt="A beautiful flat-lay of various natural sweeteners, with Golden TAAN palm sugar at the center." className="rounded-lg shadow-xl aspect-video object-cover"/>
+                <img src={`${ASSET_BASE_URL}golden-taan-gift-set.webp`} alt={t.seo.altTags.consciousChoice} className="rounded-lg shadow-xl aspect-video object-cover"/>
             </div>
         </ParallaxSection>
     </div>
@@ -742,15 +810,16 @@ const HeritagePage = () => {
 
     const ContentRenderer = ({ content }: { content: string }) => {
         // Split by the [image:...] tag, but keep the delimiter
-        const parts = content.split(/(\[image:.*?\])/g).filter(part => part.trim());
+        const parts = content.split(/(\[image:.*?\|.*?\])/g).filter(part => part.trim());
 
         return (
             <div className="text-primary-text/90 text-lg">
                 {parts.map((part, index) => {
-                    const imageMatch = part.match(/\[image:(.*?)\]/);
+                    const imageMatch = part.match(/\[image:\s*(.*?)\s*\|\s*ratio:.*?\]/);
                     if (imageMatch) {
-                        const imageName = imageMatch[1];
-                        const altText = imageName.replace(/\.(webp|png)$/, '').replace(/-/g, ' ');
+                        const imageName = imageMatch[1].trim();
+                        const altTextKey = imageName.split('.')[0]; // e.g., 'borassus-flabellifer-illustration'
+                        const altText = t.seo.altTags[altTextKey] || imageName.replace(/-/g, ' ');
                         return (
                             <div key={index} className="my-8">
                                 <img
@@ -852,16 +921,16 @@ const SustainabilityPage = () => {
     return (
         <div>
             <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
+                <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
             </header>
 
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <img src={`${ASSET_BASE_URL}ratchaburi-palm-groves-landscape.webp`} alt="A lush, green, and biodiverse Palmyra palm grove." className="rounded-lg shadow-xl object-cover w-full h-full" />
+                        <img src={`${ASSET_BASE_URL}ratchaburi-palm-groves-landscape.webp`} alt={t.seo.altTags.lushGrove} className="rounded-lg shadow-xl object-cover w-full h-full" />
                         <div>
-                            <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.environmental.title)}</h3>
+                            <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.environmental.title)}</h2>
                             <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
                                 {t.environmental.points.map((point, i) => <li key={i}><strong>{renderStyledText(point.title)}:</strong> {renderStyledText(point.text)}</li>)}
                             </ul>
@@ -874,12 +943,12 @@ const SustainabilityPage = () => {
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div className="order-last md:order-first">
-                            <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.social.title)}</h3>
+                            <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.social.title)}</h2>
                             <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
                                 {t.social.points.map((point, i) => <li key={i}><strong>{renderStyledText(point.title)}:</strong> {renderStyledText(point.text)}</li>)}
                             </ul>
                         </div>
-                        <img src={`${ASSET_BASE_URL}hands-holding-rich-soil.webp`} alt="The hands of community farmers holding fresh palmyra palm sugar." className="rounded-lg shadow-xl object-cover w-full h-full" />
+                        <img src={`${ASSET_BASE_URL}hands-holding-rich-soil.webp`} alt={t.seo.altTags.communityHands} className="rounded-lg shadow-xl object-cover w-full h-full" />
                     </div>
                 </div>
             </ParallaxSection>
@@ -887,9 +956,9 @@ const SustainabilityPage = () => {
             <ParallaxSection index={2} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <img src={`${ASSET_BASE_URL}golden-taan-gift-set.webp`} alt="A Golden TAAN product with a seal of quality and transparency." className="rounded-lg shadow-xl object-cover w-full h-full" />
+                        <img src={`${ASSET_BASE_URL}golden-taan-gift-set.webp`} alt={t.seo.altTags.qualitySeal} className="rounded-lg shadow-xl object-cover w-full h-full" />
                         <div>
-                            <h3 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.governance.title)}</h3>
+                            <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.governance.title)}</h2>
                             <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
                                 {t.governance.points.map((point, i) => <li key={i}><strong>{renderStyledText(point.title)}:</strong> {renderStyledText(point.text)}</li>)}
                             </ul>
@@ -900,16 +969,16 @@ const SustainabilityPage = () => {
 
             <ParallaxSection index={3} className="py-20 px-4 md:px-8 text-primary-text">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h3 className="text-4xl font-display text-center text-dark-golden mb-12">{renderStyledText(t.insights.title)}</h3>
+                    <h2 className="text-4xl font-display text-center text-dark-golden mb-12">{renderStyledText(t.insights.title)}</h2>
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div>
-                            <h4 className="text-2xl font-display text-center mb-4">{renderStyledText(t.insights.chartTitle)}</h4>
+                            <h3 className="text-2xl font-display text-center mb-4">{renderStyledText(t.insights.chartTitle)}</h3>
                             <ResourceEfficiencyRadarChart />
                         </div>
                         <div className="text-center md:text-left">
-                            <img src={`${ASSET_BASE_URL}palmyra-leaf-texture-macro.webp`} alt="A detailed macro shot of a Palmyra palm leaf, highlighting its natural texture." className="rounded-lg shadow-xl aspect-video md:aspect-[4/3] object-cover w-full"/>
+                            <img src={`${ASSET_BASE_URL}palmyra-leaf-texture-macro.webp`} alt={t.seo.altTags.leafTexture} className="rounded-lg shadow-xl aspect-video md:aspect-[4/3] object-cover w-full"/>
                             <div className="mt-8 bg-golden-accent/10 border border-golden-accent/30 rounded-lg p-6 text-center">
-                                <h4 className="font-display text-xl text-dark-golden">{renderStyledText(t.insights.report.title)}</h4>
+                                <h3 className="font-display text-xl text-dark-golden">{renderStyledText(t.insights.report.title)}</h3>
                                 <p className="mt-1 text-primary-text/90">{renderStyledText(t.insights.report.text)}</p>
                                 <button className="mt-4 bg-dark-golden text-light-text font-bold py-2 px-6 rounded-full hover:bg-primary-text transition duration-300">
                                     {renderStyledText(t.insights.report.cta)}
@@ -923,157 +992,131 @@ const SustainabilityPage = () => {
     );
 };
 
-const WholesalePage = () => {
+const ProductsPage = () => {
     const { translations } = useLocalization();
-    const t = translations.wholesale;
-    const [formData, setFormData] = useState({
-        companyName: '',
-        contactPerson: '',
-        email: '',
-        country: '',
-        volume: '',
-        productType: '',
-        packaging: '',
-        message: '',
-    });
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const t = translations.productsPage;
+    type Tab = 'usa' | 'eu' | 'japan' | 'uae';
+    const [activeTab, setActiveTab] = useState<Tab>('usa');
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log('Wholesale Inquiry:', formData);
-        setIsSubmitted(true);
+    const FlippingProductCard = ({ product }: { product: Product }) => {
+        const [isFlipped, setIsFlipped] = useState(false);
+        const cardRef = useRef<HTMLDivElement>(null);
+    
+        return (
+            <div 
+                className="w-full h-[450px] bg-transparent cursor-pointer group"
+                style={{ perspective: '1000px' }}
+                onClick={() => setIsFlipped(!isFlipped)}
+                onMouseEnter={() => setIsFlipped(true)}
+                onMouseLeave={() => setIsFlipped(false)}
+            >
+                <div 
+                    ref={cardRef}
+                    className={`relative w-full h-full transition-transform duration-700 ease-in-out`}
+                    style={{ transformStyle: 'preserve-3d', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
+                >
+                    {/* Front Face */}
+                    <div className="absolute w-full h-full bg-light-bg/80 rounded-lg shadow-lg overflow-hidden border border-dark-accent/10" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
+                        <img src={product.img} alt={product.title} className="w-full h-1/2 object-cover" />
+                        <div className="p-4 flex flex-col items-center text-center">
+                            <h3 className="text-2xl font-display text-dark-golden">{renderStyledText(product.title)}</h3>
+                            <p className="mt-2 text-primary-text/80 text-sm flex-grow">{renderStyledText(product.shortDescription)}</p>
+                        </div>
+                    </div>
+                    {/* Back Face */}
+                    <div className="absolute w-full h-full bg-dark-golden text-light-text p-6 rounded-lg shadow-lg flex flex-col" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                        <h4 className="text-xl font-display text-golden-accent">{renderStyledText(product.title)}</h4>
+                        <p className="mt-2 text-sm text-light-text/90 flex-grow">{renderStyledText(product.description)}</p>
+                        <div>
+                            <h5 className="font-bold text-golden-accent/80 mt-4">Perfect For:</h5>
+                            <ul className="text-xs list-disc list-inside">
+                                {product.pairings.slice(0, 3).map(p => <li key={p}>{renderStyledText(p)}</li>)}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     return (
         <div>
-            <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
-                <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
-            </header>
-
-            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h3 className="text-4xl font-display text-dark-golden mb-4 text-center">{renderStyledText(t.insights.title)}</h3>
-                    <p className="text-lg text-primary-text/90 text-center max-w-3xl mx-auto">{renderStyledText(t.insights.text)}</p>
+            {/* Section 1: Retail */}
+            <ParallaxSection index={6} className="py-20 px-4 md:px-8">
+                <div className="max-w-6xl mx-auto bg-white/60 p-8 md:p-12 rounded-lg shadow-2xl backdrop-blur-sm">
+                    <div className="text-center">
+                        <h2 className="text-4xl md:text-5xl font-display text-dark-golden mb-2">{renderStyledText(t.retail.headline)}</h2>
+                        <p className="text-lg text-primary-text/90 max-w-3xl mx-auto">{renderStyledText(t.retail.subtitle)}</p>
+                    </div>
+                    <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {t.retail.products.map(p => <FlippingProductCard key={p.id} product={p} />)}
+                    </div>
                 </div>
             </ParallaxSection>
+            
+            {/* Section 2: Wholesale */}
+            <ParallaxSection index={7} className="py-20 px-4 md:px-8">
+                <div className="max-w-6xl mx-auto bg-white/60 p-8 md:p-12 rounded-lg shadow-2xl backdrop-blur-sm">
+                    <div className="text-center">
+                        <h2 className="text-4xl md:text-5xl font-display text-dark-golden mb-2">{renderStyledText(t.wholesale.headline)}</h2>
+                        <p className="text-lg text-primary-text/90 max-w-3xl mx-auto">{renderStyledText(t.wholesale.subtitle)}</p>
+                    </div>
 
-            <ParallaxSection index={1} className="py-16 px-4 md:px-8">
-                <div className="max-w-5xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h3 className="text-4xl font-display text-dark-golden mb-4 text-center">{renderStyledText(t.pricing.title)}</h3>
-                    <p className="text-lg text-primary-text/90 text-center max-w-3xl mx-auto mb-12">{renderStyledText(t.pricing.text)}</p>
-                    
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full text-left border-collapse">
-                             <thead className="bg-dark-golden/10">
+                    {/* Pricing Table */}
+                    <div className="mt-12 overflow-x-auto">
+                        <table className="min-w-full text-left border-collapse bg-light-bg/50 rounded-lg shadow-md">
+                            <thead className="bg-dark-golden/10">
                                 <tr>
-                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.productLine}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.sku}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.tier1}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.tier2}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.tier3}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text">{t.pricing.table.headers.tier4}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text">{t.wholesale.pricingTable.headers.sku}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text">{t.wholesale.pricingTable.headers.product}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text">{t.wholesale.pricingTable.headers.size}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text text-right">{t.wholesale.pricingTable.headers.retailPrice}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text text-right">{t.wholesale.pricingTable.headers.tier1}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text text-right">{t.wholesale.pricingTable.headers.tier2}</th>
+                                    <th className="p-4 font-display text-lg text-primary-text text-right">{t.wholesale.pricingTable.headers.tier3}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {t.pricing.table.data.map((line, index) => (
-                                    <React.Fragment key={index}>
-                                        {line.skus.map((sku, skuIndex) => (
-                                            <tr key={`${index}-${skuIndex}`} className="border-t border-medium-bg">
-                                                {skuIndex === 0 && <td rowSpan={line.skus.length} className="p-4 font-semibold align-top">{renderStyledText(line.productLine)}</td>}
-                                                <td className="p-4">{renderStyledText(sku.name)}</td>
-                                                <td className="p-4">{sku.tier1}</td>
-                                                <td className="p-4">{sku.tier2}</td>
-                                                <td className="p-4">{sku.tier3}</td>
-                                                <td className="p-4">{sku.tier4}</td>
-                                            </tr>
-                                        ))}
-                                    </React.Fragment>
+                                {t.wholesale.pricingTable.rows.map((row, index) => (
+                                     <tr key={index} className="border-t border-medium-bg">
+                                        <td className="p-4 font-semibold">{row.sku}</td>
+                                        <td className="p-4">{row.product}</td>
+                                        <td className="p-4">{row.size}</td>
+                                        <td className="p-4 text-right">{row.retailPrice}</td>
+                                        <td className="p-4 text-right">{row.tier1_price}</td>
+                                        <td className="p-4 text-right">{row.tier2_price}</td>
+                                        <td className="p-4 text-right">{row.tier3_price}</td>
+                                     </tr>
                                 ))}
                             </tbody>
                         </table>
-                    </div>
-                     <p className="text-sm text-primary-text/70 mt-4 text-center">{renderStyledText(t.pricing.table.note)}</p>
-                </div>
-            </ParallaxSection>
-
-            <ParallaxSection index={2} className="py-16 px-4 md:px-8">
-                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                     <h3 className="text-4xl font-display text-dark-golden mb-12 text-center">{renderStyledText(t.logistics.title)}</h3>
-                     <div className="grid md:grid-cols-2 gap-12">
-                         <div>
-                             <h4 className="text-2xl font-display text-primary-text mb-4">{renderStyledText(t.logistics.packaging.title)}</h4>
-                             <ul className="list-disc list-inside space-y-2 text-primary-text/90">
-                                 {t.logistics.packaging.options.map((opt, i) => <li key={i}>{renderStyledText(opt)}</li>)}
-                             </ul>
-                         </div>
-                         <div>
-                             <h4 className="text-2xl font-display text-primary-text mb-4">{renderStyledText(t.logistics.export.title)}</h4>
-                             <ul className="list-disc list-inside space-y-2 text-primary-text/90">
-                                 {t.logistics.export.services.map((svc, i) => <li key={i}>{renderStyledText(svc)}</li>)}
-                             </ul>
-                         </div>
-                     </div>
-                </div>
-            </ParallaxSection>
-
-            <ParallaxSection index={3} className="py-16 px-4 md:px-8">
-                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h3 className="text-4xl font-display text-dark-golden mb-8 text-center">{renderStyledText(t.form.title)}</h3>
-                    {isSubmitted ? (
-                        <div className="text-center p-8 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-                            <p className="text-xl">{renderStyledText(t.form.successMessage)}</p>
+                        <div className="text-right mt-4">
+                            <button className="bg-dark-golden text-light-text font-bold py-2 px-6 rounded-full hover:bg-primary-text transition duration-300">
+                                {t.wholesale.pricingTable.exportCta}
+                            </button>
                         </div>
-                    ) : (
-                        <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
-                             <div>
-                                <label className="block text-primary-text/80 mb-1">{t.form.companyName}</label>
-                                <input type="text" name="companyName" value={formData.companyName} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
+                    </div>
+
+                    {/* Compliance Info */}
+                    <div className="mt-16">
+                        <h3 className="text-3xl font-display text-center text-dark-golden mb-8">{renderStyledText(t.wholesale.compliance.headline)}</h3>
+                        <div className="max-w-3xl mx-auto">
+                            <div className="border-b border-medium-bg mb-4 flex flex-wrap justify-center gap-x-4 gap-y-2 md:gap-x-8">
+                                <button onClick={() => setActiveTab('usa')} className={`py-2 px-4 font-semibold text-lg ${activeTab === 'usa' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.wholesale.compliance.tabs.usa}</button>
+                                <button onClick={() => setActiveTab('eu')} className={`py-2 px-4 font-semibold text-lg ${activeTab === 'eu' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.wholesale.compliance.tabs.eu}</button>
+                                <button onClick={() => setActiveTab('japan')} className={`py-2 px-4 font-semibold text-lg ${activeTab === 'japan' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.wholesale.compliance.tabs.japan}</button>
+                                <button onClick={() => setActiveTab('uae')} className={`py-2 px-4 font-semibold text-lg ${activeTab === 'uae' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.wholesale.compliance.tabs.uae}</button>
                             </div>
-                            <div>
-                                <label className="block text-primary-text/80 mb-1">{t.form.contactPerson}</label>
-                                <input type="text" name="contactPerson" value={formData.contactPerson} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
+                            <div className="p-6 bg-light-bg/50 rounded-lg min-h-[180px]">
+                                {activeTab === 'usa' && <p>{t.wholesale.compliance.content.usa}</p>}
+                                {activeTab === 'eu' && <p>{t.wholesale.compliance.content.eu}</p>}
+                                {activeTab === 'japan' && <p>{t.wholesale.compliance.content.japan}</p>}
+                                {activeTab === 'uae' && <p>{t.wholesale.compliance.content.uae}</p>}
                             </div>
-                            <div>
-                                <label className="block text-primary-text/80 mb-1">{t.form.email}</label>
-                                <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
-                            </div>
-                             <div>
-                                <label className="block text-primary-text/80 mb-1">{t.form.country}</label>
-                                <input type="text" name="country" value={formData.country} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
-                            </div>
-                             <div>
-                                <label className="block text-primary-text/80 mb-1">{t.form.volume}</label>
-                                <input type="text" name="volume" value={formData.volume} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
-                            </div>
-                             <div>
-                                <label className="block text-primary-text/80 mb-1">{t.form.productType.label}</label>
-                                <select name="productType" value={formData.productType} onChange={handleChange} required className="w-full p-2 border border-medium-bg rounded-md bg-light-bg">
-                                    <option value="" disabled>Select a type</option>
-                                    {t.form.productType.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                                </select>
-                            </div>
-                            <div className="md:col-span-2">
-                                <label className="block text-primary-text/80 mb-1">{t.form.packaging.label}</label>
-                                <input type="text" name="packaging" value={formData.packaging} onChange={handleChange} placeholder={t.form.packaging.placeholder} className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"/>
-                            </div>
-                             <div className="md:col-span-2">
-                                <label className="block text-primary-text/80 mb-1">{t.form.message}</label>
-                                <textarea name="message" value={formData.message} onChange={handleChange} rows={5} className="w-full p-2 border border-medium-bg rounded-md bg-light-bg"></textarea>
-                            </div>
-                             <div className="md:col-span-2 text-center">
-                                <button type="submit" className="bg-dark-golden text-light-text font-bold py-3 px-12 rounded-full hover:bg-primary-text transition duration-300">
-                                    {t.form.submit}
-                                </button>
-                            </div>
-                        </form>
-                    )}
-                 </div>
+                            <p className="text-xs text-primary-text/60 text-center mt-4 italic">{t.wholesale.compliance.disclaimer}</p>
+                        </div>
+                    </div>
+                </div>
             </ParallaxSection>
         </div>
     );
@@ -1100,12 +1143,12 @@ const ShopNowPage = ({ cartItems, setCartItems, setPage }: { cartItems: CartItem
         return (
              <div>
                 <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                    <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
+                    <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
                     <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
                 </header>
                 <ParallaxSection index={0} className="py-32 px-4 md:px-8 text-center">
                     <div className="max-w-xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                         <h3 className="text-4xl font-display text-dark-golden">{renderStyledText(t.emptyCart.title)}</h3>
+                         <h2 className="text-4xl font-display text-dark-golden">{renderStyledText(t.emptyCart.title)}</h2>
                          <p className="mt-4 text-lg">{renderStyledText(t.emptyCart.text)}</p>
                          <button onClick={() => setPage(Page.Home)} className="mt-8 bg-dark-golden text-light-text font-bold py-3 px-8 rounded-full hover:bg-primary-text transition duration-300">
                              {t.emptyCart.cta}
@@ -1119,18 +1162,18 @@ const ShopNowPage = ({ cartItems, setCartItems, setPage }: { cartItems: CartItem
     return (
         <div>
             <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
+                <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
             </header>
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                  <div className="max-w-6xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl grid lg:grid-cols-3 gap-12">
                      <div className="lg:col-span-2 space-y-4">
-                        <h3 className="text-3xl font-display text-dark-golden mb-4">Your Cart</h3>
+                        <h2 className="text-3xl font-display text-dark-golden mb-4">Your Cart</h2>
                         {cartItems.map(item => (
                             <div key={item.id} className="flex items-center gap-4 border-b border-medium-bg pb-4">
                                 <img src={item.img} alt={item.title} className="w-24 h-24 object-cover rounded-md"/>
                                 <div className="flex-grow">
-                                    <h4 className="font-bold text-lg">{renderStyledText(item.title)}</h4>
+                                    <h3 className="font-bold text-lg">{renderStyledText(item.title)}</h3>
                                     <p className="text-sm text-primary-text/70">{item.size}</p>
                                     <p className="font-display text-xl">${item.price.toFixed(2)}</p>
                                 </div>
@@ -1145,7 +1188,7 @@ const ShopNowPage = ({ cartItems, setCartItems, setPage }: { cartItems: CartItem
                      </div>
                      <div className="lg:col-span-1 space-y-8">
                         <div className="bg-light-bg p-6 rounded-lg border border-medium-bg">
-                            <h3 className="text-2xl font-display text-dark-golden mb-4">{t.summary.title}</h3>
+                            <h2 className="text-2xl font-display text-dark-golden mb-4">{t.summary.title}</h2>
                             <div className="space-y-2 text-lg">
                                 <div className="flex justify-between"><span>{t.summary.subtotal}</span><span>${subtotal.toFixed(2)}</span></div>
                                 <div className="flex justify-between"><span>{t.summary.shipping}</span><span>${shipping.toFixed(2)}</span></div>
@@ -1153,7 +1196,7 @@ const ShopNowPage = ({ cartItems, setCartItems, setPage }: { cartItems: CartItem
                             </div>
                         </div>
                         <div className="bg-light-bg p-6 rounded-lg border border-medium-bg">
-                             <h3 className="text-2xl font-display text-dark-golden mb-4">{t.payment.title}</h3>
+                             <h2 className="text-2xl font-display text-dark-golden mb-4">{t.payment.title}</h2>
                              <div className="border-b border-medium-bg mb-4">
                                 <nav className="flex space-x-4">
                                     <button onClick={() => setActivePaymentTab('card')} className={`py-2 px-4 ${activePaymentTab === 'card' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.payment.tabs.card}</button>
@@ -1187,17 +1230,17 @@ const ShopNowPage = ({ cartItems, setCartItems, setPage }: { cartItems: CartItem
                             )}
                         </div>
                          <div className="bg-light-bg p-6 rounded-lg border border-medium-bg text-sm space-y-4">
-                            <h3 className="text-xl font-display text-dark-golden -mb-2">{t.shippingInfo.title}</h3>
+                            <h2 className="text-xl font-display text-dark-golden -mb-2">{t.shippingInfo.title}</h2>
                             <div>
-                                <h4 className="font-bold">{t.shippingInfo.policy.title}</h4>
+                                <h3 className="font-bold">{t.shippingInfo.policy.title}</h3>
                                 <p className="text-primary-text/80">{t.shippingInfo.policy.text}</p>
                             </div>
                              <div>
-                                <h4 className="font-bold">{t.shippingInfo.delivery.title}</h4>
+                                <h3 className="font-bold">{t.shippingInfo.delivery.title}</h3>
                                 <p className="text-primary-text/80 whitespace-pre-wrap">{t.shippingInfo.delivery.text}</p>
                             </div>
                              <div>
-                                <h4 className="font-bold">{t.shippingInfo.customs.title}</h4>
+                                <h3 className="font-bold">{t.shippingInfo.customs.title}</h3>
                                 <p className="text-primary-text/80">{t.shippingInfo.customs.text}</p>
                             </div>
                          </div>
@@ -1240,8 +1283,34 @@ const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | 
 
     if (selectedPost) {
         const coverImageUrl = selectedPost.coverImage.startsWith('http') ? selectedPost.coverImage : `${ASSET_BASE_URL}${selectedPost.coverImage}`;
+        const blogPostSchema = {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": `https://www.goldentaan.com/#${Page.Blog}/${selectedPost.id}`
+            },
+            "headline": selectedPost.title,
+            "description": selectedPost.introduction,
+            "image": coverImageUrl,
+            "author": {
+                "@type": "Organization",
+                "name": "Golden TAAN"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Golden TAAN",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp"
+                }
+            },
+            "datePublished": "2024-08-28", // Placeholder date
+            "dateModified": "2024-08-28" // Placeholder date
+        };
         return (
             <div>
+                <SchemaInjector schema={blogPostSchema} />
                 <header className="relative h-96">
                     <img src={coverImageUrl} alt={selectedPost.title} className="w-full h-full object-cover"/>
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -1249,11 +1318,11 @@ const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | 
                     </div>
                 </header>
                 <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                     <div className="max-w-3xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                     <article className="max-w-3xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
                         <button onClick={() => setSelectedPost(null)} className="mb-8 text-dark-golden hover:underline">&larr; {t.back}</button>
                         <p className="text-xl italic text-primary-text/80 mb-8">{renderStyledText(selectedPost.introduction)}</p>
                         <BlogContentRenderer content={selectedPost.content} />
-                     </div>
+                     </article>
                 </ParallaxSection>
             </div>
         );
@@ -1262,7 +1331,7 @@ const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | 
     return (
         <div>
             <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                <h2 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h2>
+                <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
             </header>
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
@@ -1274,7 +1343,7 @@ const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | 
                                 <div key={post.id} onClick={() => setSelectedPost(post)} className="border border-medium-bg/50 rounded-lg overflow-hidden group transition-transform duration-300 hover:scale-105 cursor-pointer flex flex-col">
                                     <img src={coverImageUrl} alt={post.title} className="w-full h-48 object-cover"/>
                                     <div className="p-6 flex-grow flex flex-col">
-                                        <h3 className="text-2xl font-display text-dark-golden group-hover:underline">{renderStyledText(post.title)}</h3>
+                                        <h2 className="text-2xl font-display text-dark-golden group-hover:underline">{renderStyledText(post.title)}</h2>
                                         <p className="mt-2 text-primary-text/80 flex-grow">{renderStyledText(post.introduction)}</p>
                                         <span className="mt-4 font-semibold text-dark-golden">{t.readMore} &rarr;</span>
                                     </div>
@@ -1283,6 +1352,143 @@ const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | 
                         })}
                     </div>
                  </div>
+            </ParallaxSection>
+        </div>
+    );
+};
+
+const ContactPage = () => {
+    const { translations } = useLocalization();
+    const t = translations.contact;
+    const [formData, setFormData] = useState({
+        fullName: '',
+        companyName: '',
+        country: '',
+        email: '',
+        inquiryType: '',
+        message: '',
+    });
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log('Contact Inquiry:', formData);
+        setIsSubmitted(true);
+    };
+    
+    const countries = [
+        "United States", "Canada", "United Kingdom", "Australia", "Germany", 
+        "France", "Japan", "China", "Thailand", "Singapore", "United Arab Emirates", "Other"
+    ];
+
+    return (
+        <div>
+            <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
+                <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
+                <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
+            </header>
+
+            <ParallaxSection index={4} className="py-16 px-4 md:px-8">
+                <div className="max-w-6xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    <div className="grid md:grid-cols-2 gap-12">
+                        {/* Left Column */}
+                        <div className="space-y-8">
+                            <div className="flex items-start gap-4">
+                                <SvgIcon path="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M8.25 6h9m-9 3h9m-9 3h9m-9 3h9M7.5 21a3 3 0 003.75 0h1.5a3 3 0 003.75 0" className="w-8 h-8 text-dark-golden mt-1 flex-shrink-0" />
+                                <div>
+                                    <h3 className="text-2xl font-display text-primary-text">{t.leftColumn.hq}</h3>
+                                    <p className="text-primary-text/80 whitespace-pre-wrap">{translations.footer.office.address}</p>
+                                </div>
+                            </div>
+                             <div className="flex items-start gap-4">
+                                <SvgIcon path="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.211-.992-.55-1.35l-2.45-2.451a2.25 2.25 0 00-3.182 0l-1.264 1.264a2.25 2.25 0 01-3.182 0l-2.45-2.451a2.25 2.25 0 000-3.182l1.264-1.264a2.25 2.25 0 000-3.182Z" className="w-7 h-7 text-dark-golden mt-1 flex-shrink-0" />
+                                <div>
+                                    <h3 className="text-2xl font-display text-primary-text">{t.leftColumn.phone}</h3>
+                                    <p className="text-primary-text/80">{translations.footer.contact.phone.number}</p>
+                                    <p className="text-sm text-primary-text/60">{t.leftColumn.hours}</p>
+                                </div>
+                            </div>
+                             <div className="flex items-start gap-4">
+                                <SvgIcon path="M21.75 6.75v10.5a2.25 2.25 0 01-2.25-2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" className="w-7 h-7 text-dark-golden mt-1 flex-shrink-0" />
+                                <div>
+                                    <h3 className="text-2xl font-display text-primary-text">{t.leftColumn.email}</h3>
+                                    <p className="text-primary-text/80 font-semibold">{t.leftColumn.sales}</p>
+                                    <a href={`mailto:${translations.footer.contact.email.address}`} className="text-primary-text/80 hover:underline">{translations.footer.contact.email.address}</a>
+                                    <p className="text-primary-text/80 font-semibold mt-2">{t.leftColumn.cc}</p>
+                                    <a href={`mailto:${translations.footer.contact.cc.address}`} className="text-primary-text/80 hover:underline">{translations.footer.contact.cc.address}</a>
+                                </div>
+                            </div>
+                            <div className="w-full aspect-[4/3]">
+                                <iframe 
+                                    src="https://www.google.com/maps/embed?pb=!1m12!1m8!1m3!1d3875.9293303747204!2d100.5201638!3d13.7227283!3m2!1i1024!2i768!4f13.1!2m1!1sjewelry%20trade%20center!5e0!3m2!1sen!2sth!4v1756338719849!5m2!1sen!2sth"
+                                    className="w-full h-full rounded-lg shadow-md"
+                                    style={{border:0}} 
+                                    allowFullScreen={true}
+                                    loading="lazy" 
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                    title={translations.contact.seo.altTags.map}>
+                                </iframe>
+                            </div>
+                        </div>
+
+                        {/* Right Column */}
+                        <div>
+                             <h3 className="text-3xl font-display text-dark-golden mb-6">{t.form.title}</h3>
+                             {isSubmitted ? (
+                                <div className="text-center p-8 bg-green-100 border border-green-400 text-green-700 rounded-lg h-full flex items-center justify-center">
+                                    <p className="text-xl">{renderStyledText(t.form.successMessage)}</p>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="space-y-4">
+                                    <div>
+                                        <label htmlFor="fullName" className="block text-primary-text/80 mb-1">{t.form.fullName}</label>
+                                        <input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden"/>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="companyName" className="block text-primary-text/80 mb-1">{t.form.companyName}</label>
+                                        <input type="text" id="companyName" name="companyName" value={formData.companyName} onChange={handleChange} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden"/>
+                                    </div>
+                                     <div>
+                                        <label htmlFor="country" className="block text-primary-text/80 mb-1">{t.form.country}</label>
+                                        <select id="country" name="country" value={formData.country} onChange={handleChange} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden">
+                                            <option value="" disabled>Select your country</option>
+                                            {countries.map(c => <option key={c} value={c}>{c}</option>)}
+                                        </select>
+                                    </div>
+                                     <div>
+                                        <label htmlFor="email" className="block text-primary-text/80 mb-1">{t.form.email}</label>
+                                        <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden"/>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="inquiryType" className="block text-primary-text/80 mb-1">{t.form.inquiryType.label}</label>
+                                        <select id="inquiryType" name="inquiryType" value={formData.inquiryType} onChange={handleChange} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden">
+                                            <option value="" disabled>Select inquiry type</option>
+                                            <option value="wholesale">{t.form.inquiryType.options.wholesale}</option>
+                                            <option value="oem">{t.form.inquiryType.options.oem}</option>
+                                            <option value="sample">{t.form.inquiryType.options.sample}</option>
+                                            <option value="productInfo">{t.form.inquiryType.options.productInfo}</option>
+                                            <option value="general">{t.form.inquiryType.options.general}</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="message" className="block text-primary-text/80 mb-1">{t.form.message}</label>
+                                        <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows={5} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden"></textarea>
+                                    </div>
+                                    <div>
+                                        <button type="submit" className="w-full bg-dark-golden text-light-text font-bold py-3 px-12 rounded-full hover:bg-primary-text transition duration-300">
+                                            {t.form.submit}
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
+                        </div>
+                    </div>
+                </div>
             </ParallaxSection>
         </div>
     );
@@ -1334,19 +1540,21 @@ const Header = ({ setPage, page, cartItems }: { setPage: (page: Page) => void, p
                                 </div>
                             )}
                         </div>
+                        <button onClick={() => handleSetPage(Page.Wholesale)} className={`hover:text-golden-accent transition ${page === Page.Wholesale ? 'text-golden-accent' : ''}`}>{t.products}</button>
                         <button onClick={() => handleSetPage(Page.Sustainability)} className={`hover:text-golden-accent transition ${page === Page.Sustainability ? 'text-golden-accent' : ''}`}>{t.sustainability}</button>
                         <button onClick={() => handleSetPage(Page.Blog)} className={`hover:text-golden-accent transition ${page === Page.Blog ? 'text-golden-accent' : ''}`}>{t.blog}</button>
-                        <button onClick={() => handleSetPage(Page.Wholesale)} className={`hover:text-golden-accent transition ${page === Page.Wholesale ? 'text-golden-accent' : ''}`}>{t.wholesale}</button>
+                        <button onClick={() => handleSetPage(Page.Contact)} className={`hover:text-golden-accent transition ${page === Page.Contact ? 'text-golden-accent' : ''}`}>{t.contact}</button>
                     </nav>
                     <div className="hidden md:flex items-center space-x-4">
                          <select value={language} onChange={e => setLanguage(e.target.value as Language)} className="bg-primary-text border border-light-text/30 rounded-md p-1 text-sm">
                             <option value="en">EN</option>
                             <option value="th">TH</option>
-                            <option value="de">DE</option>
                             <option value="ja">JA</option>
-                            <option value="ko">KO</option>
-                            <option value="fr">FR</option>
                             <option value="zh">ZH</option>
+                            <option value="ar">AR</option>
+                            <option value="fr">FR</option>
+                            <option value="ko">KO</option>
+                            <option value="nl">NL</option>
                         </select>
                         <button onClick={() => handleSetPage(Page.ShopNow)} className="bg-golden-accent text-primary-text font-bold py-2 px-6 rounded-full hover:bg-yellow-500 transition relative">
                             {t.shopNow}
@@ -1365,252 +1573,217 @@ const Header = ({ setPage, page, cartItems }: { setPage: (page: Page) => void, p
                      <button onClick={() => handleSetPage(Page.Home)} className="block w-full text-left py-2 hover:text-golden-accent">{t.home}</button>
                      <button onClick={() => handleSetPage(Page.About)} className="block w-full text-left py-2 hover:text-golden-accent">{t.ourStory}</button>
                      <button onClick={() => handleSetPage(Page.Heritage)} className="block w-full text-left py-2 hover:text-golden-accent">{t.heritage}</button>
+                     <button onClick={() => handleSetPage(Page.Wholesale)} className="block w-full text-left py-2 hover:text-golden-accent">{t.products}</button>
                      <button onClick={() => handleSetPage(Page.Sustainability)} className="block w-full text-left py-2 hover:text-golden-accent">{t.sustainability}</button>
                      <button onClick={() => handleSetPage(Page.Blog)} className="block w-full text-left py-2 hover:text-golden-accent">{t.blog}</button>
-                     <button onClick={() => handleSetPage(Page.Wholesale)} className="block w-full text-left py-2 hover:text-golden-accent">{t.wholesale}</button>
-                     <button onClick={() => handleSetPage(Page.ShopNow)} className="mt-4 w-full bg-golden-accent text-primary-text font-bold py-2 px-4 rounded-full">{t.shopNow} ({totalCartItems})</button>
+                     <button onClick={() => handleSetPage(Page.Contact)} className="block w-full text-left py-2 hover:text-golden-accent">{t.contact}</button>
+                     <button onClick={() => handleSetPage(Page.ShopNow)} className="mt-4 w-full bg-golden-accent text-primary-text font-bold py-2 px-4 rounded-full">{t.shopNow}</button>
                 </div>
             )}
         </header>
     );
 };
 
-const Footer = () => {
-    const { translations, setLanguage } = useLocalization();
+const Footer = ({ setPage }: { setPage: (page: Page) => void }) => {
+    const { translations } = useLocalization();
     const t = translations.footer;
     const nav = translations.nav;
+    const year = new Date().getFullYear();
 
-    const quickLinks = [
-        { label: nav.home, page: Page.Home },
-        { label: nav.ourStory, page: Page.About },
-        { label: nav.heritage, page: Page.Heritage },
-        { label: nav.sustainability, page: Page.Sustainability },
-        { label: nav.blog, page: Page.Blog },
-        { label: nav.wholesale, page: Page.Wholesale },
-    ];
-    
+    const handleLinkClick = (page: Page) => {
+        setPage(page);
+    };
+
     return (
-        <footer id="contact" className="bg-primary-text text-light-text/70 pt-16 pb-8 px-4 md:px-8">
-            <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
+        <footer className="bg-primary-text text-light-text/80 py-12 px-4 md:px-8">
+            <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
                 <div>
-                    <h3 className="font-display text-2xl text-golden-accent mb-4">{t.office.title}</h3>
+                    <img 
+                        src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" 
+                        alt="Golden TAAN Logo" 
+                        className="h-16 mb-4 cursor-pointer"
+                        onClick={() => handleLinkClick(Page.Home)}
+                    />
                     <p className="whitespace-pre-wrap">{t.office.address}</p>
                 </div>
                 <div>
-                    <h3 className="font-display text-2xl text-golden-accent mb-4">{t.contact.title}</h3>
+                    <h3 className="font-display text-xl text-light-text mb-4">{t.contact.title}</h3>
                     <p>{t.contact.name}</p>
-                    <p>{t.contact.phone.label}: {t.contact.phone.number}</p>
-                    <p>{t.contact.email.label}: <a href={`mailto:${t.contact.email.address}`} className="hover:underline">{t.contact.email.address}</a></p>
-                    <p>{t.contact.cc.label}: <a href={`mailto:${t.contact.cc.address}`} className="hover:underline">{t.contact.cc.address}</a></p>
+                    <p>{t.contact.phone.label}: <a href={`tel:${t.contact.phone.number.replace(/\s/g, '')}`} className="hover:text-golden-accent">{t.contact.phone.number}</a></p>
+                    <p>{t.contact.email.label}: <a href={`mailto:${t.contact.email.address}`} className="hover:text-golden-accent">{t.contact.email.address}</a></p>
+                    <p>{t.contact.cc.label}: <a href={`mailto:${t.contact.cc.address}`} className="hover:text-golden-accent">{t.contact.cc.address}</a></p>
                 </div>
                 <div>
-                    <h3 className="font-display text-2xl text-golden-accent mb-4">{t.quickLinks}</h3>
-                    <div className="grid grid-cols-2 gap-2">
-                        {quickLinks.map(link => (
-                            <a key={link.page} href={`#${link.page}`} onClick={() => window.history.pushState(null, '', `#${link.page}`)} className="hover:text-golden-accent hover:underline">{link.label}</a>
-                        ))}
-                         <a href={`#shop-now`} onClick={() => window.history.pushState(null, '', `#shop-now`)} className="hover:text-golden-accent hover:underline">{nav.shopNow}</a>
-                    </div>
+                    <h3 className="font-display text-xl text-light-text mb-4">{t.quickLinks}</h3>
+                    <nav className="space-y-2">
+                        <button onClick={() => handleLinkClick(Page.Home)} className="block hover:text-golden-accent">{nav.home}</button>
+                        <button onClick={() => handleLinkClick(Page.About)} className="block hover:text-golden-accent">{nav.ourStory}</button>
+                        <button onClick={() => handleLinkClick(Page.Wholesale)} className="block hover:text-golden-accent">{nav.products}</button>
+                        <button onClick={() => handleLinkClick(Page.Sustainability)} className="block hover:text-golden-accent">{nav.sustainability}</button>
+                        <button onClick={() => handleLinkClick(Page.Contact)} className="block hover:text-golden-accent">{nav.contact}</button>
+                    </nav>
                 </div>
             </div>
-            <div className="mt-12 text-center border-t border-light-text/20 pt-8">
-                <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Small Golden TAAN Logo" className="h-16 mx-auto mb-4" />
-                <p className="text-sm">{t.copyright.replace('{year}', new Date().getFullYear().toString())}</p>
+            <div className="mt-12 border-t border-light-text/20 pt-8 text-center text-sm">
+                <p>{t.copyright.replace('{year}', year.toString())}</p>
             </div>
         </footer>
     );
 };
 
-const SoftLaunchModal = ({ onClose }: { onClose: () => void }) => {
-    const { translations, setLanguage, language } = useLocalization();
-    const t = translations.softLaunchModal;
+const AppContent = () => {
+    const { translations } = useLocalization();
+    const [page, setPage] = useState<Page>(Page.Home);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+
+    useEffect(() => {
+        document.title = translations.meta.globalTitle;
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+            metaDesc.setAttribute('content', translations.meta.globalDescription);
+        }
+    }, [translations]);
+
+    useEffect(() => {
+        const handleHashChange = () => {
+            const hash = window.location.hash.replace('#', '');
+            const newPage = Object.values(Page).find(p => p === hash.split('/')[0]) || Page.Home;
+            setPage(newPage);
+            window.scrollTo(0, 0);
+            trackPageView(`/${hash || ''}`);
+        };
+        handleHashChange();
+        window.addEventListener('hashchange', handleHashChange, false);
+        return () => window.removeEventListener('hashchange', handleHashChange);
+    }, []);
+    
+    const handleSetPage = (newPage: Page) => {
+        if (page !== newPage) {
+            window.location.hash = newPage;
+        } else {
+             window.scrollTo(0, 0);
+        }
+    };
+
+    const handleAddToCart = (productToAdd: Product) => {
+        setCartItems(prev => {
+            const existingItem = prev.find(item => item.id === productToAdd.id);
+            if (existingItem) {
+                return prev.map(item => item.id === productToAdd.id ? { ...item, quantity: item.quantity + 1 } : item);
+            }
+            return [...prev, { ...productToAdd, quantity: 1 }];
+        });
+    };
+
+    const renderPage = () => {
+        switch (page) {
+            case Page.Home: return <HomePage onAddToCart={handleAddToCart} setPage={handleSetPage} setSelectedPost={setSelectedPost} />;
+            case Page.About: return <AboutUsPage />;
+            case Page.Heritage: return <HeritagePage />;
+            case Page.Sustainability: return <SustainabilityPage />;
+            case Page.Wholesale: return <ProductsPage />;
+            case Page.Blog: return <BlogPage selectedPost={selectedPost} setSelectedPost={setSelectedPost} />;
+            case Page.Contact: return <ContactPage />;
+            case Page.ShopNow: return <ShopNowPage cartItems={cartItems} setCartItems={setCartItems} setPage={handleSetPage} />;
+            default: return <HomePage onAddToCart={handleAddToCart} setPage={handleSetPage} setSelectedPost={setSelectedPost} />;
+        }
+    };
 
     return (
-        <div className="fixed inset-0 bg-black/70 z-[200] flex items-center justify-center p-4 animate-fade-in" role="dialog" aria-modal="true">
-            <div className="bg-light-bg rounded-lg shadow-2xl max-w-lg w-full p-8 text-center text-primary-text">
-                <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden TAAN Logo" className="h-20 mx-auto mb-6" />
-                <h2 className="text-3xl font-display text-dark-golden mb-4">{renderStyledText(t.title)}</h2>
-                <p className="mb-4">{renderStyledText(t.mainText)}</p>
-                <div className="bg-golden-accent/10 border border-golden-accent/30 rounded-lg p-4 text-sm mb-6">
-                    <p>{renderStyledText(t.statusText)}</p>
-                    <p className="mt-2 text-xs text-primary-text/60">{t.lastUpdated}</p>
-                </div>
+        <div className="bg-light-bg font-sans text-primary-text">
+            <Header setPage={handleSetPage} page={page} cartItems={cartItems} />
+            <main>{renderPage()}</main>
+            <Footer setPage={handleSetPage} />
+        </div>
+    );
+};
 
+const SoftLaunchModal = ({ onEnter }: { onEnter: (lang: Language) => void }) => {
+    const [selectedLang, setSelectedLang] = useState<Language>('en');
+    const t = siteContent[selectedLang].softLaunchModal;
+
+    return (
+        <div className="fixed inset-0 bg-black/70 z-[200] flex items-center justify-center p-4 backdrop-blur-sm">
+            <div className="bg-light-bg text-primary-text rounded-lg shadow-2xl max-w-lg w-full p-8 text-center animate-fade-in">
+                <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden TAAN Logo" className="h-20 mx-auto mb-6" />
+                <h2 className="text-3xl font-display text-dark-golden mb-4">{t.title}</h2>
+                <p className="mb-4">{t.mainText}</p>
+                <p className="mb-6 text-sm bg-golden-accent/10 p-3 rounded-md">{t.statusText}</p>
+                
                 <div className="mb-6">
-                     <label htmlFor="lang-select" className="block mb-2 text-sm font-medium text-gray-900">{t.selectLanguage}</label>
-                     <select id="lang-select" value={language} onChange={e => setLanguage(e.target.value as Language)} className="bg-medium-bg border border-dark-accent text-primary-text text-sm rounded-lg focus:ring-dark-golden focus:border-dark-golden block w-full p-2.5">
-                        <option value="en">English (EN)</option>
-                        <option value="th">ภาษาไทย (TH)</option>
-                        <option value="de">Deutsch (DE)</option>
-                        <option value="ja">日本語 (JA)</option>
-                        <option value="ko">한국어 (KO)</option>
-                        <option value="fr">Français (FR)</option>
-                        <option value="zh">中文 (ZH)</option>
+                    <label htmlFor="lang-select" className="block mb-2 font-semibold">{t.selectLanguage}</label>
+                    <select
+                        id="lang-select"
+                        value={selectedLang}
+                        onChange={e => setSelectedLang(e.target.value as Language)}
+                        className="bg-white border border-medium-bg rounded-md p-2 text-center"
+                    >
+                        <option value="en">English</option>
+                        <option value="th">ภาษาไทย</option>
+                        <option value="ja">日本語</option>
+                        <option value="zh">中文</option>
+                        <option value="ar">العربية</option>
+                        <option value="fr">Français</option>
+                        <option value="ko">한국어</option>
+                        <option value="nl">Nederlands</option>
                     </select>
                 </div>
                 
-                <button onClick={onClose} className="w-full bg-dark-golden text-light-text font-bold py-3 px-8 rounded-full hover:bg-primary-text transition duration-300">
+                <button
+                    onClick={() => onEnter(selectedLang)}
+                    className="w-full bg-dark-golden text-light-text font-bold py-3 px-8 rounded-full hover:bg-primary-text transition duration-300 transform hover:scale-105"
+                >
                     {t.enterSite}
                 </button>
+                <p className="text-xs text-primary-text/50 mt-4">{t.lastUpdated}</p>
             </div>
         </div>
     );
 };
 
-
 const LocalizationProvider = ({ children }: { children: React.ReactNode }) => {
-    const [language, setLanguage] = useState<Language>('en');
-    const translations = siteContent[language] || siteContent.en;
+    const [language, setLanguageState] = useState<Language>(() => {
+        const savedLang = localStorage.getItem('goldentaan-lang') as Language;
+        const browserLang = navigator.language.split('-')[0] as Language;
+        return savedLang || (Object.keys(siteContent).includes(browserLang) ? browserLang : 'en');
+    });
 
-    const handleSetLanguage = (lang: Language) => {
+    const [isModalOpen, setIsModalOpen] = useState(() => !localStorage.getItem('goldentaan-lang-set'));
+
+    const setLanguage = useCallback((lang: Language) => {
+        localStorage.setItem('goldentaan-lang', lang);
+        localStorage.setItem('goldentaan-lang-set', 'true');
+        setLanguageState(lang);
+    }, []);
+
+    const handleEnterSite = (lang: Language) => {
         setLanguage(lang);
+        setIsModalOpen(false);
     };
 
+    const value = useMemo(() => ({
+        language,
+        setLanguage,
+        translations: siteContent[language] || siteContent.en
+    }), [language, setLanguage]);
+
+    if (isModalOpen) {
+        return <SoftLaunchModal onEnter={handleEnterSite} />;
+    }
+
     return (
-        <LocalizationContext.Provider value={{ language, setLanguage: handleSetLanguage, translations }}>
+        <LocalizationContext.Provider value={value}>
             {children}
         </LocalizationContext.Provider>
     );
 };
 
 const App = () => {
-    const [page, setPage] = useState<Page>(Page.Home);
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-    const [showModal, setShowModal] = useState(false);
-
-    useEffect(() => {
-        const hasSeenModal = sessionStorage.getItem('hasSeenSoftLaunchModal');
-        if (!hasSeenModal) {
-            setShowModal(true);
-        }
-
-        const handleHashChange = () => {
-            const hash = window.location.hash.replace('#', '');
-            const pageValue = Object.values(Page).find(p => p === hash);
-            if (pageValue) {
-                setPage(pageValue);
-                setSelectedPost(null); // Clear post selection on page change
-                trackPageView(`/${hash}`);
-                window.scrollTo(0, 0);
-            }
-        };
-
-        window.addEventListener('hashchange', handleHashChange);
-        handleHashChange(); // Initial check
-
-        return () => window.removeEventListener('hashchange', handleHashChange);
-    }, []);
-
-    const handleSetPage = (newPage: Page) => {
-        window.location.hash = newPage;
-    };
-
-    const handleAddToCart = (product: Product) => {
-        setCartItems(prevItems => {
-            const itemInCart = prevItems.find(item => item.id === product.id);
-            if (itemInCart) {
-                return prevItems.map(item =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-                );
-            }
-            return [...prevItems, { ...product, quantity: 1 }];
-        });
-    };
-    
-     const handleCloseModal = () => {
-        setShowModal(false);
-        sessionStorage.setItem('hasSeenSoftLaunchModal', 'true');
-    };
-
-    const renderPage = () => {
-        switch (page) {
-            case Page.Home:
-                return <HomePage onAddToCart={handleAddToCart} setPage={handleSetPage} setSelectedPost={setSelectedPost} />;
-            case Page.About:
-                return <AboutUsPage />;
-            case Page.Heritage:
-                return <HeritagePage />;
-            case Page.Sustainability:
-                return <SustainabilityPage />;
-             case Page.Wholesale:
-                return <WholesalePage />;
-            case Page.ShopNow:
-                return <ShopNowPage cartItems={cartItems} setCartItems={setCartItems} setPage={handleSetPage} />;
-            case Page.Blog:
-                return <BlogPage selectedPost={selectedPost} setSelectedPost={setSelectedPost} />;
-            default:
-                return <HomePage onAddToCart={handleAddToCart} setPage={handleSetPage} setSelectedPost={setSelectedPost}/>;
-        }
-    };
-
     return (
         <LocalizationProvider>
-            <AppContent
-                page={page}
-                setPage={handleSetPage}
-                cartItems={cartItems}
-                onAddToCart={handleAddToCart}
-                selectedPost={selectedPost}
-                setSelectedPost={setSelectedPost}
-                showModal={showModal}
-                onCloseModal={handleCloseModal}
-            />
+            <AppContent />
         </LocalizationProvider>
-    );
-};
-
-// Sub-component to access localization context
-const AppContent = ({ page, setPage, cartItems, onAddToCart, selectedPost, setSelectedPost, showModal, onCloseModal }: {
-    page: Page;
-    setPage: (page: Page) => void;
-    cartItems: CartItem[];
-    onAddToCart: (product: Product) => void;
-    selectedPost: BlogPost | null;
-    setSelectedPost: (post: BlogPost | null) => void;
-    showModal: boolean;
-    onCloseModal: () => void;
-}) => {
-    const { translations } = useLocalization();
-
-    useEffect(() => {
-        document.title = translations.metaTitle;
-        const metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc) {
-            metaDesc.setAttribute('content', translations.metaDescription);
-        }
-    }, [translations]);
-    
-    const renderPage = () => {
-        switch (page) {
-            case Page.Home:
-                return <HomePage onAddToCart={onAddToCart} setPage={setPage} setSelectedPost={setSelectedPost} />;
-            case Page.About:
-                return <AboutUsPage />;
-            case Page.Heritage:
-                return <HeritagePage />;
-            case Page.Sustainability:
-                return <SustainabilityPage />;
-             case Page.Wholesale:
-                return <WholesalePage />;
-            case Page.ShopNow:
-                return <ShopNowPage cartItems={cartItems} setCartItems={() => {}} setPage={setPage} />;
-            case Page.Blog:
-                return <BlogPage selectedPost={selectedPost} setSelectedPost={setSelectedPost} />;
-            default:
-                return <HomePage onAddToCart={onAddToCart} setPage={setPage} setSelectedPost={setSelectedPost}/>;
-        }
-    };
-
-    return (
-        <>
-            {showModal && <SoftLaunchModal onClose={onCloseModal} />}
-            <Header setPage={setPage} page={page} cartItems={cartItems} />
-            <main>
-                {renderPage()}
-            </main>
-            <Footer />
-        </>
     );
 };
 
