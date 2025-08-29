@@ -256,7 +256,7 @@ const DetailSection = ({ title, content, isList = false, isLightBg = false }: { 
     );
 };
 
-const ProductDetailModal = ({ product, onClose, onAddToCart, setPage, setSelectedPost }: { product: Product, onClose: () => void, onAddToCart: (product: Product) => void, setPage: (page: Page) => void, setSelectedPost: (post: BlogPost) => void }) => {
+const ProductDetailModal = ({ product, onClose, onAddToCart, setPage, setSelectedPost }: { product: Product, onClose: () => void, onAddToCart: (product: Product) => void, setPage: (page: Page) => void, setSelectedPost: (post: BlogPost | null) => void }) => {
     const { translations } = useLocalization();
     const t = translations.home.productSection;
     const allPosts = translations.blog.posts;
@@ -475,13 +475,12 @@ const ProductSchemas = ({ products }: { products: Product[] }) => {
     return null;
 };
 
-const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (product: Product) => void, setPage: (page: Page) => void, setSelectedPost: (post: BlogPost) => void }) => {
+const HomePage = ({ onAddToCart, setPage, setSelectedPost, onProductSelect }: { onAddToCart: (product: Product) => void, setPage: (page: Page) => void, setSelectedPost: (post: BlogPost | null) => void, onProductSelect: (product: Product) => void }) => {
     const { translations } = useLocalization();
     const t = translations.home;
     const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
     const [showAllFaqs, setShowAllFaqs] = useState(false);
     const [addedProductId, setAddedProductId] = useState<string | null>(null);
-    const [modalProduct, setModalProduct] = useState<Product | null>(null);
     
     const faqs = t.faq.items;
 
@@ -673,7 +672,7 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
                     <div className="grid md:grid-cols-3 gap-8">
                         {products.map(p => (
                              <div key={p.id} className="border border-medium-bg/50 rounded-lg overflow-hidden group transition-transform duration-300 hover:scale-105 flex flex-col">
-                                <div onClick={() => setModalProduct(p)} className="cursor-pointer">
+                                <div onClick={() => onProductSelect(p)} className="cursor-pointer">
                                     <img src={p.img} alt={p.title} className="w-full h-64 object-cover" />
                                 </div>
                                 <div className="p-6 flex-grow flex flex-col">
@@ -722,16 +721,6 @@ const HomePage = ({ onAddToCart, setPage, setSelectedPost }: { onAddToCart: (pro
                     )}
                 </div>
             </ParallaxSection>
-
-            {modalProduct && (
-                <ProductDetailModal
-                    product={modalProduct}
-                    onClose={() => setModalProduct(null)}
-                    onAddToCart={onAddToCart}
-                    setPage={setPage}
-                    setSelectedPost={setSelectedPost}
-                />
-            )}
         </div>
     );
 };
@@ -785,655 +774,388 @@ const AboutUsPage = () => {
                         <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.mission.title)}</h2>
                         <p className="text-lg text-primary-text/90">{renderStyledText(t.mission.text)}</p>
                     </div>
-                     <div className="grid grid-cols-2 gap-4">
-                        <img src={`${ASSET_BASE_URL}golden-taan-caramel-latte.webp`} alt={t.seo.altTags.modernKitchen} className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
-                        <img src={`${ASSET_BASE_URL}gluten-free-palmyra-blondies.webp`} alt={t.seo.altTags.healthyLifestyle} className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
+                    <div className="grid grid-cols-2 gap-4">
+                        <img src={`${ASSET_BASE_URL}modern-kitchen-with-palmyra-sugar.webp`} alt={t.seo.altTags.modernKitchen} className="rounded-lg shadow-xl aspect-[3/4] object-cover" />
+                        <img src={`${ASSET_BASE_URL}healthy-lifestyle-with-low-gi.webp`} alt={t.seo.altTags.healthyLifestyle} className="rounded-lg shadow-xl aspect-[3/4] object-cover mt-8" />
                     </div>
                 </div>
             </div>
         </ParallaxSection>
-        
-        {/* Timeline Section */}
-        <ParallaxSection index={3} className="py-20 px-4 md:px-8">
+
+         <ParallaxSection index={3} className="py-16 px-4 md:px-8">
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                <div className="text-center">
-                     <h2 className="text-4xl font-display text-dark-golden mb-16">{renderStyledText(t.timelineTitle)}</h2>
-                </div>
-                <div className="max-w-xl md:max-w-3xl mx-auto relative">
-                    <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-medium-bg transform -translate-x-1/2"></div>
+                 <h2 className="text-4xl font-display text-center text-dark-golden mb-8">{renderStyledText(t.timelineTitle)}</h2>
+                <div className="relative border-l-2 border-dark-golden/30 ml-6 md:ml-0">
                     {t.timeline.map((item, index) => (
-                        <div key={index} className="mb-12 flex items-center w-full">
-                            <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
-                            </div>
-                            <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-dark-golden ring-4 ring-light-bg"></div>
-                            <div className={`w-1/2 p-4 rounded-lg shadow-lg border border-medium-bg/50 ${index % 2 === 0 ? 'ml-auto text-left' : 'mr-auto text-right'}`}>
-                                 <p className="text-sm font-semibold text-dark-golden">{item.era}</p>
-                                <h3 className="text-xl font-display text-primary-text mt-1">{renderStyledText(item.title)}</h3>
-                                <p className="text-primary-text/80 mt-2">{renderStyledText(item.description)}</p>
-                            </div>
+                        <div key={index} className="mb-10 ml-10">
+                            <span className="absolute -left-4 flex items-center justify-center w-8 h-8 bg-medium-bg rounded-full ring-4 ring-light-bg">
+                                <SvgIcon path="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" className="w-5 h-5 text-dark-golden" />
+                            </span>
+                            <h3 className="flex items-center mb-1 text-lg font-semibold text-primary-text">{item.title} <span className="text-dark-golden text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3 bg-dark-golden/10">{item.era}</span></h3>
+                            <p className="text-base font-normal text-primary-text/80">{renderStyledText(item.description)}</p>
                         </div>
                     ))}
                 </div>
             </div>
         </ParallaxSection>
-
-        {/* People Behind the Purity Section */}
-        <ParallaxSection index={4} className="py-20 px-4 md:px-8 text-primary-text">
+        
+        <ParallaxSection index={4} className="py-16 px-4 md:px-8">
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                <h2 className="text-4xl font-display text-center text-dark-golden mb-12">{renderStyledText(t.people.title)}</h2>
-                 <div className="grid md:grid-cols-2 gap-12 items-center">
-                    <div className="text-center md:text-left">
-                        <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt={t.seo.altTags.founderPortrait} className="rounded-lg shadow-xl aspect-[3/4] object-cover mx-auto md:mx-0 w-64"/>
-                        <h3 className="text-2xl font-display text-primary-text mt-6">{renderStyledText(t.people.founderName)}</h3>
-                        <p className="mt-4 text-xl italic text-primary-text/80">"{renderStyledText(t.people.founderQuote)}"</p>
+                <h2 className="text-4xl font-display text-center text-dark-golden mb-8">{renderStyledText(t.people.title)}</h2>
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                    <div className="text-center">
+                         <img src={`${ASSET_BASE_URL}founder-krisada-laohasiri.webp`} alt={t.seo.altTags.founderPortrait} className="w-48 h-48 rounded-full mx-auto mb-4 shadow-lg object-cover" />
+                        <h3 className="text-2xl font-semibold">{t.people.founderName}</h3>
+                        <p className="text-primary-text/80 italic mt-2">"{renderStyledText(t.people.founderQuote)}"</p>
                     </div>
-                    <div>
-                        <img src={`${ASSET_BASE_URL}ratchaburi-farming-community.webp`} alt={t.seo.altTags.communityArtisans} className="rounded-lg shadow-xl aspect-video md:aspect-[4/3] object-cover w-full"/>
-                        <h3 className="text-2xl font-display text-primary-text mt-6">{renderStyledText(t.people.communityTitle)}</h3>
-                        <p className="mt-2 text-primary-text/90">{renderStyledText(t.people.communityText)}</p>
+                     <div>
+                        <h3 className="text-3xl font-display text-dark-golden mb-4">{renderStyledText(t.people.communityTitle)}</h3>
+                        <p className="text-lg text-primary-text/90">{renderStyledText(t.people.communityText)}</p>
                     </div>
                 </div>
             </div>
         </ParallaxSection>
 
-
-         <ParallaxSection index={5} className="py-16 px-4 md:px-8">
+        <ParallaxSection index={5} className="py-16 px-4 md:px-8">
             <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl text-center">
                 <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.choice.title)}</h2>
-                <p className="text-lg text-primary-text/90 mb-8">{renderStyledText(t.choice.text)}</p>
-                <img src={`${ASSET_BASE_URL}golden-taan-gift-set.webp`} alt={t.seo.altTags.consciousChoice} className="rounded-lg shadow-xl aspect-video object-cover"/>
+                <p className="text-lg text-primary-text/90 max-w-3xl mx-auto">{renderStyledText(t.choice.text)}</p>
+                <button onClick={() => window.location.hash = Page.ShopNow} className="mt-8 bg-golden-accent text-primary-text font-bold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300 transform hover:scale-105">{translations.nav.shopNow}</button>
             </div>
         </ParallaxSection>
     </div>
-    )
-};
-
-const HeritagePage = () => {
-    const { translations } = useLocalization();
-    const t = translations.heritage;
-    const [openSections, setOpenSections] = useState<number[]>([0]);
-
-    const toggleSection = (index: number) => {
-        setOpenSections(prev =>
-            prev.includes(index)
-                ? prev.filter(i => i !== index)
-                : [...prev, index]
-        );
-    };
-
-    const ContentRenderer = ({ content }: { content: string }) => {
-        // Split by the [image:...] tag, but keep the delimiter
-        const parts = content.split(/(\[image:.*?\|.*?\])/g).filter(part => part.trim());
-
-        return (
-            <div className="text-primary-text/90 text-lg">
-                {parts.map((part, index) => {
-                    const imageMatch = part.match(/\[image:\s*(.*?)\s*\|\s*ratio:.*?\]/);
-                    if (imageMatch) {
-                        const imageName = imageMatch[1].trim();
-                        const altTextKey = imageName.split('.')[0]; // e.g., 'borassus-flabellifer-illustration'
-                        const altText = t.seo.altTags[altTextKey] || imageName.replace(/-/g, ' ');
-                        return (
-                            <div key={index} className="my-8">
-                                <img
-                                    src={`${ASSET_BASE_URL}${imageName}`}
-                                    alt={altText}
-                                    className="rounded-lg shadow-xl aspect-[16/9] object-cover w-full"
-                                />
-                            </div>
-                        );
-                    } else {
-                        // This part is text. Process it for paragraphs and lists.
-                        const paragraphs = part.split('\n').filter(p => p.trim() !== '');
-                        const elements = [];
-                        let currentList: string[] = [];
-
-                        for (let i = 0; i < paragraphs.length; i++) {
-                            const p = paragraphs[i].trim();
-                            if (p.startsWith('•')) {
-                                currentList.push(p.substring(1).trim());
-                            } else {
-                                if (currentList.length > 0) {
-                                    elements.push(
-                                        <ul key={`ul-${i}`} className="list-disc list-outside space-y-2 pl-5">
-                                            {currentList.map((item, li) => <li key={li}>{renderStyledText(item)}</li>)}
-                                        </ul>
-                                    );
-                                    currentList = [];
-                                }
-                                elements.push(<p key={`p-${i}`}>{renderStyledText(p)}</p>);
-                            }
-                        }
-                        
-                        if (currentList.length > 0) {
-                            elements.push(
-                                <ul key="ul-end" className="list-disc list-outside space-y-2 pl-5">
-                                    {currentList.map((item, li) => <li key={li}>{renderStyledText(item)}</li>)}
-                                </ul>
-                            );
-                        }
-
-                        return <div className="space-y-6" key={index}>{elements}</div>;
-                    }
-                })}
-            </div>
-        );
-    };
-
-    return (
-        <div>
-            <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
-                <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
-            </header>
-
-            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <div className="space-y-4">
-                        {t.sections.map((section, index) => {
-                            const isOpen = openSections.includes(index);
-                            return (
-                                <div key={index} className="border-b border-medium-bg transition-all duration-500">
-                                    <button
-                                        onClick={() => toggleSection(index)}
-                                        className="w-full text-left py-6 flex flex-col"
-                                        aria-expanded={isOpen}
-                                        aria-controls={`heritage-content-${index}`}
-                                    >
-                                        <div className="flex justify-between items-center">
-                                            <h2 className="text-3xl md:text-4xl font-display text-dark-golden">{renderStyledText(section.title)}</h2>
-                                            <span className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}>
-                                                <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-6 h-6 text-primary-text"/>
-                                            </span>
-                                        </div>
-                                        <p className="mt-2 text-primary-text/70 text-lg">{renderStyledText(section.subtitle)}</p>
-                                    </button>
-                                    <div
-                                        id={`heritage-content-${index}`}
-                                        className={`overflow-hidden transition-all duration-700 ease-in-out ${isOpen ? 'max-h-[4000px] pb-8' : 'max-h-0'}`}
-                                    >
-                                        <ContentRenderer content={section.content} />
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            </ParallaxSection>
-        </div>
     );
 };
-
-
-
 
 const SustainabilityPage = () => {
     const { translations } = useLocalization();
     const t = translations.sustainability;
-    
+
+    const renderPoints = (points: {title: string, text: string}[]) => (
+        <div className="grid md:grid-cols-2 gap-8">
+            {points.map((point, index) => (
+                <div key={index} className="bg-white/50 p-6 rounded-lg shadow-md">
+                    <h4 className="font-display text-xl text-dark-golden mb-2">{renderStyledText(point.title)}</h4>
+                    <p className="text-primary-text/90">{renderStyledText(point.text)}</p>
+                </div>
+            ))}
+        </div>
+    );
+
     return (
         <div>
             <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
                 <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
             </header>
-
+            
             <ParallaxSection index={0} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <img src={`${ASSET_BASE_URL}ratchaburi-palm-groves-landscape.webp`} alt={t.seo.altTags.lushGrove} className="rounded-lg shadow-xl object-cover w-full h-full" />
-                        <div>
-                            <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.environmental.title)}</h2>
-                            <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
-                                {t.environmental.points.map((point, i) => <li key={i}><strong>{renderStyledText(point.title)}:</strong> {renderStyledText(point.text)}</li>)}
-                            </ul>
-                        </div>
-                    </div>
+                    <h2 className="text-3xl font-display text-center text-dark-golden mb-8">{renderStyledText(t.environmental.title)}</h2>
+                    {renderPoints(t.environmental.points)}
                 </div>
             </ParallaxSection>
 
-            <ParallaxSection index={1} className="py-16 px-4 md:px-8 text-primary-text">
+            <ParallaxSection index={1} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <div className="order-last md:order-first">
-                            <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.social.title)}</h2>
-                            <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
-                                {t.social.points.map((point, i) => <li key={i}><strong>{renderStyledText(point.title)}:</strong> {renderStyledText(point.text)}</li>)}
-                            </ul>
-                        </div>
-                        <img src={`${ASSET_BASE_URL}hands-holding-rich-soil.webp`} alt={t.seo.altTags.communityHands} className="rounded-lg shadow-xl object-cover w-full h-full" />
-                    </div>
+                    <h2 className="text-3xl font-display text-center text-dark-golden mb-8">{renderStyledText(t.social.title)}</h2>
+                    {renderPoints(t.social.points)}
                 </div>
             </ParallaxSection>
 
             <ParallaxSection index={2} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <img src={`${ASSET_BASE_URL}golden-taan-gift-set.webp`} alt={t.seo.altTags.qualitySeal} className="rounded-lg shadow-xl object-cover w-full h-full" />
-                        <div>
-                            <h2 className="text-4xl font-display text-dark-golden mb-4">{renderStyledText(t.governance.title)}</h2>
-                            <ul className="list-disc list-inside space-y-3 text-lg text-primary-text/90">
-                                {t.governance.points.map((point, i) => <li key={i}><strong>{renderStyledText(point.title)}:</strong> {renderStyledText(point.text)}</li>)}
-                            </ul>
-                        </div>
-                    </div>
+                    <h2 className="text-3xl font-display text-center text-dark-golden mb-8">{renderStyledText(t.governance.title)}</h2>
+                    {renderPoints(t.governance.points)}
                 </div>
             </ParallaxSection>
 
-            <ParallaxSection index={3} className="py-20 px-4 md:px-8 text-primary-text">
+            <ParallaxSection index={3} className="py-16 px-4 md:px-8">
                 <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <h2 className="text-4xl font-display text-center text-dark-golden mb-12">{renderStyledText(t.insights.title)}</h2>
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <div>
-                            <h3 className="text-2xl font-display text-center mb-4">{renderStyledText(t.insights.chartTitle)}</h3>
-                            <ResourceEfficiencyRadarChart />
-                        </div>
-                        <div className="text-center md:text-left">
-                            <img src={`${ASSET_BASE_URL}palmyra-leaf-texture-macro.webp`} alt={t.seo.altTags.leafTexture} className="rounded-lg shadow-xl aspect-video md:aspect-[4/3] object-cover w-full"/>
-                            <div className="mt-8 bg-golden-accent/10 border border-golden-accent/30 rounded-lg p-6 text-center">
-                                <h3 className="font-display text-xl text-dark-golden">{renderStyledText(t.insights.report.title)}</h3>
-                                <p className="mt-1 text-primary-text/90">{renderStyledText(t.insights.report.text)}</p>
-                                <button className="mt-4 bg-dark-golden text-light-text font-bold py-2 px-6 rounded-full hover:bg-primary-text transition duration-300">
-                                    {renderStyledText(t.insights.report.cta)}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <h2 className="text-3xl font-display text-center text-dark-golden mb-8">{renderStyledText(t.insights.title)}</h2>
+                    <h3 className="text-2xl font-display text-center mb-4">{renderStyledText(t.insights.chartTitle)}</h3>
+                    <ResourceEfficiencyRadarChart />
                 </div>
             </ParallaxSection>
         </div>
     );
 };
 
-const ProductsPage = () => {
-    const { translations } = useLocalization();
-    const t = translations.productsPage;
-    type Tab = 'usa' | 'eu' | 'japan' | 'uae';
-    const [activeTab, setActiveTab] = useState<Tab>('usa');
+const ScrollToTopButton = () => {
+    const [isVisible, setIsVisible] = useState(false);
 
-    const FlippingProductCard = ({ product }: { product: Product }) => {
-        const [isFlipped, setIsFlipped] = useState(false);
-        const cardRef = useRef<HTMLDivElement>(null);
-    
-        return (
-            <div 
-                className="w-full h-[450px] bg-transparent cursor-pointer group"
-                style={{ perspective: '1000px' }}
-                onClick={() => setIsFlipped(!isFlipped)}
-                onMouseEnter={() => setIsFlipped(true)}
-                onMouseLeave={() => setIsFlipped(false)}
-            >
-                <div 
-                    ref={cardRef}
-                    className={`relative w-full h-full transition-transform duration-700 ease-in-out`}
-                    style={{ transformStyle: 'preserve-3d', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
-                >
-                    {/* Front Face */}
-                    <div className="absolute w-full h-full bg-light-bg/80 rounded-lg shadow-lg overflow-hidden border border-dark-accent/10" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
-                        <img src={product.img} alt={product.title} className="w-full h-1/2 object-cover" />
-                        <div className="p-4 flex flex-col items-center text-center">
-                            <h3 className="text-2xl font-display text-dark-golden">{renderStyledText(product.title)}</h3>
-                            <p className="mt-2 text-primary-text/80 text-sm flex-grow">{renderStyledText(product.shortDescription)}</p>
-                        </div>
-                    </div>
-                    {/* Back Face */}
-                    <div className="absolute w-full h-full bg-dark-golden text-light-text p-6 rounded-lg shadow-lg flex flex-col" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-                        <h4 className="text-xl font-display text-golden-accent">{renderStyledText(product.title)}</h4>
-                        <p className="mt-2 text-sm text-light-text/90 flex-grow">{renderStyledText(product.description)}</p>
-                        <div>
-                            <h5 className="font-bold text-golden-accent/80 mt-4">Perfect For:</h5>
-                            <ul className="text-xs list-disc list-inside">
-                                {product.pairings.slice(0, 3).map(p => <li key={p}>{renderStyledText(p)}</li>)}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+    const toggleVisibility = useCallback(() => {
+        if (window.scrollY > 300) {
+            setIsVisible(true);
+        } else {
+            setIsVisible(false);
+        }
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     };
+
+    useEffect(() => {
+        window.addEventListener('scroll', toggleVisibility);
+        return () => {
+            window.removeEventListener('scroll', toggleVisibility);
+        };
+    }, [toggleVisibility]);
 
     return (
-        <div>
-            {/* Section 1: Retail */}
-            <ParallaxSection index={6} className="py-20 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto bg-white/60 p-8 md:p-12 rounded-lg shadow-2xl backdrop-blur-sm">
-                    <div className="text-center">
-                        <h2 className="text-4xl md:text-5xl font-display text-dark-golden mb-2">{renderStyledText(t.retail.headline)}</h2>
-                        <p className="text-lg text-primary-text/90 max-w-3xl mx-auto">{renderStyledText(t.retail.subtitle)}</p>
-                    </div>
-                    <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {t.retail.products.map(p => <FlippingProductCard key={p.id} product={p} />)}
-                    </div>
-                </div>
-            </ParallaxSection>
-            
-            {/* Section 2: Wholesale */}
-            <ParallaxSection index={7} className="py-20 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto bg-white/60 p-8 md:p-12 rounded-lg shadow-2xl backdrop-blur-sm">
-                    <div className="text-center">
-                        <h2 className="text-4xl md:text-5xl font-display text-dark-golden mb-2">{renderStyledText(t.wholesale.headline)}</h2>
-                        <p className="text-lg text-primary-text/90 max-w-3xl mx-auto">{renderStyledText(t.wholesale.subtitle)}</p>
-                    </div>
-
-                    {/* Pricing Table */}
-                    <div className="mt-12 overflow-x-auto">
-                        <table className="min-w-full text-left border-collapse bg-light-bg/50 rounded-lg shadow-md">
-                            <thead className="bg-dark-golden/10">
-                                <tr>
-                                    <th className="p-4 font-display text-lg text-primary-text">{t.wholesale.pricingTable.headers.sku}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text">{t.wholesale.pricingTable.headers.product}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text">{t.wholesale.pricingTable.headers.size}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text text-right">{t.wholesale.pricingTable.headers.retailPrice}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text text-right">{t.wholesale.pricingTable.headers.tier1}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text text-right">{t.wholesale.pricingTable.headers.tier2}</th>
-                                    <th className="p-4 font-display text-lg text-primary-text text-right">{t.wholesale.pricingTable.headers.tier3}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {t.wholesale.pricingTable.rows.map((row, index) => (
-                                     <tr key={index} className="border-t border-medium-bg">
-                                        <td className="p-4 font-semibold">{row.sku}</td>
-                                        <td className="p-4">{row.product}</td>
-                                        <td className="p-4">{row.size}</td>
-                                        <td className="p-4 text-right">{row.retailPrice}</td>
-                                        <td className="p-4 text-right">{row.tier1_price}</td>
-                                        <td className="p-4 text-right">{row.tier2_price}</td>
-                                        <td className="p-4 text-right">{row.tier3_price}</td>
-                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div className="text-right mt-4">
-                            <button className="bg-dark-golden text-light-text font-bold py-2 px-6 rounded-full hover:bg-primary-text transition duration-300">
-                                {t.wholesale.pricingTable.exportCta}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Compliance Info */}
-                    <div className="mt-16">
-                        <h3 className="text-3xl font-display text-center text-dark-golden mb-8">{renderStyledText(t.wholesale.compliance.headline)}</h3>
-                        <div className="max-w-3xl mx-auto">
-                            <div className="border-b border-medium-bg mb-4 flex flex-wrap justify-center gap-x-4 gap-y-2 md:gap-x-8">
-                                <button onClick={() => setActiveTab('usa')} className={`py-2 px-4 font-semibold text-lg ${activeTab === 'usa' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.wholesale.compliance.tabs.usa}</button>
-                                <button onClick={() => setActiveTab('eu')} className={`py-2 px-4 font-semibold text-lg ${activeTab === 'eu' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.wholesale.compliance.tabs.eu}</button>
-                                <button onClick={() => setActiveTab('japan')} className={`py-2 px-4 font-semibold text-lg ${activeTab === 'japan' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.wholesale.compliance.tabs.japan}</button>
-                                <button onClick={() => setActiveTab('uae')} className={`py-2 px-4 font-semibold text-lg ${activeTab === 'uae' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.wholesale.compliance.tabs.uae}</button>
-                            </div>
-                            <div className="p-6 bg-light-bg/50 rounded-lg min-h-[180px]">
-                                {activeTab === 'usa' && <p>{t.wholesale.compliance.content.usa}</p>}
-                                {activeTab === 'eu' && <p>{t.wholesale.compliance.content.eu}</p>}
-                                {activeTab === 'japan' && <p>{t.wholesale.compliance.content.japan}</p>}
-                                {activeTab === 'uae' && <p>{t.wholesale.compliance.content.uae}</p>}
-                            </div>
-                            <p className="text-xs text-primary-text/60 text-center mt-4 italic">{t.wholesale.compliance.disclaimer}</p>
-                        </div>
-                    </div>
-                </div>
-            </ParallaxSection>
-        </div>
+        <button
+            onClick={scrollToTop}
+            className={`fixed bottom-8 right-8 bg-dark-golden text-light-text p-3 rounded-full shadow-lg transition-opacity duration-300 z-[99] ${isVisible ? 'opacity-100 hover:bg-primary-text' : 'opacity-0 pointer-events-none'}`}
+            aria-label="Go to top"
+        >
+            <SvgIcon path="M12 8.25L5.625 14.625 6.687 15.687 12 10.375 17.313 15.687 18.375 14.625z" className="w-6 h-6" />
+        </button>
     );
 };
 
-const ShopNowPage = ({ cartItems, setCartItems, setPage }: { cartItems: CartItem[], setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>, setPage: (page: Page) => void }) => {
+
+const HeritagePage = () => {
     const { translations } = useLocalization();
-    const t = translations.shop;
-    const [activePaymentTab, setActivePaymentTab] = useState<'qr' | 'crypto' | 'card'>('card');
+    const t = translations.heritage;
+    const [openAccordion, setOpenAccordion] = useState<number | null>(0);
 
-    const updateQuantity = (productId: string, newQuantity: number) => {
-        if (newQuantity <= 0) {
-            setCartItems(prev => prev.filter(item => item.id !== productId));
-        } else {
-            setCartItems(prev => prev.map(item => item.id === productId ? { ...item, quantity: newQuantity } : item));
-        }
-    };
-    
-    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const shipping = subtotal > 0 ? 25.00 : 0; // Flat international shipping rate
-    const total = subtotal + shipping;
+    const renderContent = (content: string) => {
+        // Split by the image tag, keeping the delimiter
+        const parts = content.split(/(\[image:.*?\])/g).filter(part => part);
 
-    if (cartItems.length === 0) {
-        return (
-             <div>
-                <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
-                    <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
-                    <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
-                </header>
-                <ParallaxSection index={0} className="py-32 px-4 md:px-8 text-center">
-                    <div className="max-w-xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                         <h2 className="text-4xl font-display text-dark-golden">{renderStyledText(t.emptyCart.title)}</h2>
-                         <p className="mt-4 text-lg">{renderStyledText(t.emptyCart.text)}</p>
-                         <button onClick={() => setPage(Page.Home)} className="mt-8 bg-dark-golden text-light-text font-bold py-3 px-8 rounded-full hover:bg-primary-text transition duration-300">
-                             {t.emptyCart.cta}
-                         </button>
+        return parts.map((part, index) => {
+            const match = part.match(/\[image:(.*?)\s*\|\s*ratio:\s*(.*?)\]/);
+            if (match) {
+                const [, src, ratio] = match;
+                const imageName = src.trim();
+                const altKey = imageName.substring(0, imageName.lastIndexOf('.'));
+                const [width, height] = ratio.split(':');
+                
+                return (
+                    <div key={index} className="my-6" style={{ aspectRatio: `${width} / ${height}` }}>
+                        <img 
+                            src={`${ASSET_BASE_URL}${imageName}`} 
+                            alt={t.seo.altTags[altKey] || altKey}
+                            className="rounded-lg shadow-lg w-full h-full object-cover"
+                        />
                     </div>
-                </ParallaxSection>
-            </div>
-        );
-    }
-    
+                );
+            }
+            // Render text parts, splitting by newlines to create paragraphs
+            return part.split('\n').map((text, i) => (
+                text.trim() && <p key={`${index}-${i}`} className="mb-4 whitespace-pre-wrap">{renderStyledText(text)}</p>
+            ));
+        });
+    };
+
     return (
         <div>
             <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
                 <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
             </header>
-            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                 <div className="max-w-6xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl grid lg:grid-cols-3 gap-12">
-                     <div className="lg:col-span-2 space-y-4">
-                        <h2 className="text-3xl font-display text-dark-golden mb-4">Your Cart</h2>
-                        {cartItems.map(item => (
-                            <div key={item.id} className="flex items-center gap-4 border-b border-medium-bg pb-4">
-                                <img src={item.img} alt={item.title} className="w-24 h-24 object-cover rounded-md"/>
+
+            <ParallaxSection index={6} className="py-16 px-4 md:px-8">
+                <div className="max-w-4xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    {t.sections.map((section, index) => (
+                        <div key={index} className="border-b border-medium-bg last:border-b-0 py-6">
+                            <button
+                                onClick={() => setOpenAccordion(openAccordion === index ? null : index)}
+                                className="w-full text-left flex justify-between items-center group"
+                                aria-expanded={openAccordion === index}
+                                aria-controls={`accordion-content-${index}`}
+                            >
                                 <div className="flex-grow">
-                                    <h3 className="font-bold text-lg">{renderStyledText(item.title)}</h3>
-                                    <p className="text-sm text-primary-text/70">{item.size}</p>
-                                    <p className="font-display text-xl">${item.price.toFixed(2)}</p>
+                                    <h2 className="text-3xl font-display text-dark-golden group-hover:text-primary-text transition-colors">{renderStyledText(section.title)}</h2>
+                                    <p className="text-md text-primary-text/70 mt-1">{renderStyledText(section.subtitle)}</p>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-8 h-8 border rounded-md hover:bg-medium-bg">-</button>
-                                    <span className="w-8 text-center">{item.quantity}</span>
-                                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-8 h-8 border rounded-md hover:bg-medium-bg">+</button>
+                                <span className={`transform transition-transform duration-300 ${openAccordion === index ? 'rotate-180' : 'rotate-0'}`}>
+                                    <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-5 h-5"/>
+                                </span>
+                            </button>
+                            <div
+                                id={`accordion-content-${index}`}
+                                className={`overflow-hidden transition-all duration-700 ease-in-out ${openAccordion === index ? 'max-h-[3000px] mt-6' : 'max-h-0'}`}
+                            >
+                                <div className="prose max-w-none text-primary-text/90">
+                                    {renderContent(section.content)}
                                 </div>
-                                <p className="font-bold text-lg w-24 text-right">${(item.price * item.quantity).toFixed(2)}</p>
-                            </div>
-                        ))}
-                     </div>
-                     <div className="lg:col-span-1 space-y-8">
-                        <div className="bg-light-bg p-6 rounded-lg border border-medium-bg">
-                            <h2 className="text-2xl font-display text-dark-golden mb-4">{t.summary.title}</h2>
-                            <div className="space-y-2 text-lg">
-                                <div className="flex justify-between"><span>{t.summary.subtotal}</span><span>${subtotal.toFixed(2)}</span></div>
-                                <div className="flex justify-between"><span>{t.summary.shipping}</span><span>${shipping.toFixed(2)}</span></div>
-                                <div className="flex justify-between font-bold text-xl border-t pt-2 mt-2"><span>{t.summary.total}</span><span>${total.toFixed(2)}</span></div>
                             </div>
                         </div>
-                        <div className="bg-light-bg p-6 rounded-lg border border-medium-bg">
-                             <h2 className="text-2xl font-display text-dark-golden mb-4">{t.payment.title}</h2>
-                             <div className="border-b border-medium-bg mb-4">
-                                <nav className="flex space-x-4">
-                                    <button onClick={() => setActivePaymentTab('card')} className={`py-2 px-4 ${activePaymentTab === 'card' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.payment.tabs.card}</button>
-                                    <button onClick={() => setActivePaymentTab('qr')} className={`py-2 px-4 ${activePaymentTab === 'qr' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.payment.tabs.qr}</button>
-                                    <button onClick={() => setActivePaymentTab('crypto')} className={`py-2 px-4 ${activePaymentTab === 'crypto' ? 'border-b-2 border-dark-golden text-primary-text' : 'text-primary-text/60'}`}>{t.payment.tabs.crypto}</button>
-                                </nav>
-                            </div>
-                            {activePaymentTab === 'card' && (
-                                <form className="space-y-4">
-                                    <div><input placeholder={t.payment.card.number} className="w-full p-2 border rounded bg-light-bg"/></div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <input placeholder={t.payment.card.expiry} className="w-full p-2 border rounded bg-light-bg"/>
-                                        <input placeholder={t.payment.card.cvc} className="w-full p-2 border rounded bg-light-bg"/>
-                                    </div>
-                                    <div><input placeholder={t.payment.card.name} className="w-full p-2 border rounded bg-light-bg"/></div>
-                                    <button className="w-full bg-dark-golden text-light-text font-bold py-3 rounded-full hover:bg-primary-text">{t.payment.card.pay} ${total.toFixed(2)}</button>
-                                </form>
-                            )}
-                            {activePaymentTab === 'qr' && (
-                                <div className="text-center">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=example" alt="Thai QR Payment" className="mx-auto"/>
-                                    <p className="mt-2 text-sm">{t.payment.qr.text}</p>
-                                </div>
-                            )}
-                            {activePaymentTab === 'crypto' && (
-                                <div className="text-sm">
-                                    <p>{t.payment.crypto.text}</p>
-                                    <p className="font-mono bg-medium-bg p-2 rounded text-xs my-2 break-all">0x1A2b3c4D5e6F7g8H9i0J1k2L3m4N5o6P7q8R9s0T</p>
-                                    <p>{t.payment.crypto.accept} BTC, ETH</p>
-                                </div>
-                            )}
-                        </div>
-                         <div className="bg-light-bg p-6 rounded-lg border border-medium-bg text-sm space-y-4">
-                            <h2 className="text-xl font-display text-dark-golden -mb-2">{t.shippingInfo.title}</h2>
-                            <div>
-                                <h3 className="font-bold">{t.shippingInfo.policy.title}</h3>
-                                <p className="text-primary-text/80">{t.shippingInfo.policy.text}</p>
-                            </div>
-                             <div>
-                                <h3 className="font-bold">{t.shippingInfo.delivery.title}</h3>
-                                <p className="text-primary-text/80 whitespace-pre-wrap">{t.shippingInfo.delivery.text}</p>
-                            </div>
-                             <div>
-                                <h3 className="font-bold">{t.shippingInfo.customs.title}</h3>
-                                <p className="text-primary-text/80">{t.shippingInfo.customs.text}</p>
-                            </div>
-                         </div>
-                     </div>
-                 </div>
+                    ))}
+                </div>
             </ParallaxSection>
+            <ScrollToTopButton />
         </div>
     );
 };
 
-const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | null, setSelectedPost: (post: BlogPost | null) => void }) => {
+
+// --- Blog Components ---
+const BlogPostPage = ({ post, onBack }: { post: BlogPost; onBack: () => void; }) => {
     const { translations } = useLocalization();
     const t = translations.blog;
-    const [activeCategory, setActiveCategory] = useState<string>('all');
 
-    const BlogContentRenderer = ({ content }: { content: BlogContent[] }) => {
-        return (
-            <div className="space-y-6 text-lg text-primary-text/90">
-                {content.map((item, index) => {
+    return (
+        <div className="max-w-3xl mx-auto p-4 md:p-8 animate-fade-in">
+            <button onClick={onBack} className="mb-8 text-dark-golden hover:underline">&larr; {t.back}</button>
+            <h1 className="text-4xl md:text-5xl font-display text-dark-golden mb-4">{renderStyledText(post.title)}</h1>
+            <img src={`${ASSET_BASE_URL}${post.coverImage}`} alt={post.title} className="w-full h-auto object-cover rounded-lg mb-6"/>
+            <p className="text-lg text-primary-text/80 italic mb-8">{renderStyledText(post.introduction)}</p>
+            <div className="prose max-w-none text-primary-text/90">
+                {post.content.map((item, index) => {
                     switch (item.type) {
                         case 'heading':
-                            return <h3 key={index} className="text-3xl font-display text-dark-golden mt-8">{renderStyledText(item.text)}</h3>;
-                        case 'paragraph': {
-                             const lines = item.text?.split('\n') || [];
-                             const isList = lines.every(line => line.trim().startsWith('•'));
-                             if (isList) {
-                                 return <ul key={index} className="list-disc list-outside space-y-2 pl-5">{lines.map((li, i) => <li key={i}>{renderStyledText(li.substring(1).trim())}</li>)}</ul>;
-                             }
-                             return lines.map((p, i) => <p key={`${index}-${i}`}>{renderStyledText(p)}</p>);
-                        }
+                            return <h2 key={index} className="text-3xl font-display text-primary-text mt-8 mb-4">{renderStyledText(item.text)}</h2>;
+                        case 'paragraph':
+                            return <p key={index} className="mb-4 whitespace-pre-wrap">{renderStyledText(item.text)}</p>;
                         case 'image':
-                            const imageUrl = item.src?.startsWith('http') ? item.src : `${ASSET_BASE_URL}${item.src}`;
-                            return <img key={index} src={imageUrl} alt={item.alt} className="rounded-lg shadow-xl my-8 aspect-video object-cover w-full"/>;
+                            return <img key={index} src={`${ASSET_BASE_URL}${item.src}`} alt={item.alt || ''} className="rounded-lg my-6" />;
                         default:
                             return null;
                     }
                 })}
             </div>
-        );
-    };
+        </div>
+    );
+};
 
-    if (selectedPost) {
-        const coverImageUrl = selectedPost.coverImage.startsWith('http') ? selectedPost.coverImage : `${ASSET_BASE_URL}${selectedPost.coverImage}`;
-        const blogPostSchema = {
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            "mainEntityOfPage": {
-                "@type": "WebPage",
-                "@id": `https://www.goldentaan.com/#${Page.Blog}/${selectedPost.id}`
-            },
-            "headline": selectedPost.title,
-            "description": selectedPost.introduction,
-            "image": coverImageUrl,
-            "author": {
-                "@type": "Organization",
-                "name": "Golden TAAN"
-            },
-            "publisher": {
-                "@type": "Organization",
-                "name": "Golden TAAN",
-                "logo": {
-                    "@type": "ImageObject",
-                    "url": "https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp"
-                }
-            },
-            "datePublished": "2024-08-28", // Placeholder date
-            "dateModified": "2024-08-28" // Placeholder date
-        };
-        return (
-            <div>
-                <SchemaInjector schema={blogPostSchema} />
-                <header className="relative h-96">
-                    <img src={coverImageUrl} alt={selectedPost.title} className="w-full h-full object-cover"/>
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <h1 className="text-4xl md:text-6xl font-display text-light-text text-center max-w-4xl px-4">{renderStyledText(selectedPost.title)}</h1>
-                    </div>
-                </header>
-                <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                     <article className="max-w-3xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                        <button onClick={() => setSelectedPost(null)} className="mb-8 text-dark-golden hover:underline">&larr; {t.back}</button>
-                        <p className="text-xl italic text-primary-text/80 mb-8">{renderStyledText(selectedPost.introduction)}</p>
-                        <BlogContentRenderer content={selectedPost.content} />
-                     </article>
-                </ParallaxSection>
-            </div>
-        );
-    }
+const BlogPage = ({ onPostSelect }: { onPostSelect: (post: BlogPost) => void }) => {
+    const { translations } = useLocalization();
+    const t = translations.blog;
+    const [filter, setFilter] = useState<string>('all');
 
-    const allPosts = t.posts;
-    const categoryMap = {
+    const filteredPosts = filter === 'all'
+        ? t.posts
+        : t.posts.filter(p => p.category === filter);
+
+    const categories = {
         'all': t.allCategories,
-        ...t.categories
+        'recipes': t.categories.recipes,
+        'health': t.categories.health,
+        'sustainability': t.categories.sustainability,
     };
-    const filteredPosts = activeCategory === 'all'
-        ? allPosts
-        : allPosts.filter(post => post.category === activeCategory);
-    
+
     return (
         <div>
             <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
                 <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
             </header>
-            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
-                 <div className="max-w-5xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-display text-primary-text mb-4">{t.filterTitle}</h2>
-                        <div className="flex flex-wrap justify-center gap-2">
-                            {Object.entries(categoryMap).map(([key, name]) => (
-                                <button
-                                    key={key}
-                                    onClick={() => setActiveCategory(key)}
-                                    className={`py-2 px-5 rounded-full font-semibold transition ${
-                                        activeCategory === key
-                                            ? 'bg-dark-golden text-light-text'
-                                            : 'bg-medium-bg/50 text-primary-text hover:bg-dark-accent/50'
-                                    }`}
-                                >
-                                    {name}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+            <div className="max-w-7xl mx-auto p-4 md:p-8">
+                <div className="mb-12 flex justify-center items-center flex-wrap gap-4">
+                    <h3 className="font-bold text-lg">{t.filterTitle}:</h3>
+                    {Object.entries(categories).map(([key, value]) => (
+                        <button
+                            key={key}
+                            onClick={() => setFilter(key)}
+                            className={`px-4 py-2 rounded-full transition-colors text-sm font-semibold ${filter === key ? 'bg-dark-golden text-light-text' : 'bg-medium-bg hover:bg-dark-accent/80'}`}
+                        >
+                            {value}
+                        </button>
+                    ))}
+                </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {filteredPosts.map(post => {
-                             const coverImageUrl = post.coverImage.startsWith('http') ? post.coverImage : `${ASSET_BASE_URL}${post.coverImage}`;
-                             return (
-                                <div key={post.id} onClick={() => setSelectedPost(post)} className="border border-medium-bg/50 rounded-lg overflow-hidden group transition-transform duration-300 hover:scale-105 cursor-pointer flex flex-col">
-                                    <img src={coverImageUrl} alt={post.title} className="w-full h-48 object-cover"/>
-                                    <div className="p-6 flex-grow flex flex-col">
-                                        <h2 className="text-2xl font-display text-dark-golden group-hover:underline">{renderStyledText(post.title)}</h2>
-                                        <p className="mt-2 text-primary-text/80 flex-grow">{renderStyledText(post.introduction)}</p>
-                                        <span className="mt-4 font-semibold text-dark-golden">{t.readMore} &rarr;</span>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {filteredPosts.map(post => (
+                        <div key={post.id} className="border border-medium-bg/50 rounded-lg overflow-hidden group transition-transform duration-300 hover:scale-105 flex flex-col cursor-pointer" onClick={() => onPostSelect(post)}>
+                            <img src={post.coverImage.startsWith('http') ? post.coverImage : `${ASSET_BASE_URL}${post.coverImage}`} alt={post.title} className="w-full h-48 object-cover" />
+                            <div className="p-6 flex-grow flex flex-col">
+                                <h3 className="text-2xl font-display text-dark-golden">{renderStyledText(post.title)}</h3>
+                                <p className="mt-2 text-primary-text/80 flex-grow text-sm">{renderStyledText(post.introduction)}</p>
+                                <span className="mt-4 text-dark-golden font-semibold group-hover:underline">{t.readMore} &rarr;</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const ProductsPage = ({ onAddToCart, onProductSelect }: { onAddToCart: (product: Product) => void, onProductSelect: (product: Product) => void }) => {
+    const { translations } = useLocalization();
+    const t = translations.productsPage;
+
+    const ProductCard = ({ product }: { product: Product }) => {
+        const [isAdded, setIsAdded] = useState(false);
+        const handleAddToCart = () => {
+            onAddToCart(product);
+            setIsAdded(true);
+            setTimeout(() => setIsAdded(false), 2000);
+        };
+        return (
+            <div className="border border-medium-bg/50 rounded-lg overflow-hidden group transition-transform duration-300 hover:scale-105 flex flex-col">
+                <div onClick={() => onProductSelect(product)} className="cursor-pointer">
+                    <img src={product.img} alt={product.title} className="w-full h-64 object-cover" />
+                </div>
+                <div className="p-6 flex-grow flex flex-col">
+                    <h3 className="text-2xl font-display text-dark-golden">{renderStyledText(product.title)}</h3>
+                    <p className="mt-2 text-primary-text/80 flex-grow">{renderStyledText(product.shortDescription)}</p>
+                    <p className="text-2xl font-display text-primary-text mt-4">${product.price.toFixed(2)}</p>
+                </div>
+                <div className="p-6 pt-0 mt-auto">
+                    <button
+                        onClick={handleAddToCart}
+                        disabled={isAdded}
+                        className="w-full bg-dark-golden text-light-text font-bold py-2 px-4 rounded-full hover:bg-primary-text transition duration-300 disabled:bg-green-600"
+                    >
+                        {isAdded ? translations.home.productSection.added : translations.home.productSection.addToCart}
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <div>
+            <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
+                <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.retail.headline)}</h1>
+                <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.retail.subtitle)}</p>
+            </header>
+            
+            <ParallaxSection index={0} className="py-16 px-4 md:px-8">
+                <div className="max-w-5xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {t.retail.products.map(p => <ProductCard key={p.id} product={p} />)}
                     </div>
-                 </div>
+                </div>
+            </ParallaxSection>
+
+             <ParallaxSection index={1} className="py-16 px-4 md:px-8">
+                <div className="max-w-5xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
+                    <h2 className="text-4xl font-display text-center text-dark-golden mb-4">{renderStyledText(t.wholesale.headline)}</h2>
+                    <p className="text-center text-lg max-w-3xl mx-auto mb-12">{renderStyledText(t.wholesale.subtitle)}</p>
+                    
+                     <div className="overflow-x-auto mt-8 rounded-lg shadow-lg border border-dark-accent/20">
+                        <table className="min-w-full text-left border-collapse">
+                           <thead className="bg-dark-golden/10">
+                                <tr>
+                                    <th className="p-3 font-display text-primary-text">{t.wholesale.pricingTable.headers.sku}</th>
+                                    <th className="p-3 font-display text-primary-text">{t.wholesale.pricingTable.headers.product}</th>
+                                    <th className="p-3 font-display text-primary-text">{t.wholesale.pricingTable.headers.tier1}</th>
+                                    <th className="p-3 font-display text-primary-text">{t.wholesale.pricingTable.headers.tier2}</th>
+                                    <th className="p-3 font-display text-primary-text">{t.wholesale.pricingTable.headers.tier3}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {t.wholesale.pricingTable.rows.map((row, index) => (
+                                    <tr key={index} className={`transition-colors hover:bg-dark-golden/10 ${index % 2 === 0 ? 'bg-medium-bg/20' : 'bg-transparent'}`}>
+                                        <td className="p-3">{row.sku}</td>
+                                        <td className="p-3 font-semibold">{renderStyledText(row.product)}</td>
+                                        <td className="p-3">{row.tier1_price}</td>
+                                        <td className="p-3">{row.tier2_price}</td>
+                                        <td className="p-3">{row.tier3_price}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </ParallaxSection>
         </div>
     );
@@ -1442,31 +1164,13 @@ const BlogPage = ({ selectedPost, setSelectedPost }: { selectedPost: BlogPost | 
 const ContactPage = () => {
     const { translations } = useLocalization();
     const t = translations.contact;
-    const [formData, setFormData] = useState({
-        fullName: '',
-        companyName: '',
-        country: '',
-        email: '',
-        inquiryType: '',
-        message: '',
-    });
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Contact Inquiry:', formData);
-        setIsSubmitted(true);
+        setSubmitSuccess(true);
+        setTimeout(() => setSubmitSuccess(false), 5000);
     };
-    
-    const countries = [
-        "United States", "Canada", "United Kingdom", "Australia", "Germany", 
-        "France", "Japan", "China", "Thailand", "Singapore", "United Arab Emirates", "Other"
-    ];
 
     return (
         <div>
@@ -1474,348 +1178,175 @@ const ContactPage = () => {
                 <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
                 <p className="mt-4 text-xl max-w-3xl mx-auto">{renderStyledText(t.header.subtitle)}</p>
             </header>
-
-            <ParallaxSection index={4} className="py-16 px-4 md:px-8">
-                <div className="max-w-6xl mx-auto bg-white/50 p-8 md:p-12 rounded-lg shadow-2xl">
-                    <div className="grid md:grid-cols-2 gap-12">
-                        {/* Left Column */}
-                        <div className="space-y-8">
-                            <div className="flex items-start gap-4">
-                                <SvgIcon path="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M8.25 6h9m-9 3h9m-9 3h9m-9 3h9M7.5 21a3 3 0 003.75 0h1.5a3 3 0 003.75 0" className="w-8 h-8 text-dark-golden mt-1 flex-shrink-0" />
-                                <div>
-                                    <h3 className="text-2xl font-display text-primary-text">{t.leftColumn.hq}</h3>
-                                    <p className="text-primary-text/80 whitespace-pre-wrap">{translations.footer.office.address}</p>
-                                </div>
-                            </div>
-                             <div className="flex items-start gap-4">
-                                <SvgIcon path="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.211-.992-.55-1.35l-2.45-2.451a2.25 2.25 0 00-3.182 0l-1.264 1.264a2.25 2.25 0 01-3.182 0l-2.45-2.451a2.25 2.25 0 000-3.182l1.264-1.264a2.25 2.25 0 000-3.182Z" className="w-7 h-7 text-dark-golden mt-1 flex-shrink-0" />
-                                <div>
-                                    <h3 className="text-2xl font-display text-primary-text">{t.leftColumn.phone}</h3>
-                                    <p className="text-primary-text/80">{translations.footer.contact.phone.number}</p>
-                                    <p className="text-sm text-primary-text/60">{t.leftColumn.hours}</p>
-                                </div>
-                            </div>
-                             <div className="flex items-start gap-4">
-                                <SvgIcon path="M21.75 6.75v10.5a2.25 2.25 0 01-2.25-2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" className="w-7 h-7 text-dark-golden mt-1 flex-shrink-0" />
-                                <div>
-                                    <h3 className="text-2xl font-display text-primary-text">{t.leftColumn.email}</h3>
-                                    <p className="text-primary-text/80 font-semibold">{t.leftColumn.sales}</p>
-                                    <a href={`mailto:${translations.footer.contact.email.address}`} className="text-primary-text/80 hover:underline">{translations.footer.contact.email.address}</a>
-                                    <p className="text-primary-text/80 font-semibold mt-2">{t.leftColumn.cc}</p>
-                                    <a href={`mailto:${translations.footer.contact.cc.address}`} className="text-primary-text/80 hover:underline">{translations.footer.contact.cc.address}</a>
-                                </div>
-                            </div>
-                            <div className="w-full aspect-[4/3]">
-                                <iframe 
-                                    src="https://www.google.com/maps/embed?pb=!1m12!1m8!1m3!1d3875.9293303747204!2d100.5201638!3d13.7227283!3m2!1i1024!2i768!4f13.1!2m1!1sjewelry%20trade%20center!5e0!3m2!1sen!2sth!4v1756338719849!5m2!1sen!2sth"
-                                    className="w-full h-full rounded-lg shadow-md"
-                                    style={{border:0}} 
-                                    allowFullScreen={true}
-                                    loading="lazy" 
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                    title={translations.contact.seo.altTags.map}>
-                                </iframe>
-                            </div>
-                        </div>
-
-                        {/* Right Column */}
-                        <div>
-                             <h3 className="text-3xl font-display text-dark-golden mb-6">{t.form.title}</h3>
-                             {isSubmitted ? (
-                                <div className="text-center p-8 bg-green-100 border border-green-400 text-green-700 rounded-lg h-full flex items-center justify-center">
-                                    <p className="text-xl">{renderStyledText(t.form.successMessage)}</p>
-                                </div>
-                            ) : (
-                                <form onSubmit={handleSubmit} className="space-y-4">
-                                    <div>
-                                        <label htmlFor="fullName" className="block text-primary-text/80 mb-1">{t.form.fullName}</label>
-                                        <input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden"/>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="companyName" className="block text-primary-text/80 mb-1">{t.form.companyName}</label>
-                                        <input type="text" id="companyName" name="companyName" value={formData.companyName} onChange={handleChange} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden"/>
-                                    </div>
-                                     <div>
-                                        <label htmlFor="country" className="block text-primary-text/80 mb-1">{t.form.country}</label>
-                                        <select id="country" name="country" value={formData.country} onChange={handleChange} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden">
-                                            <option value="" disabled>Select your country</option>
-                                            {countries.map(c => <option key={c} value={c}>{c}</option>)}
-                                        </select>
-                                    </div>
-                                     <div>
-                                        <label htmlFor="email" className="block text-primary-text/80 mb-1">{t.form.email}</label>
-                                        <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden"/>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="inquiryType" className="block text-primary-text/80 mb-1">{t.form.inquiryType.label}</label>
-                                        <select id="inquiryType" name="inquiryType" value={formData.inquiryType} onChange={handleChange} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden">
-                                            <option value="" disabled>Select inquiry type</option>
-                                            <option value="wholesale">{t.form.inquiryType.options.wholesale}</option>
-                                            <option value="oem">{t.form.inquiryType.options.oem}</option>
-                                            <option value="sample">{t.form.inquiryType.options.sample}</option>
-                                            <option value="productInfo">{t.form.inquiryType.options.productInfo}</option>
-                                            <option value="general">{t.form.inquiryType.options.general}</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="message" className="block text-primary-text/80 mb-1">{t.form.message}</label>
-                                        <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows={5} required className="w-full p-3 border border-medium-bg rounded-md bg-light-bg focus:ring-dark-golden focus:border-dark-golden"></textarea>
-                                    </div>
-                                    <div>
-                                        <button type="submit" className="w-full bg-dark-golden text-light-text font-bold py-3 px-12 rounded-full hover:bg-primary-text transition duration-300">
-                                            {t.form.submit}
-                                        </button>
-                                    </div>
-                                </form>
-                            )}
-                        </div>
+            <div className="max-w-5xl mx-auto p-4 md:p-8 grid md:grid-cols-2 gap-12 my-16">
+                <div className="space-y-6">
+                    <div>
+                        <h3 className="text-2xl font-display text-dark-golden">{t.leftColumn.hq}</h3>
+                        <p>{translations.footer.office.address}</p>
+                    </div>
+                     <div>
+                        <h3 className="text-2xl font-display text-dark-golden">{t.leftColumn.phone}</h3>
+                        <p>{translations.footer.contact.phone.number}</p>
+                        <p className="text-sm text-primary-text/70">{t.leftColumn.hours}</p>
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-display text-dark-golden">{t.leftColumn.email}</h3>
+                        <p><strong>{t.leftColumn.sales}</strong> <a href={`mailto:${translations.footer.contact.email.address}`} className="hover:underline">{translations.footer.contact.email.address}</a></p>
+                        <p><strong>{t.leftColumn.cc}</strong> <a href={`mailto:${translations.footer.contact.cc.address}`} className="hover:underline">{translations.footer.contact.cc.address}</a></p>
                     </div>
                 </div>
-            </ParallaxSection>
+                <div>
+                    <h2 className="text-3xl font-display text-center text-dark-golden mb-6">{t.form.title}</h2>
+                    {submitSuccess ? (
+                        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg text-center">
+                            {t.form.successMessage}
+                        </div>
+                    ) : (
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <input type="text" placeholder={t.form.fullName} className="w-full p-3 border border-medium-bg rounded-lg" required/>
+                        <input type="email" placeholder={t.form.email} className="w-full p-3 border border-medium-bg rounded-lg" required/>
+                        <select className="w-full p-3 border border-medium-bg rounded-lg" required>
+                            <option value="">{t.form.inquiryType.label}</option>
+                            {Object.values(t.form.inquiryType.options).map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                        <textarea placeholder={t.form.message} rows={5} className="w-full p-3 border border-medium-bg rounded-lg" required></textarea>
+                        <button type="submit" className="w-full bg-dark-golden text-light-text font-bold py-3 px-8 rounded-full hover:bg-primary-text transition duration-300">
+                            {t.form.submit}
+                        </button>
+                    </form>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };
 
-const Header = ({ setPage, page, cartItems }: { setPage: (page: Page) => void, page: Page, cartItems: CartItem[] }) => {
-    const { translations, setLanguage, language } = useLocalization();
-    const t = translations.nav;
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isStoryOpen, setIsStoryOpen] = useState(false);
-    const storyTimeoutRef = useRef<number | null>(null);
+const ShopPage = ({ cart, onUpdateQuantity, onRemoveFromCart, setPage }: { cart: CartItem[], onUpdateQuantity: (productId: string, quantity: number) => void, onRemoveFromCart: (productId: string) => void, setPage: (page: Page) => void }) => {
+    const { translations } = useLocalization();
+    const t = translations.shop;
 
-    const handleSetPage = (newPage: Page) => {
-        setPage(newPage);
-        setIsMenuOpen(false);
-        setIsStoryOpen(false);
-    };
+    const subtotal = useMemo(() => cart.reduce((sum, item) => sum + item.price * item.quantity, 0), [cart]);
+    const shipping = subtotal > 0 ? 25.00 : 0; // Flat international shipping
+    const total = subtotal + shipping;
+
+    if (cart.length === 0) {
+        return (
+             <div className="text-center py-20 px-4">
+                <h1 className="text-4xl font-display text-dark-golden mb-4">{t.emptyCart.title}</h1>
+                <p className="text-lg mb-8">{t.emptyCart.text}</p>
+                <button onClick={() => setPage(Page.Products)} className="bg-golden-accent text-primary-text font-bold py-3 px-8 rounded-full hover:bg-yellow-500 transition duration-300">
+                    {t.emptyCart.cta}
+                </button>
+            </div>
+        );
+    }
     
-    const handleStoryEnter = () => {
-        if (storyTimeoutRef.current) clearTimeout(storyTimeoutRef.current);
-        setIsStoryOpen(true);
-    };
-
-    const handleStoryLeave = () => {
-        storyTimeoutRef.current = window.setTimeout(() => {
-            setIsStoryOpen(false);
-        }, 300);
-    };
-
-    const totalCartItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-
     return (
-        <header className="bg-primary-text text-light-text sticky top-0 z-50 shadow-lg">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20">
-                    <div className="flex-shrink-0 cursor-pointer" onClick={() => handleSetPage(Page.Home)}>
-                        <img className="h-12" src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden Taan Logo"/>
-                    </div>
-                    <nav className="hidden md:flex items-center space-x-6">
-                        <button onClick={() => handleSetPage(Page.Home)} className={`hover:text-golden-accent transition ${page === Page.Home ? 'text-golden-accent' : ''}`}>{t.home}</button>
-                        <div className="relative" onMouseEnter={handleStoryEnter} onMouseLeave={handleStoryLeave}>
-                             <button onClick={() => handleSetPage(Page.About)} className={`hover:text-golden-accent transition flex items-center ${[Page.About, Page.Heritage].includes(page) ? 'text-golden-accent' : ''}`}>
-                                 {t.ourStory} <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-4 h-4 ml-1" />
-                            </button>
-                             {isStoryOpen && (
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-primary-text rounded-md shadow-lg py-1 animate-fade-in">
-                                    <button onClick={() => handleSetPage(Page.About)} className="block w-full text-left px-4 py-2 text-sm hover:bg-dark-golden transition">{t.ourStory}</button>
-                                    <button onClick={() => handleSetPage(Page.Heritage)} className="block w-full text-left px-4 py-2 text-sm hover:bg-dark-golden transition">{t.heritage}</button>
+        <div>
+            <header className="py-20 px-4 md:px-8 bg-gradient-to-br from-primary-text to-dark-golden text-light-text text-center">
+                <h1 className="text-5xl md:text-6xl font-display text-golden-accent">{renderStyledText(t.header.title)}</h1>
+            </header>
+            <div className="max-w-5xl mx-auto p-4 md:p-8 my-16 grid lg:grid-cols-3 gap-12">
+                <div className="lg:col-span-2">
+                     <h2 className="text-3xl font-display text-dark-golden mb-6">{t.summary.title}</h2>
+                     <div className="space-y-4">
+                        {cart.map(item => (
+                            <div key={item.id} className="flex items-center justify-between border-b border-medium-bg pb-4">
+                                <div className="flex items-center gap-4">
+                                    <img src={item.img} alt={item.title} className="w-20 h-20 object-cover rounded-lg"/>
+                                    <div>
+                                        <h3 className="font-bold">{item.title}</h3>
+                                        <p className="text-sm text-primary-text/70">${item.price.toFixed(2)}</p>
+                                    </div>
                                 </div>
-                            )}
-                        </div>
-                        <button onClick={() => handleSetPage(Page.Wholesale)} className={`hover:text-golden-accent transition ${page === Page.Wholesale ? 'text-golden-accent' : ''}`}>{t.products}</button>
-                        <button onClick={() => handleSetPage(Page.Sustainability)} className={`hover:text-golden-accent transition ${page === Page.Sustainability ? 'text-golden-accent' : ''}`}>{t.sustainability}</button>
-                        <button onClick={() => handleSetPage(Page.Blog)} className={`hover:text-golden-accent transition ${page === Page.Blog ? 'text-golden-accent' : ''}`}>{t.blog}</button>
-                        <button onClick={() => handleSetPage(Page.Contact)} className={`hover:text-golden-accent transition ${page === Page.Contact ? 'text-golden-accent' : ''}`}>{t.contact}</button>
-                    </nav>
-                    <div className="hidden md:flex items-center space-x-4">
-                         <select value={language} onChange={e => setLanguage(e.target.value as Language)} className="bg-primary-text border border-light-text/30 rounded-md p-1 text-sm">
-                            <option value="en">EN</option>
-                            <option value="th">TH</option>
-                            <option value="ja">JA</option>
-                            <option value="zh">ZH</option>
-                            <option value="ar">AR</option>
-                            <option value="fr">FR</option>
-                            <option value="ko">KO</option>
-                            <option value="nl">NL</option>
-                        </select>
-                        <button onClick={() => handleSetPage(Page.ShopNow)} className="bg-golden-accent text-primary-text font-bold py-2 px-6 rounded-full hover:bg-yellow-500 transition relative">
-                            {t.shopNow}
-                            {totalCartItems > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">{totalCartItems}</span>}
-                        </button>
+                                <div className="flex items-center gap-4">
+                                     <input type="number" value={item.quantity} onChange={e => onUpdateQuantity(item.id, parseInt(e.target.value, 10))} min="1" className="w-16 p-2 border border-medium-bg rounded-lg text-center" />
+                                     <button onClick={() => onRemoveFromCart(item.id)} className="text-red-500 hover:text-red-700">
+                                        <SvgIcon path="M18 6L6 18M6 6l12 12" className="w-5 h-5"/>
+                                     </button>
+                                </div>
+                            </div>
+                        ))}
+                     </div>
+                </div>
+                <div className="bg-white/50 p-8 rounded-lg shadow-2xl">
+                    <h3 className="text-2xl font-display text-dark-golden mb-6">{t.summary.title}</h3>
+                    <div className="space-y-2 border-b border-medium-bg pb-4 mb-4">
+                        <div className="flex justify-between"><span>{t.summary.subtotal}</span><span>${subtotal.toFixed(2)}</span></div>
+                        <div className="flex justify-between"><span>{t.summary.shipping}</span><span>${shipping.toFixed(2)}</span></div>
                     </div>
-                    <div className="md:hidden">
-                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Open menu">
-                            <SvgIcon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" className="w-6 h-6" />
-                        </button>
-                    </div>
+                    <div className="flex justify-between font-bold text-xl"><span>{t.summary.total}</span><span>${total.toFixed(2)}</span></div>
+                    <button className="mt-8 w-full bg-dark-golden text-light-text font-bold py-3 px-8 rounded-full hover:bg-primary-text transition duration-300">
+                        Proceed to Checkout
+                    </button>
                 </div>
             </div>
-            {isMenuOpen && (
-                <div className="md:hidden p-4 space-y-2 animate-fade-in">
-                     <button onClick={() => handleSetPage(Page.Home)} className="block w-full text-left py-2 hover:text-golden-accent">{t.home}</button>
-                     <button onClick={() => handleSetPage(Page.About)} className="block w-full text-left py-2 hover:text-golden-accent">{t.ourStory}</button>
-                     <button onClick={() => handleSetPage(Page.Heritage)} className="block w-full text-left py-2 hover:text-golden-accent">{t.heritage}</button>
-                     <button onClick={() => handleSetPage(Page.Wholesale)} className="block w-full text-left py-2 hover:text-golden-accent">{t.products}</button>
-                     <button onClick={() => handleSetPage(Page.Sustainability)} className="block w-full text-left py-2 hover:text-golden-accent">{t.sustainability}</button>
-                     <button onClick={() => handleSetPage(Page.Blog)} className="block w-full text-left py-2 hover:text-golden-accent">{t.blog}</button>
-                     <button onClick={() => handleSetPage(Page.Contact)} className="block w-full text-left py-2 hover:text-golden-accent">{t.contact}</button>
-                     <button onClick={() => handleSetPage(Page.ShopNow)} className="mt-4 w-full bg-golden-accent text-primary-text font-bold py-2 px-4 rounded-full">{t.shopNow}</button>
-                </div>
-            )}
-        </header>
+        </div>
     );
 };
 
-const Footer = ({ setPage }: { setPage: (page: Page) => void }) => {
-    const { translations } = useLocalization();
+const Footer = () => {
+    const { translations, setLanguage } = useLocalization();
     const t = translations.footer;
-    const nav = translations.nav;
     const year = new Date().getFullYear();
-
-    const handleLinkClick = (page: Page) => {
-        setPage(page);
-    };
+    const copyrightText = t.copyright.replace('{year}', year.toString());
 
     return (
-        <footer className="bg-primary-text text-light-text/80 py-12 px-4 md:px-8">
-            <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
+        <footer className="bg-primary-text text-light-text py-12 px-6">
+            <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 text-center md:text-left">
                 <div>
-                    <img 
-                        src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" 
-                        alt="Golden TAAN Logo" 
-                        className="h-16 mb-4 cursor-pointer"
-                        onClick={() => handleLinkClick(Page.Home)}
-                    />
-                    <p className="whitespace-pre-wrap">{t.office.address}</p>
+                    <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden TAAN Logo" className="h-12 mx-auto md:mx-0 mb-4 invert brightness-0" />
+                    <p className="text-sm text-light-text/70">{copyrightText}</p>
                 </div>
-                <div>
-                    <h3 className="font-display text-xl text-light-text mb-4">{t.contact.title}</h3>
-                    <p>{t.contact.name}</p>
-                    <p>{t.contact.phone.label}: <a href={`tel:${t.contact.phone.number.replace(/\s/g, '')}`} className="hover:text-golden-accent">{t.contact.phone.number}</a></p>
-                    <p>{t.contact.email.label}: <a href={`mailto:${t.contact.email.address}`} className="hover:text-golden-accent">{t.contact.email.address}</a></p>
-                    <p>{t.contact.cc.label}: <a href={`mailto:${t.contact.cc.address}`} className="hover:text-golden-accent">{t.contact.cc.address}</a></p>
+                 <div>
+                    <h3 className="font-bold mb-4">{t.quickLinks}</h3>
+                    <ul className="space-y-2">
+                        <li><a href={`#${Page.Home}`} className="hover:underline text-light-text/80">{translations.nav.home}</a></li>
+                        <li><a href={`#${Page.About}`} className="hover:underline text-light-text/80">{translations.nav.ourStory}</a></li>
+                        <li><a href={`#${Page.Products}`} className="hover:underline text-light-text/80">{translations.nav.products}</a></li>
+                        <li><a href={`#${Page.Contact}`} className="hover:underline text-light-text/80">{translations.nav.contact}</a></li>
+                    </ul>
                 </div>
-                <div>
-                    <h3 className="font-display text-xl text-light-text mb-4">{t.quickLinks}</h3>
-                    <nav className="space-y-2">
-                        <button onClick={() => handleLinkClick(Page.Home)} className="block hover:text-golden-accent">{nav.home}</button>
-                        <button onClick={() => handleLinkClick(Page.About)} className="block hover:text-golden-accent">{nav.ourStory}</button>
-                        <button onClick={() => handleLinkClick(Page.Wholesale)} className="block hover:text-golden-accent">{nav.products}</button>
-                        <button onClick={() => handleLinkClick(Page.Sustainability)} className="block hover:text-golden-accent">{nav.sustainability}</button>
-                        <button onClick={() => handleLinkClick(Page.Contact)} className="block hover:text-golden-accent">{nav.contact}</button>
-                    </nav>
+                 <div>
+                    <h3 className="font-bold mb-4">{t.office.title}</h3>
+                    <p className="text-light-text/80 whitespace-pre-line">{t.office.address}</p>
+                    <div className="mt-4 flex justify-center md:justify-start space-x-4">
+                        <a href="https://facebook.com/goldentaan" target="_blank" rel="noopener noreferrer" aria-label="Facebook">FB</a>
+                        <a href="https://instagram.com/goldentaan" target="_blank" rel="noopener noreferrer" aria-label="Instagram">IG</a>
+                    </div>
                 </div>
-            </div>
-            <div className="mt-12 border-t border-light-text/20 pt-8 text-center text-sm">
-                <p>{t.copyright.replace('{year}', year.toString())}</p>
             </div>
         </footer>
     );
-};
+}
 
-const AppContent = () => {
-    const { translations } = useLocalization();
-    const [page, setPage] = useState<Page>(Page.Home);
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+const SoftLaunchModal = ({ onLanguageSelect, onEnter }: { onLanguageSelect: (lang: Language) => void, onEnter: () => void }) => {
+    const { translations, setLanguage, language } = useLocalization();
+    const t = translations.softLaunchModal;
 
-    useEffect(() => {
-        document.title = translations.meta.globalTitle;
-        const metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc) {
-            metaDesc.setAttribute('content', translations.meta.globalDescription);
-        }
-    }, [translations]);
-
-    useEffect(() => {
-        const handleHashChange = () => {
-            const hash = window.location.hash.replace('#', '');
-            const newPage = Object.values(Page).find(p => p === hash.split('/')[0]) || Page.Home;
-            setPage(newPage);
-            window.scrollTo(0, 0);
-            trackPageView(`/${hash || ''}`);
-        };
-        handleHashChange();
-        window.addEventListener('hashchange', handleHashChange, false);
-        return () => window.removeEventListener('hashchange', handleHashChange);
-    }, []);
-    
-    const handleSetPage = (newPage: Page) => {
-        if (page !== newPage) {
-            window.location.hash = newPage;
-        } else {
-             window.scrollTo(0, 0);
-        }
-    };
-
-    const handleAddToCart = (productToAdd: Product) => {
-        setCartItems(prev => {
-            const existingItem = prev.find(item => item.id === productToAdd.id);
-            if (existingItem) {
-                return prev.map(item => item.id === productToAdd.id ? { ...item, quantity: item.quantity + 1 } : item);
-            }
-            return [...prev, { ...productToAdd, quantity: 1 }];
-        });
-    };
-
-    const renderPage = () => {
-        switch (page) {
-            case Page.Home: return <HomePage onAddToCart={handleAddToCart} setPage={handleSetPage} setSelectedPost={setSelectedPost} />;
-            case Page.About: return <AboutUsPage />;
-            case Page.Heritage: return <HeritagePage />;
-            case Page.Sustainability: return <SustainabilityPage />;
-            case Page.Wholesale: return <ProductsPage />;
-            case Page.Blog: return <BlogPage selectedPost={selectedPost} setSelectedPost={setSelectedPost} />;
-            case Page.Contact: return <ContactPage />;
-            case Page.ShopNow: return <ShopNowPage cartItems={cartItems} setCartItems={setCartItems} setPage={handleSetPage} />;
-            default: return <HomePage onAddToCart={handleAddToCart} setPage={handleSetPage} setSelectedPost={setSelectedPost} />;
-        }
-    };
+    const languages: { code: Language; name: string }[] = [
+        { code: 'en', name: 'English' }, { code: 'th', name: 'ไทย' }, { code: 'ja', name: '日本語' },
+        { code: 'zh', name: '中文' }, { code: 'ar', name: 'العربية' }, { code: 'fr', name: 'Français' },
+        { code: 'ko', name: '한국어' }, { code: 'nl', name: 'Nederlands' },
+    ];
 
     return (
-        <div className="bg-light-bg font-sans text-primary-text">
-            <Header setPage={handleSetPage} page={page} cartItems={cartItems} />
-            <main>{renderPage()}</main>
-            <Footer setPage={handleSetPage} />
-        </div>
-    );
-};
-
-const SoftLaunchModal = ({ onEnter }: { onEnter: (lang: Language) => void }) => {
-    const [selectedLang, setSelectedLang] = useState<Language>('en');
-    const t = siteContent[selectedLang].softLaunchModal;
-
-    return (
-        <div className="fixed inset-0 bg-black/70 z-[200] flex items-center justify-center p-4 backdrop-blur-sm">
-            <div className="bg-light-bg text-primary-text rounded-lg shadow-2xl max-w-lg w-full p-8 text-center animate-fade-in">
-                <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden TAAN Logo" className="h-20 mx-auto mb-6" />
+        <div className="fixed inset-0 bg-black/70 z-[200] flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-light-bg rounded-lg shadow-2xl max-w-lg w-full p-8 text-center">
                 <h2 className="text-3xl font-display text-dark-golden mb-4">{t.title}</h2>
                 <p className="mb-4">{t.mainText}</p>
-                <p className="mb-6 text-sm bg-golden-accent/10 p-3 rounded-md">{t.statusText}</p>
+                <p className="mb-6 bg-medium-bg/50 p-3 rounded-lg text-sm">{t.statusText}</p>
                 
-                <div className="mb-6">
-                    <label htmlFor="lang-select" className="block mb-2 font-semibold">{t.selectLanguage}</label>
-                    <select
-                        id="lang-select"
-                        value={selectedLang}
-                        onChange={e => setSelectedLang(e.target.value as Language)}
-                        className="bg-white border border-medium-bg rounded-md p-2 text-center"
-                    >
-                        <option value="en">English</option>
-                        <option value="th">ภาษาไทย</option>
-                        <option value="ja">日本語</option>
-                        <option value="zh">中文</option>
-                        <option value="ar">العربية</option>
-                        <option value="fr">Français</option>
-                        <option value="ko">한국어</option>
-                        <option value="nl">Nederlands</option>
-                    </select>
+                <h3 className="font-bold mb-2">{t.selectLanguage}</h3>
+                <div className="flex flex-wrap justify-center gap-2 mb-8">
+                    {languages.map(lang => (
+                        <button key={lang.code} onClick={() => setLanguage(lang.code)} className={`px-4 py-2 text-sm rounded-full ${language === lang.code ? 'bg-dark-golden text-light-text' : 'bg-medium-bg'}`}>
+                            {lang.name}
+                        </button>
+                    ))}
                 </div>
-                
-                <button
-                    onClick={() => onEnter(selectedLang)}
-                    className="w-full bg-dark-golden text-light-text font-bold py-3 px-8 rounded-full hover:bg-primary-text transition duration-300 transform hover:scale-105"
-                >
+
+                <button onClick={onEnter} className="bg-golden-accent text-primary-text font-bold py-3 px-12 rounded-full hover:bg-yellow-500 transition duration-300">
                     {t.enterSite}
                 </button>
                 <p className="text-xs text-primary-text/50 mt-4">{t.lastUpdated}</p>
@@ -1824,49 +1355,282 @@ const SoftLaunchModal = ({ onEnter }: { onEnter: (lang: Language) => void }) => 
     );
 };
 
-const LocalizationProvider = ({ children }: { children: React.ReactNode }) => {
-    const [language, setLanguageState] = useState<Language>(() => {
-        const savedLang = localStorage.getItem('goldentaan-lang') as Language;
-        const browserLang = navigator.language.split('-')[0] as Language;
-        return savedLang || (Object.keys(siteContent).includes(browserLang) ? browserLang : 'en');
-    });
 
-    const [isModalOpen, setIsModalOpen] = useState(() => !localStorage.getItem('goldentaan-lang-set'));
+// --- Main App Component ---
+const AppInternal = () => {
+    const { translations, language, setLanguage } = useLocalization();
+    const [page, setPage] = useState<Page>(() => (window.location.hash.substring(1) as Page) || Page.Home);
+    const [cart, setCart] = useState<CartItem[]>([]);
+    const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const [isMenuOpen, setMenuOpen] = useState(false);
+    const [isStoryDropdownOpen, setStoryDropdownOpen] = useState(false);
+    const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
+    const langDropdownRef = useRef<HTMLDivElement>(null);
 
-    const setLanguage = useCallback((lang: Language) => {
-        localStorage.setItem('goldentaan-lang', lang);
-        localStorage.setItem('goldentaan-lang-set', 'true');
-        setLanguageState(lang);
-    }, []);
-
-    const handleEnterSite = (lang: Language) => {
-        setLanguage(lang);
-        setIsModalOpen(false);
+    // FIX: Add a safe mapping from Page enum to navigation translation keys.
+    const pageToNavKeyMap: { [key in Page]?: keyof Omit<Translations['nav'], 'homeSubItems'> } = {
+        [Page.Home]: 'home',
+        [Page.About]: 'ourStory',
+        [Page.Heritage]: 'heritage',
+        [Page.Products]: 'products',
+        [Page.Blog]: 'blog',
+        [Page.Sustainability]: 'sustainability',
+        [Page.Wholesale]: 'wholesale',
+        [Page.ShopNow]: 'shopNow',
+        [Page.Contact]: 'contact',
     };
 
-    const value = useMemo(() => ({
-        language,
-        setLanguage,
-        translations: siteContent[language] || siteContent.en
-    }), [language, setLanguage]);
+    const handleNavigate = (targetPage: Page) => {
+        setPage(targetPage);
+        window.scrollTo(0, 0);
+        setMenuOpen(false);
+        trackPageView(`/${targetPage}`);
+    };
 
-    if (isModalOpen) {
-        return <SoftLaunchModal onEnter={handleEnterSite} />;
+    useEffect(() => {
+        const handleHashChange = () => {
+            const hash = window.location.hash.substring(1) as Page;
+            if (Object.values(Page).includes(hash)) {
+                setPage(hash);
+            } else {
+                setPage(Page.Home);
+            }
+        };
+        window.addEventListener('hashchange', handleHashChange);
+        handleHashChange(); // Initial check
+        return () => window.removeEventListener('hashchange', handleHashChange);
+    }, []);
+    
+    useEffect(() => {
+        if(page) window.location.hash = page;
+    }, [page]);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (langDropdownRef.current && !langDropdownRef.current.contains(event.target as Node)) {
+                setIsLangDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [isMenuOpen]);
+
+
+    const handleAddToCart = (product: Product) => {
+        setCart(prevCart => {
+            const existingItem = prevCart.find(item => item.id === product.id);
+            if (existingItem) {
+                return prevCart.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+            }
+            return [...prevCart, { ...product, quantity: 1 }];
+        });
+    };
+    
+    const handleUpdateCartQuantity = (productId: string, quantity: number) => {
+        if(quantity < 1) return;
+        setCart(cart.map(item => item.id === productId ? {...item, quantity} : item));
     }
+    
+    const handleRemoveFromCart = (productId: string) => {
+        setCart(cart.filter(item => item.id !== productId));
+    }
+
+    const renderPage = () => {
+        if (selectedPost) {
+            return <BlogPostPage post={selectedPost} onBack={() => setSelectedPost(null)} />;
+        }
+        switch (page) {
+            case Page.Home: return <HomePage onAddToCart={handleAddToCart} setPage={handleNavigate} setSelectedPost={setSelectedPost} onProductSelect={setSelectedProduct} />;
+            case Page.About: return <AboutUsPage />;
+            case Page.Heritage: return <HeritagePage />;
+            case Page.Products: return <ProductsPage onAddToCart={handleAddToCart} onProductSelect={setSelectedProduct} />;
+            case Page.Blog: return <BlogPage onPostSelect={setSelectedPost} />;
+            case Page.Sustainability: return <SustainabilityPage />;
+            case Page.Contact: return <ContactPage />;
+            case Page.ShopNow: return <ShopPage cart={cart} onUpdateQuantity={handleUpdateCartQuantity} onRemoveFromCart={handleRemoveFromCart} setPage={handleNavigate}/>;
+            default: return <HomePage onAddToCart={handleAddToCart} setPage={handleNavigate} setSelectedPost={setSelectedPost} onProductSelect={setSelectedProduct} />;
+        }
+    };
+    
+    const itemCount = useMemo(() => cart.reduce((sum, item) => sum + item.quantity, 0), [cart]);
+    const languages: { code: Language; name: string }[] = [
+        { code: 'en', name: 'English' }, { code: 'th', name: 'ไทย' }, { code: 'ja', name: '日本語' },
+        { code: 'zh', name: '中文' }, { code: 'ar', name: 'العربية' }, { code: 'fr', name: 'Français' },
+        { code: 'ko', name: '한국어' }, { code: 'nl', name: 'Nederlands' },
+    ];
+
+
+    const mainNavPages = [
+        Page.Home,
+        Page.About,
+        Page.Products,
+        Page.Blog,
+        Page.Sustainability,
+        Page.Wholesale,
+        Page.Contact,
+    ];
+
+    // --- Mobile Menu Overlay ---
+    const MobileMenu = () => (
+        <div className="fixed inset-0 bg-light-bg/95 backdrop-blur-md z-40 flex flex-col items-center justify-center animate-fade-in md:hidden">
+            <button
+                onClick={() => setMenuOpen(false)}
+                className="absolute top-6 right-6 text-primary-text hover:text-dark-golden"
+                aria-label="Close menu"
+            >
+                <SvgIcon path="M6 18L18 6M6 6l12 12" className="w-8 h-8" />
+            </button>
+            <ul className="flex flex-col items-center space-y-6 text-center">
+               {mainNavPages.map(p => {
+                   const navKey = pageToNavKeyMap[p];
+                   if (!navKey) return null;
+                   const navLabel = translations.nav[navKey];
+                   
+                   if (p === Page.About) {
+                       return (
+                           <li key={p}>
+                               <button onClick={() => handleNavigate(p)} className="text-3xl font-display hover:text-dark-golden transition-colors py-2">
+                                   {navLabel}
+                               </button>
+                               <ul className="mt-2">
+                                   <li>
+                                       <button onClick={() => handleNavigate(Page.Heritage)} className="text-xl font-sans text-primary-text/80 hover:text-dark-golden transition-colors py-1">
+                                           {translations.nav.heritage}
+                                       </button>
+                                   </li>
+                               </ul>
+                           </li>
+                       );
+                   }
+
+                   return (
+                       <li key={p}>
+                           <button onClick={() => handleNavigate(p)} className="text-3xl font-display hover:text-dark-golden transition-colors py-2">
+                               {navLabel}
+                           </button>
+                       </li>
+                   );
+               })}
+            </ul>
+        </div>
+    );
+
+    return (
+        <div className={`font-sans ${language === 'ar' ? 'rtl' : 'ltr'}`}>
+            <header className="sticky top-0 z-50 bg-light-bg/80 backdrop-blur-md shadow-md">
+                <nav className="container mx-auto px-6 py-3 flex justify-between items-center">
+                    <button onClick={() => handleNavigate(Page.Home)} className="flex items-center">
+                        <img src="https://cdn.jsdelivr.net/gh/devoncasa/goldentaan-assets@main/golden-taan-logo-smll.webp" alt="Golden TAAN Logo" className="h-12" />
+                    </button>
+
+                    <div className="hidden md:flex items-center space-x-6">
+                        <button onClick={() => handleNavigate(Page.Home)} className="font-semibold hover:text-dark-golden">{translations.nav.home}</button>
+                        <div className="relative" onMouseEnter={() => setStoryDropdownOpen(true)} onMouseLeave={() => setStoryDropdownOpen(false)}>
+                             <button onClick={() => handleNavigate(Page.About)} className="font-semibold hover:text-dark-golden flex items-center">{translations.nav.ourStory} <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-4 h-4 ml-1"/></button>
+                             {isStoryDropdownOpen && <div className="absolute top-full left-0 mt-2 w-48 bg-light-bg shadow-lg rounded-md py-2"><a href={`#${Page.Heritage}`} onClick={() => handleNavigate(Page.Heritage)} className="block px-4 py-2 hover:bg-medium-bg">{translations.nav.heritage}</a></div>}
+                        </div>
+                        <button onClick={() => handleNavigate(Page.Products)} className="font-semibold hover:text-dark-golden">{translations.nav.products}</button>
+                        <button onClick={() => handleNavigate(Page.Blog)} className="font-semibold hover:text-dark-golden">{translations.nav.blog}</button>
+                        <button onClick={() => handleNavigate(Page.Sustainability)} className="font-semibold hover:text-dark-golden">{translations.nav.sustainability}</button>
+                        <button onClick={() => handleNavigate(Page.Contact)} className="font-semibold hover:text-dark-golden">{translations.nav.contact}</button>
+                    </div>
+
+                    <div className="flex items-center space-x-2 sm:space-x-4">
+                        <div className="relative">
+                            <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="flex items-center text-primary-text hover:text-dark-golden">
+                                <SvgIcon path="M12 21a9.75 9.75 0 110-19.5 9.75 9.75 0 010 19.5zm0-17.25a7.5 7.5 0 100 15 7.5 7.5 0 000-15z M2.25 12a9.745 9.745 0 013.06-7.032l-1.02-.34A.75.75 0 003 4.253L1.625 5.628a.75.75 0 00.54 1.306l1.02.34A9.745 9.745 0 012.25 12zm18-7.747a.75.75 0 00-1.306-.54L17.93 5.06a9.745 9.745 0 01-1.25-2.806l.34-1.02a.75.75 0 00-1.306-.54L14.34 2.06a9.745 9.745 0 00-4.68 0L8.285.686a.75.75 0 00-1.306.54l.34 1.02A9.745 9.745 0 016.07 5.06l-1.02-.34a.75.75 0 00-1.306.54L5.117 6.63a9.745 9.745 0 000 10.74l-1.372 1.373a.75.75 0 00.54 1.306l1.02-.34a9.745 9.745 0 002.806 1.25l-.34 1.02a.75.75 0 001.306.54l1.373-1.372a9.745 9.745 0 0010.74 0l1.373 1.372a.75.75 0 001.306-.54l-.34-1.02a9.745 9.745 0 002.806-1.25l1.02.34a.75.75 0 001.306-.54l-1.372-1.373a9.745 9.745 0 000-10.74l1.372-1.373z" className="w-6 h-6"/>
+                                <span className="ml-1 uppercase">{language}</span>
+                            </button>
+                             {isLangDropdownOpen && (
+                                <div ref={langDropdownRef} className="absolute right-0 mt-2 w-40 bg-light-bg shadow-lg rounded-md py-2 z-50">
+                                    {languages.map(lang => (
+                                        <button key={lang.code} onClick={() => { setLanguage(lang.code); setIsLangDropdownOpen(false); }} className="block w-full text-left px-4 py-2 hover:bg-medium-bg">
+                                            {lang.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <button onClick={() => handleNavigate(Page.ShopNow)} className="relative text-primary-text hover:text-dark-golden">
+                            <SvgIcon path="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.658-.463 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" className="w-6 h-6"/>
+                            {itemCount > 0 && <span className="absolute -top-2 -right-2 bg-golden-accent text-light-text text-xs rounded-full h-5 w-5 flex items-center justify-center">{itemCount}</span>}
+                        </button>
+                        <div className="md:hidden">
+                            <button onClick={() => setMenuOpen(!isMenuOpen)} className="text-dark-golden">
+                                <SvgIcon path={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"} className="w-6 h-6" />
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+                {isMenuOpen && <MobileMenu />}
+            </header>
+            
+            <main>{renderPage()}</main>
+            
+            <Footer />
+
+            {selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} setPage={handleNavigate} setSelectedPost={setSelectedPost} />}
+        </div>
+    );
+};
+
+const LocalizationProvider = ({ children }: { children: React.ReactNode }) => {
+    const getInitialLanguage = (): Language => {
+        const storedLang = localStorage.getItem('golden-taan-lang') as Language;
+        if (storedLang && siteContent[storedLang]) return storedLang;
+        const browserLang = navigator.language.split('-')[0] as Language;
+        return siteContent[browserLang] ? browserLang : 'en';
+    };
+    
+    const [language, setLanguage] = useState<Language>(getInitialLanguage);
+    const [showModal, setShowModal] = useState<boolean>(!localStorage.getItem('golden-taan-visited'));
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('reset_welcome') === 'true') {
+            localStorage.removeItem('golden-taan-visited');
+            setShowModal(true);
+        }
+    }, []);
+
+    const handleSetLanguage = (lang: Language) => {
+        setLanguage(lang);
+        localStorage.setItem('golden-taan-lang', lang);
+    };
+
+    const handleEnterSite = () => {
+        localStorage.setItem('golden-taan-visited', 'true');
+        setShowModal(false);
+    };
+
+    const translations = useMemo(() => siteContent[language] || siteContent.en, [language]);
+    
+    const value = useMemo(() => ({ language, setLanguage: handleSetLanguage, translations }), [language, translations]);
 
     return (
         <LocalizationContext.Provider value={value}>
+            {showModal && <SoftLaunchModal onLanguageSelect={handleSetLanguage} onEnter={handleEnterSite} />}
             {children}
         </LocalizationContext.Provider>
     );
 };
 
-const App = () => {
-    return (
-        <LocalizationProvider>
-            <AppContent />
-        </LocalizationProvider>
-    );
-};
+const App = () => (
+    <LocalizationProvider>
+        <AppInternal />
+    </LocalizationProvider>
+);
 
 export default App;

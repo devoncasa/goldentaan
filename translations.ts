@@ -889,6 +889,7 @@ th.blog.categories = {
     health: "สุขภาพและสุขภาวะ",
     sustainability: "วัฒนธรรมและความยั่งยืน"
 };
+th.heritage = en.heritage;
 
 const ja: Translations = JSON.parse(JSON.stringify(en));
 ja.home.health.nutrientData = nutrientData.ja;
@@ -965,6 +966,7 @@ ja.blog.categories = {
     health: "健康とウェルネス",
     sustainability: "文化と持続可能性"
 };
+ja.heritage = en.heritage;
 
 const zh: Translations = JSON.parse(JSON.stringify(en));
 zh.home.health.nutrientData = nutrientData.zh;
@@ -1041,6 +1043,7 @@ zh.blog.categories = {
     health: "健康与保健",
     sustainability: "文化与可持续性"
 };
+zh.heritage = en.heritage;
 
 const ar: Translations = JSON.parse(JSON.stringify(en));
 ar.home.health.nutrientData = nutrientData.ar;
@@ -1117,6 +1120,7 @@ ar.blog.categories = {
     health: "الصحة والعافية",
     sustainability: "الثقافة والاستدامة"
 };
+ar.heritage = en.heritage;
 
 const fr: Translations = JSON.parse(JSON.stringify(en));
 fr.home.health.nutrientData = nutrientData.fr;
@@ -1162,9 +1166,9 @@ fr.home.productSection.description = "Explorez notre gamme d'ingrédients gourma
 fr.home.faq.headline = "Vos questions sur le sucre de palmier de Palmyre répondues";
 fr.home.faq.items[0].q = "Qu'est-ce que le sucre de toddy palm ?";
 fr.home.faq.items[0].a = "C'est un édulcorant naturel pur et non raffiné récolté à partir du nectar du palmier de Palmyre. Golden TAAN est fabriqué avec des méthodes artisanales traditionnelles qui préservent les minéraux et une saveur riche de caramel, ce qui en fait une alternative saine supérieure au sucre.";
-fr.home.faq.items[1].q = "Golden TAAN est-il une alternative saine au sucre ?";
 // FIX: Corrected corrupted translation string and completed the FAQ section.
 fr.home.faq.items[1].a = "Oui. Il a un faible indice glycémique (IG ~35) pour une libération lente d'énergie, ce qui en fait un sucre adapté aux diabétiques. Il est également riche en nutriments comme le potassium et le fer, contrairement aux sucres à 'calories vides'.";
+fr.home.faq.items[1].q = "Golden TAAN est-il une alternative saine au sucre ?";
 fr.home.faq.items[2].q = "Quelle est la différence entre le sucre de palme et le sucre de coco ?";
 fr.home.faq.items[2].a = "Ils proviennent d'arbres différents. Le Golden TAAN (du palmier de Palmyre) a une saveur de caramel au beurre plus profonde et fumée et est généralement plus riche en minéraux. C'est un ingrédient gastronomique unique ancré dans le patrimoine thaïlandais.";
 fr.home.faq.items[3].q = "Comment puis-je utiliser ce sucre végétal ?";
@@ -1178,6 +1182,7 @@ fr.blog.categories = {
     health: "Santé et bien-être",
     sustainability: "Culture et durabilité"
 };
+fr.heritage = en.heritage;
 
 const ko: Translations = JSON.parse(JSON.stringify(en));
 ko.home.health.nutrientData = nutrientData.ko;
@@ -1200,6 +1205,7 @@ ko.blog.categories = {
     health: "건강 및 웰빙",
     sustainability: "문화 및 지속가능성"
 };
+ko.heritage = en.heritage;
 
 
 const nl: Translations = JSON.parse(JSON.stringify(en));
@@ -1223,6 +1229,7 @@ nl.blog.categories = {
     health: "Gezondheid & Welzijn",
     sustainability: "Cultuur & Duurzaamheid"
 };
+nl.heritage = en.heritage;
 
 export const siteContent: Record<Language, Translations> = {
     en,

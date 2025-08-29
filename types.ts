@@ -2,6 +2,7 @@ export enum Page {
     Home = 'home',
     About = 'about-us',
     Heritage = 'heritage',
+    Products = 'products',
     Blog = 'blog',
     Sustainability = 'sustainability',
     Wholesale = 'wholesale',
