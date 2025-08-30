@@ -1365,8 +1365,10 @@ const AppInternal = () => {
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [isMenuOpen, setMenuOpen] = useState(false);
     const [isStoryDropdownOpen, setStoryDropdownOpen] = useState(false);
+    const [isMobileStorySubmenuOpen, setMobileStorySubmenuOpen] = useState(false);
     const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
     const langDropdownRef = useRef<HTMLDivElement>(null);
+    const storyDropdownRef = useRef<HTMLDivElement>(null);
 
     // FIX: Add a safe mapping from Page enum to navigation translation keys.
     const pageToNavKeyMap: { [key in Page]?: keyof Omit<Translations['nav'], 'homeSubItems'> } = {
@@ -1385,6 +1387,8 @@ const AppInternal = () => {
         setPage(targetPage);
         window.scrollTo(0, 0);
         setMenuOpen(false);
+        setStoryDropdownOpen(false);
+        setMobileStorySubmenuOpen(false);
         trackPageView(`/${targetPage}`);
     };
 
@@ -1410,6 +1414,9 @@ const AppInternal = () => {
         const handleClickOutside = (event: MouseEvent) => {
             if (langDropdownRef.current && !langDropdownRef.current.contains(event.target as Node)) {
                 setIsLangDropdownOpen(false);
+            }
+            if (storyDropdownRef.current && !storyDropdownRef.current.contains(event.target as Node)) {
+                setStoryDropdownOpen(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -1487,7 +1494,7 @@ const AppInternal = () => {
         <div className="fixed inset-0 bg-light-bg/95 backdrop-blur-md z-40 flex flex-col items-center justify-center animate-fade-in md:hidden">
             <button
                 onClick={() => setMenuOpen(false)}
-                className="absolute top-6 right-6 text-primary-text hover:text-dark-golden"
+                className="absolute top-6 right-6 p-2 rounded-full text-primary-text hover:text-dark-golden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dark-golden"
                 aria-label="Close menu"
             >
                 <SvgIcon path="M6 18L18 6M6 6l12 12" className="w-8 h-8" />
@@ -1501,23 +1508,33 @@ const AppInternal = () => {
                    if (p === Page.About) {
                        return (
                            <li key={p}>
-                               <button onClick={() => handleNavigate(p)} className="text-3xl font-display hover:text-dark-golden transition-colors py-2">
+                               <button onClick={() => setMobileStorySubmenuOpen(!isMobileStorySubmenuOpen)} className="text-3xl font-display hover:text-dark-golden transition-colors px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dark-golden flex items-center">
                                    {navLabel}
+                                   <span className={`transform transition-transform duration-300 ml-2 ${isMobileStorySubmenuOpen ? 'rotate-180' : ''}`}>
+                                       <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-5 h-5"/>
+                                   </span>
                                </button>
-                               <ul className="mt-2">
-                                   <li>
-                                       <button onClick={() => handleNavigate(Page.Heritage)} className="text-xl font-sans text-primary-text/80 hover:text-dark-golden transition-colors py-1">
-                                           {translations.nav.heritage}
-                                       </button>
-                                   </li>
-                               </ul>
+                               {isMobileStorySubmenuOpen && (
+                                   <ul className="mt-2 space-y-2">
+                                       <li>
+                                           <button onClick={() => handleNavigate(Page.About)} className="text-xl font-sans text-primary-text/80 hover:text-dark-golden transition-colors px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dark-golden">
+                                               {translations.nav.ourStory}
+                                           </button>
+                                       </li>
+                                       <li>
+                                           <button onClick={() => handleNavigate(Page.Heritage)} className="text-xl font-sans text-primary-text/80 hover:text-dark-golden transition-colors px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dark-golden">
+                                               {translations.nav.heritage}
+                                           </button>
+                                       </li>
+                                   </ul>
+                               )}
                            </li>
                        );
                    }
 
                    return (
                        <li key={p}>
-                           <button onClick={() => handleNavigate(p)} className="text-3xl font-display hover:text-dark-golden transition-colors py-2">
+                           <button onClick={() => handleNavigate(p)} className="text-3xl font-display hover:text-dark-golden transition-colors px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dark-golden">
                                {navLabel}
                            </button>
                        </li>
@@ -1537,9 +1554,14 @@ const AppInternal = () => {
 
                     <div className="hidden md:flex items-center space-x-6">
                         <button onClick={() => handleNavigate(Page.Home)} className="font-semibold hover:text-dark-golden">{translations.nav.home}</button>
-                        <div className="relative" onMouseEnter={() => setStoryDropdownOpen(true)} onMouseLeave={() => setStoryDropdownOpen(false)}>
-                             <button onClick={() => handleNavigate(Page.About)} className="font-semibold hover:text-dark-golden flex items-center">{translations.nav.ourStory} <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-4 h-4 ml-1"/></button>
-                             {isStoryDropdownOpen && <div className="absolute top-full left-0 mt-2 w-48 bg-light-bg shadow-lg rounded-md py-2"><a href={`#${Page.Heritage}`} onClick={() => handleNavigate(Page.Heritage)} className="block px-4 py-2 hover:bg-medium-bg">{translations.nav.heritage}</a></div>}
+                        <div ref={storyDropdownRef} className="relative">
+                             <button onClick={() => setStoryDropdownOpen(!isStoryDropdownOpen)} className="font-semibold hover:text-dark-golden flex items-center">{translations.nav.ourStory} <SvgIcon path="M19.5 8.25l-7.5 7.5-7.5-7.5" className="w-4 h-4 ml-1"/></button>
+                             {isStoryDropdownOpen && (
+                                <div className="absolute top-full left-0 mt-2 w-48 bg-light-bg shadow-lg rounded-md py-2 animate-fade-in">
+                                    <button onClick={() => handleNavigate(Page.About)} className="block w-full text-left px-4 py-2 hover:bg-medium-bg">{translations.nav.ourStory}</button>
+                                    <button onClick={() => handleNavigate(Page.Heritage)} className="block w-full text-left px-4 py-2 hover:bg-medium-bg">{translations.nav.heritage}</button>
+                                </div>
+                             )}
                         </div>
                         <button onClick={() => handleNavigate(Page.Products)} className="font-semibold hover:text-dark-golden">{translations.nav.products}</button>
                         <button onClick={() => handleNavigate(Page.Blog)} className="font-semibold hover:text-dark-golden">{translations.nav.blog}</button>
@@ -1548,13 +1570,12 @@ const AppInternal = () => {
                     </div>
 
                     <div className="flex items-center space-x-2 sm:space-x-4">
-                        <div className="relative">
+                        <div ref={langDropdownRef} className="relative">
                             <button onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)} className="flex items-center text-primary-text hover:text-dark-golden">
-                                <SvgIcon path="M12 21a9.75 9.75 0 110-19.5 9.75 9.75 0 010 19.5zm0-17.25a7.5 7.5 0 100 15 7.5 7.5 0 000-15z M2.25 12a9.745 9.745 0 013.06-7.032l-1.02-.34A.75.75 0 003 4.253L1.625 5.628a.75.75 0 00.54 1.306l1.02.34A9.745 9.745 0 012.25 12zm18-7.747a.75.75 0 00-1.306-.54L17.93 5.06a9.745 9.745 0 01-1.25-2.806l.34-1.02a.75.75 0 00-1.306-.54L14.34 2.06a9.745 9.745 0 00-4.68 0L8.285.686a.75.75 0 00-1.306.54l.34 1.02A9.745 9.745 0 016.07 5.06l-1.02-.34a.75.75 0 00-1.306.54L5.117 6.63a9.745 9.745 0 000 10.74l-1.372 1.373a.75.75 0 00.54 1.306l1.02-.34a9.745 9.745 0 002.806 1.25l-.34 1.02a.75.75 0 001.306.54l1.373-1.372a9.745 9.745 0 0010.74 0l1.373 1.372a.75.75 0 001.306-.54l-.34-1.02a9.745 9.745 0 002.806-1.25l1.02.34a.75.75 0 001.306-.54l-1.372-1.373a9.745 9.745 0 000-10.74l1.372-1.373z" className="w-6 h-6"/>
-                                <span className="ml-1 uppercase">{language}</span>
+                                <SvgIcon path="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM11 19.93c-3.95-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c3.95.49 7 3.85 7 7.93s-3.05 7.44-7 7.93V4.07z" className="w-6 h-6" />
                             </button>
-                             {isLangDropdownOpen && (
-                                <div ref={langDropdownRef} className="absolute right-0 mt-2 w-40 bg-light-bg shadow-lg rounded-md py-2 z-50">
+                            {isLangDropdownOpen && (
+                                <div className="absolute top-full right-0 mt-2 w-48 bg-light-bg shadow-lg rounded-md py-2 animate-fade-in">
                                     {languages.map(lang => (
                                         <button key={lang.code} onClick={() => { setLanguage(lang.code); setIsLangDropdownOpen(false); }} className="block w-full text-left px-4 py-2 hover:bg-medium-bg">
                                             {lang.name}
@@ -1563,74 +1584,87 @@ const AppInternal = () => {
                                 </div>
                             )}
                         </div>
+                        
                         <button onClick={() => handleNavigate(Page.ShopNow)} className="relative text-primary-text hover:text-dark-golden">
-                            <SvgIcon path="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.658-.463 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" className="w-6 h-6"/>
-                            {itemCount > 0 && <span className="absolute -top-2 -right-2 bg-golden-accent text-light-text text-xs rounded-full h-5 w-5 flex items-center justify-center">{itemCount}</span>}
+                            <SvgIcon path="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c.51 0 .962-.328 1.095-.828l2.91-8.73a.962.962 0 00-.23-.974 1.007 1.007 0 00-.73-.348H5.625M11.25 4.5h3.75a3 3 0 013 3v.75M11.25 4.5a3 3 0 00-3 3v.75" className="w-6 h-6" />
+                            {itemCount > 0 && <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">{itemCount}</span>}
                         </button>
+                        
                         <div className="md:hidden">
                             <button onClick={() => setMenuOpen(!isMenuOpen)} className="text-dark-golden">
-                                <SvgIcon path={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"} className="w-6 h-6" />
+                                <SvgIcon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" className="w-6 h-6" />
                             </button>
                         </div>
                     </div>
                 </nav>
-                {isMenuOpen && <MobileMenu />}
             </header>
             
-            <main>{renderPage()}</main>
+            <main>
+                {renderPage()}
+                {selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} setPage={handleNavigate} setSelectedPost={setSelectedPost} />}
+            </main>
             
-            <Footer />
+            {isMenuOpen && <MobileMenu />}
 
-            {selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} setPage={handleNavigate} setSelectedPost={setSelectedPost} />}
+            <Footer />
         </div>
     );
 };
 
-const LocalizationProvider = ({ children }: { children: React.ReactNode }) => {
+const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const getInitialLanguage = (): Language => {
-        const storedLang = localStorage.getItem('golden-taan-lang') as Language;
-        if (storedLang && siteContent[storedLang]) return storedLang;
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('reset_welcome') === 'true') {
+            localStorage.removeItem('hasSeenWelcome');
+        }
+        const savedLang = localStorage.getItem('userLanguage') as Language;
+        if (savedLang && siteContent[savedLang]) {
+            return savedLang;
+        }
         const browserLang = navigator.language.split('-')[0] as Language;
         return siteContent[browserLang] ? browserLang : 'en';
     };
-    
-    const [language, setLanguage] = useState<Language>(getInitialLanguage);
-    const [showModal, setShowModal] = useState<boolean>(!localStorage.getItem('golden-taan-visited'));
 
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('reset_welcome') === 'true') {
-            localStorage.removeItem('golden-taan-visited');
-            setShowModal(true);
-        }
+    const [language, setLanguage] = useState<Language>(getInitialLanguage);
+    const [hasSeenWelcome, setHasSeenWelcome] = useState(() => localStorage.getItem('hasSeenWelcome') === 'true');
+    
+    const handleSetLanguage = useCallback((lang: Language) => {
+        setLanguage(lang);
+        localStorage.setItem('userLanguage', lang);
     }, []);
 
-    const handleSetLanguage = (lang: Language) => {
-        setLanguage(lang);
-        localStorage.setItem('golden-taan-lang', lang);
-    };
-
     const handleEnterSite = () => {
-        localStorage.setItem('golden-taan-visited', 'true');
-        setShowModal(false);
+        localStorage.setItem('hasSeenWelcome', 'true');
+        setHasSeenWelcome(true);
     };
-
-    const translations = useMemo(() => siteContent[language] || siteContent.en, [language]);
     
-    const value = useMemo(() => ({ language, setLanguage: handleSetLanguage, translations }), [language, translations]);
+    const contextValue = useMemo(() => ({
+        language,
+        setLanguage: handleSetLanguage,
+        translations: siteContent[language] || siteContent.en,
+    }), [language, handleSetLanguage]);
+
+    if (!hasSeenWelcome) {
+        return (
+            <LocalizationContext.Provider value={contextValue}>
+                <SoftLaunchModal onLanguageSelect={handleSetLanguage} onEnter={handleEnterSite} />
+            </LocalizationContext.Provider>
+        );
+    }
 
     return (
-        <LocalizationContext.Provider value={value}>
-            {showModal && <SoftLaunchModal onLanguageSelect={handleSetLanguage} onEnter={handleEnterSite} />}
+        <LocalizationContext.Provider value={contextValue}>
             {children}
         </LocalizationContext.Provider>
     );
 };
 
-const App = () => (
-    <LocalizationProvider>
-        <AppInternal />
-    </LocalizationProvider>
-);
+const Root = () => {
+    return (
+        <LocalizationProvider>
+            <AppInternal />
+        </LocalizationProvider>
+    );
+};
 
-export default App;
+export default Root;
